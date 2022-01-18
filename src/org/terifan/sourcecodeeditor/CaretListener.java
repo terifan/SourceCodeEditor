@@ -1,4 +1,4 @@
-package org.terifan.ui.sourceeditor;
+package org.terifan.sourcecodeeditor;
 
 
 public interface CaretListener

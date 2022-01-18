@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <syntax-coloring-definition>
-	<scd:syntax-parser class="org.terifan.apps.sourceeditor.XMLSyntaxParser"/>
 	<scd:presentation-name label="Extensible Markup Language"/>
 	<scd:file-association extension="xml" name="XML-file"/>
 

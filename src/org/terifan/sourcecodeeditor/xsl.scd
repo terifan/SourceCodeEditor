@@ -1,42 +1,19 @@
 <?xml version="1.0"?>
-<test xmlns:ns='test'>
-	<ns:element attribute='value'>
-		elemene text
-	</ns:element>
-</test>
-<?xml version="1.0"?>
 
 <syntax-coloring-definition>
-	<scd:syntax-parser class="org.terifan.apps.sourceeditor.XMLSyntaxParser"/>
-	<scd:presentation-name label="Hyper Text Markup Language"/>
-	<scd:file-association extension="html,htm" name="HTML-file"/>
+	<scd:presentation-name label="Extensible Stylesheet Language"/>
+	<scd:file-association extension="xsl" name="XSL-file"/>
 
-	<sp:tag name="b"/>
-	<sp:tag name="body">
-		<sp:attribute name="bgcolor"/>
-	</sp:tag>
-	<sp:tag name="br"/>
-	<sp:tag name="center"/>
-	<sp:tag name="font">
-		<sp:attribute name="color"/>
-		<sp:attribute name="face"/>
-		<sp:attribute name="size"/>
-	</sp:tag>
-	<sp:tag name="head"/>
-	<sp:tag name="hr"/>
-	<sp:tag name="html"/>
-	<sp:tag name="i"/>
-	<sp:tag name="meta">
-		<sp:attribute name="content"/>
-		<sp:attribute name="http-equiv"/>
-		<sp:attribute name="name"/>
-	</sp:tag>
-	<sp:tag name="p"/>
-	<sp:tag name="style">
-		<sp:attribute name="type"/>
-	</sp:tag>
-	<sp:tag name="title"/>
-	<sp:tag name="u"/>
+	<sp:namespace name="xsl">
+		<sp:tag name="stylesheet" strict="true">
+			<sp:attribute name="version"/>
+			<sp:attribute name="xmlns:xsl"/>
+		</sp:tag>
+		<sp:tag name="output" strict="true">
+			<sp:attribute name="method"/>
+			<sp:attribute name="indent"/>
+		</sp:tag>
+	</sp:namespace>
 
 	<scd:style id="AMP" name="AMP" face="plain" foreground="234,202,21" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
 	<scd:style id="ATTRIBUTE" name="Attribute" face="plain" foreground="111,0,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>

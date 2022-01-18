@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <syntax-coloring-definition>
-	<scd:syntax-parser class="org.terifan.apps.sourceeditor.TextSyntaxParser"/>
 	<scd:presentation-name label="Plain Text"/>
 	<scd:file-association extension="txt" name="Plain Text file"/>
 

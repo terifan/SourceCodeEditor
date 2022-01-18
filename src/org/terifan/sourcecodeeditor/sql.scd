@@ -1,63 +1,51 @@
 <?xml version="1.0"?>
 
 <syntax-coloring-definition>
-	<scd:syntax-parser class="org.terifan.apps.sourceeditor.JavaSyntaxParser"/>
-	<scd:presentation-name label="Java Source Code"/>
-	<scd:file-association extension="java" name="Java-file"/>
+	<scd:presentation-name label="SQL"/>
+	<scd:file-association extension="sql" name="SQL-file"/>
 
-	<sp:keyword name="abstract"/>
-	<sp:keyword name="assert"/>
-	<sp:keyword name="break"/>
+	<sp:keyword name="with"/>
+	<sp:keyword name="select"/>
+	<sp:keyword name="delete"/>
+	<sp:keyword name="insert"/>
+	<sp:keyword name="to"/>
+	<sp:keyword name="from"/>
+	<sp:keyword name="where"/>
+	<sp:keyword name="having"/>
+	<sp:keyword name="order"/>
+	<sp:keyword name="by"/>
+	<sp:keyword name="group"/>
+	<sp:keyword name="sysdate"/>
+	<sp:keyword name="when"/>
 	<sp:keyword name="case"/>
-	<sp:keyword name="catch"/>
-	<sp:keyword name="class"/>
-	<sp:keyword name="const"/>
-	<sp:keyword name="continue"/>
-	<sp:keyword name="default"/>
-	<sp:keyword name="do"/>
+	<sp:keyword name="then"/>
 	<sp:keyword name="else"/>
-	<sp:keyword name="extends"/>
-	<sp:keyword name="false"/>
-	<sp:keyword name="final"/>
-	<sp:keyword name="finally"/>
-	<sp:keyword name="for"/>
-	<sp:keyword name="goto"/>
-	<sp:keyword name="if"/>
-	<sp:keyword name="implements"/>
-	<sp:keyword name="import"/>
-	<sp:keyword name="instanceof"/>
-	<sp:keyword name="interface"/>
-	<sp:keyword name="native"/>
-	<sp:keyword name="new"/>
-	<sp:keyword name="null"/>
-	<sp:keyword name="package"/>
-	<sp:keyword name="private"/>
-	<sp:keyword name="protected"/>
-	<sp:keyword name="public"/>
-	<sp:keyword name="return"/>
-	<sp:keyword name="static"/>
-	<sp:keyword name="strictfp"/>
-	<sp:keyword name="super"/>
-	<sp:keyword name="switch"/>
-	<sp:keyword name="synchronized"/>
-	<sp:keyword name="this"/>
-	<sp:keyword name="throw"/>
-	<sp:keyword name="throws"/>
-	<sp:keyword name="transient"/>
-	<sp:keyword name="true"/>
-	<sp:keyword name="try"/>
-	<sp:keyword name="while"/>
-	<sp:keyword name="void"/>
-	<sp:keyword name="volatile"/>
+	<sp:keyword name="end"/>
+	<sp:keyword name="on"/>
+	<sp:keyword name="as"/>
+	<sp:keyword name="distinct"/>
+	<sp:keyword name="in"/>
+	<sp:keyword name="desc"/>
+	<sp:keyword name="not"/>
+	<sp:keyword name="last"/>
 
-	<sp:primitive name="boolean"/>
-	<sp:primitive name="byte"/>
-	<sp:primitive name="char"/>
-	<sp:primitive name="double"/>
-	<sp:primitive name="float"/>
-	<sp:primitive name="int"/>
-	<sp:primitive name="long"/>
-	<sp:primitive name="short"/>
+	<sp:function name="to_date"/>
+	<sp:function name="to_char"/>
+	<sp:function name="count"/>
+	<sp:function name="min"/>
+	<sp:function name="max"/>
+	<sp:function name="sum"/>
+	<sp:function name="convert"/>
+	<sp:function name="substring"/>
+
+	<sp:join name="and"/>
+	<sp:join name="or"/>
+	<sp:join name="like"/>
+	<sp:join name="inner"/>
+	<sp:join name="join"/>
+	<sp:join name="outer"/>
+	<sp:join name="right"/>
+	<sp:join name="left"/>
 
 	<scd:style id="BLOCKCOMMENT" name="Block Comment" face="italic" foreground="255,0,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
 	<scd:style id="BRACKETS" name="Bracket" face="plain" foreground="0,200,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>

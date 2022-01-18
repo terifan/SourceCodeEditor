@@ -1,4 +1,4 @@
-package org.terifan.ui.sourceeditor;
+package org.terifan.sourcecodeeditor;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
