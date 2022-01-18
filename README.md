@@ -2,7 +2,7 @@
 
 The SourceCodeEditor is a color coded text editor supporting HTML, Java, SQL, XML, XSL.
 
-This is old code and has plenty of bugs but is still fully functional.
+This is old code and has plenty of bugs but is still functional.
 
 This code is released to public domain. You can use it anywhere / anyhow.
 
