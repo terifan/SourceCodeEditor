@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<test xmlns:ns='test'>
+	<ns:element attribute='value'>
+		elemene text
+	</ns:element>
+</test>
+<?xml version="1.0"?>
+
+<syntax-coloring-definition>
+	<scd:syntax-parser class="org.terifan.apps.sourceeditor.XMLSyntaxParser"/>
+	<scd:presentation-name label="Hyper Text Markup Language"/>
+	<scd:file-association extension="html,htm" name="HTML-file"/>
+
+	<sp:tag name="b"/>
+	<sp:tag name="body">
+		<sp:attribute name="bgcolor"/>
+	</sp:tag>
+	<sp:tag name="br"/>
+	<sp:tag name="center"/>
+	<sp:tag name="font">
+		<sp:attribute name="color"/>
+		<sp:attribute name="face"/>
+		<sp:attribute name="size"/>
+	</sp:tag>
+	<sp:tag name="head"/>
+	<sp:tag name="hr"/>
+	<sp:tag name="html"/>
+	<sp:tag name="i"/>
+	<sp:tag name="meta">
+		<sp:attribute name="content"/>
+		<sp:attribute name="http-equiv"/>
+		<sp:attribute name="name"/>
+	</sp:tag>
+	<sp:tag name="p"/>
+	<sp:tag name="style">
+		<sp:attribute name="type"/>
+	</sp:tag>
+	<sp:tag name="title"/>
+	<sp:tag name="u"/>
+
+	<scd:style id="AMP" name="AMP" face="plain" foreground="234,202,21" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="ATTRIBUTE" name="Attribute" face="plain" foreground="111,0,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="BLOCKCOMMENT" name="Block Comment" face="italic" foreground="255,0,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="ELEMENT" name="Element" face="plain" foreground="0,0,153" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="HIGHLIGHT" name="Highlighted Text" face="plain" foreground="0,0,0" background="225,236,247" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="LINEBREAK" name="Line Break" face="plain" foreground="0,0,153" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="NAMESPACE" name="Namespace" face="plain" foreground="0,0,153" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="OPERATOR" name="Operator" face="plain" foreground="0,102,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="SEARCHRESULT" name="Search Result" face="plain" foreground="255,255,255" background="255,255,128" underlined="false" strikethrough="false" optional-background="false"/>
+	<scd:style id="SELECTION" name="Selection" face="plain" foreground="255,255,255" background="0,0,153" underlined="false" strikethrough="false" optional-background="false"/>
+	<scd:style id="STRINGLITERAL" name="String Literal" face="plain" foreground="204,0,204" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="TAG" name="Tag" face="bold" foreground="0,200,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="TEXT" name="Text" face="plain" foreground="0,0,255" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+	<scd:style id="WHITESPACE" name="Whitespace" face="plain" foreground="0,0,0" background="255,255,255" underlined="false" strikethrough="false" optional-background="true"/>
+</syntax-coloring-definition>
