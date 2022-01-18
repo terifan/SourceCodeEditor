@@ -1,6 +1,7 @@
 package demo;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import org.terifan.sourcecodeeditor.Document;
 import org.terifan.sourcecodeeditor.JavaSyntaxParser;
 import org.terifan.sourcecodeeditor.SourceEditor;
@@ -29,7 +30,7 @@ public class SimpleApp
 			);
 
 			JFrame frame = new JFrame();
-			frame.add(new SourceEditor(parser, document));
+			frame.add(new JScrollPane(new SourceEditor(parser, document)));
 			frame.setSize(1024, 768);
 			frame.setLocationRelativeTo(null);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

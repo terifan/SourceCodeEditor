@@ -995,7 +995,7 @@ public class SourceEditor extends JComponent implements Scrollable
 
 		Rectangle clipBounds = g.getClipBounds();
 		int firstRow = clipBounds.y / (getFontHeight() + mLineSpacing);
-		int lastRow = (clipBounds.y + clipBounds.height) / (getFontHeight() + mLineSpacing) - 1 + 2; // TODO: m�ste rita tv� extra rader n�r sidan scrollas annars det ett h�l. scrollRectToVisible metoden verkar inte skicka r�tt clipbounds.
+		int lastRow = (clipBounds.y + clipBounds.height) / (getFontHeight() + mLineSpacing) - 1 + 2;
 
 		int lineCount = mDocument.getLineCount();
 		if (firstRow >= lineCount)
