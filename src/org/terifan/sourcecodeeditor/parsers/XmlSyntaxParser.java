@@ -24,7 +24,7 @@ public class XmlSyntaxParser extends SyntaxParser
 	public final static String OPERATOR = "OPERATOR";
 	public final static String AMP = "AMP";
 
-	private static HashMap<String,Style> mStyles;
+	private final HashMap<String, Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -36,7 +36,7 @@ public class XmlSyntaxParser extends SyntaxParser
 	private int mInitializedRow;
 
 
-	static
+	public XmlSyntaxParser()
 	{
 		Font plain = new Font("monospaced", Font.PLAIN, 12);
 		Font bold = new Font("monospaced", Font.BOLD, 12);

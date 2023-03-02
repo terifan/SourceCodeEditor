@@ -3,6 +3,7 @@ package org.terifan.sourcecodeeditor.parsers;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -85,8 +86,8 @@ public class JavaSyntaxParser extends SyntaxParser
 
 	private final static HashSet<String> mKeywords;
 	private final static HashSet<String> mPrimitives;
-	private final static HashSet<String> mObjectTypes;
-	private final static HashMap<String, Style> mStyles;
+	private final HashSet<String> mObjectTypes;
+	private final HashMap<String, Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -98,60 +99,80 @@ public class JavaSyntaxParser extends SyntaxParser
 	private boolean mOptimizeWhitespace;
 	private int mInitializedRow;
 
-
 	static
 	{
-		mKeywords = new HashSet<>();
-		mKeywords.add("abstract");		mKeywords.add("assert");		mKeywords.add("break");
-		mKeywords.add("case");			mKeywords.add("catch");			mKeywords.add("class");
-		mKeywords.add("const");			mKeywords.add("continue");		mKeywords.add("default");
-		mKeywords.add("do");			mKeywords.add("else");			mKeywords.add("extends");
-		mKeywords.add("final");			mKeywords.add("finally");		mKeywords.add("for");
-		mKeywords.add("goto");			mKeywords.add("if");			mKeywords.add("implements");
-		mKeywords.add("import");		mKeywords.add("instanceof");	mKeywords.add("interface");
-		mKeywords.add("native");		mKeywords.add("new");			mKeywords.add("package");
-		mKeywords.add("private");		mKeywords.add("protected");		mKeywords.add("public");
-		mKeywords.add("return");		mKeywords.add("static");		mKeywords.add("strictfp");
-		mKeywords.add("super");			mKeywords.add("switch");		mKeywords.add("synchronized");
-		mKeywords.add("this");			mKeywords.add("throw");			mKeywords.add("throws");
-		mKeywords.add("transient");		mKeywords.add("try");			mKeywords.add("void");
-		mKeywords.add("volatile");		mKeywords.add("while");			mKeywords.add("true");
-		mKeywords.add("false");			mKeywords.add("null");
+		mKeywords = new HashSet<>(Arrays.asList("abstract", "assert", "break", "case", "catch", "class", "const", "continue", "default", "do", "else", "extends", "final", "finally", "for", "goto", "if", "implements", "import", "instanceof", "interface", "native", "new", "package", "private", "protected", "public", "return", "static", "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while", "true", "false", "null"));
+		mPrimitives = new HashSet<>(Arrays.asList("boolean", "byte", "short", "char", "int", "long", "float", "double"));
+	}
 
-		mPrimitives = new HashSet<>();
-		mPrimitives.add("int");			mPrimitives.add("double");		mPrimitives.add("long");
-		mPrimitives.add("float");		mPrimitives.add("boolean");		mPrimitives.add("short");
-		mPrimitives.add("byte");		mPrimitives.add("char");
 
-		Font plain = new Font("monospaced", Font.PLAIN, 14);
-		Font bold = new Font("monospaced", Font.BOLD, 14);
-		Font italic = new Font("monospaced", Font.ITALIC, 14);
-		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 14);
-		Color bg = Color.WHITE;
-
-		mStyles = new HashMap<>();
-		mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(160,160,160), bg, false, false, true, false));
-		mStyles.put(BRACKETS, new Style(BRACKETS, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(0,111,0), bg, false, false, true, false));
-		mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, plain, new Color(160,160,160), bg, false, false, true, false));
-		mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, Color.BLACK, bg, false, false, true, true));
-		mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(0,0,220), bg, false, false, true, true));
-		mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(0,0,153), bg, false, false, true, true));
-		mStyles.put(METHODNAME, new Style(METHODNAME, plain, new Color(0,153,153), bg, false, false, true, true));
-		mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(200,0,200), bg, false, false, true, true));
-		mStyles.put(OBJECTTYPE, new Style(OBJECTTYPE, plain, Color.BLACK, bg, true, false, true, true));
-		mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(0,0,0), bg, false, false, true, false));
-		mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, Color.WHITE, new Color(255,255,128), false, false, false, true));
-		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, true));
-		mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(160,160,160), bg, false, false, true, false));
-		mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(206,123,0), bg, false, false, true, false));
-		mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(0,0,0), new Color(255,200,200), false, false, false, true));
-		mStyles.put(PRIMITIVE, new Style(PRIMITIVE, plain, new Color(0,0,220), bg, false, false, true, true));
-		mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, true));
-		mStyles.put(ANNOTATION, new Style(ANNOTATION, plain, new Color(153,153,0), Color.WHITE, false, false, true, true));
-
+	public JavaSyntaxParser()
+	{
 		mObjectTypes = new HashSet<>();
+		mStyles = new HashMap<>();
+
+		setColorScheme("dark", "monospaced", 14);
+	}
+
+
+	public void setColorScheme(String aName, String aFontFamily, int aFontSize)
+	{
+		Font plain = new Font(aFontFamily, Font.PLAIN, aFontSize);
+		Font bold = new Font(aFontFamily, Font.BOLD, aFontSize);
+		Font italic = new Font(aFontFamily, Font.ITALIC, aFontSize);
+		Font bolditalic = new Font(aFontFamily, Font.BOLD | Font.ITALIC, aFontSize);
+
+		if ("dark".equals(aName))
+		{
+			Color bg = new Color(43, 43, 43);
+
+			mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(204, 120, 50), bg, false, false, true, true));
+			mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, new Color(170, 170, 170), bg, false, false, true, true));
+			mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(106, 135, 89), bg, false, false, true, false));
+			mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(106, 135, 89), bg, false, false, true, false));
+			mStyles.put(BRACKETS, new Style(BRACKETS, plain, new Color(200, 200, 200), bg, false, false, true, false));
+			mStyles.put(OBJECTTYPE, new Style(OBJECTTYPE, plain, new Color(152, 118, 170), bg, false, false, true, true));
+			mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, new Color(170, 170, 170), bg, false, false, true, false));
+			mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, new Color(170, 170, 170), new Color(70, 70, 0), false, false, true, true));
+			mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(255, 255, 255), bg, false, false, true, false));
+			mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(200, 100, 200), bg, false, false, true, true));
+			mStyles.put(METHODNAME, new Style(METHODNAME, plain, new Color(152, 118, 170), bg, false, false, true, true));
+			mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(33, 66, 131), false, false, false, true));
+			mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(255, 255, 255), bg, false, false, true, true));
+			mStyles.put(PRIMITIVE, new Style(PRIMITIVE, plain, new Color(0, 200, 220), bg, false, false, true, true));
+			mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, plain, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, bg, new Color(255, 255, 128), false, false, false, true));
+			mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(255, 0, 0), new Color(30, 30, 30), false, false, false, true));
+			mStyles.put(ANNOTATION, new Style(ANNOTATION, plain, new Color(153, 153, 0), Color.WHITE, false, false, true, true));
+		}
+		else
+		{
+			Color bg = Color.WHITE;
+			Color fg = Color.BLACK;
+
+			mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(160, 160, 160), bg, false, false, true, false));
+			mStyles.put(BRACKETS, new Style(BRACKETS, plain, fg, bg, false, false, true, false));
+			mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(0, 111, 0), bg, false, false, true, false));
+			mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, plain, new Color(160, 160, 160), bg, false, false, true, false));
+			mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, fg, bg, false, false, true, true));
+			mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(0, 0, 220), bg, false, false, true, true));
+			mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(0, 0, 153), bg, false, false, true, true));
+			mStyles.put(METHODNAME, new Style(METHODNAME, plain, new Color(0, 153, 153), bg, false, false, true, true));
+			mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(200, 0, 200), bg, false, false, true, true));
+			mStyles.put(OBJECTTYPE, new Style(OBJECTTYPE, plain, fg, bg, true, false, true, true));
+			mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(0, 0, 0), bg, false, false, true, false));
+			mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, Color.WHITE, new Color(255, 255, 128), false, false, false, true));
+			mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176, 197, 227), false, false, false, true));
+			mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(160, 160, 160), bg, false, false, true, false));
+			mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(206, 123, 0), bg, false, false, true, false));
+			mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(0, 0, 0), new Color(255, 200, 200), false, false, false, true));
+			mStyles.put(PRIMITIVE, new Style(PRIMITIVE, plain, new Color(0, 0, 220), bg, false, false, true, true));
+			mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, fg, bg, false, false, true, false));
+			mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, fg, new Color(225, 236, 247), false, false, true, true));
+			mStyles.put(ANNOTATION, new Style(ANNOTATION, plain, new Color(153, 153, 0), Color.WHITE, false, false, true, true));
+		}
 	}
 
 
@@ -161,9 +182,12 @@ public class JavaSyntaxParser extends SyntaxParser
 	@Override
 	public Style getStyle(String aIdentifier)
 	{
-		Style s = mStyles.get(aIdentifier);
-		if (s == null) throw new IllegalArgumentException("Style not found: " + aIdentifier);
-		return s;
+		Style style = mStyles.get(aIdentifier);
+		if (style == null)
+		{
+			throw new IllegalArgumentException("Style not found: " + aIdentifier);
+		}
+		return style;
 	}
 
 
@@ -179,7 +203,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	}
 
 
-	protected  Style getTokenStyle()
+	protected Style getTokenStyle()
 	{
 		if (mTokenStyle == null)
 		{
@@ -190,10 +214,8 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			return mTokenStyle;
 		}
-		else
-		{
-			return mStyles.get(mCommentState);
-		}
+
+		return mStyles.get(mCommentState);
 	}
 
 

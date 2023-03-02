@@ -22,7 +22,7 @@ public class TextSyntaxParser extends SyntaxParser
 	 */
 	public final static String TEXT = "TEXT";
 
-	private final static HashMap<String,Style> mStyles;
+	private final HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -31,7 +31,7 @@ public class TextSyntaxParser extends SyntaxParser
 	private int mInitializedRow;
 
 
-	static
+	public TextSyntaxParser()
 	{
 		Font plain = new Font("monospaced", Font.PLAIN, 12);
 		Color bg = Color.WHITE;

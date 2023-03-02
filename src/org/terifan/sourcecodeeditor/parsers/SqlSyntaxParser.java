@@ -29,7 +29,7 @@ public class SqlSyntaxParser extends SyntaxParser
 	private final static HashSet<String> mKeywords;
 	private final static HashSet<String> mFunctions;
 	private final static HashSet<String> mJoins;
-	private final static HashMap<String,Style> mStyles;
+	private final HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -88,7 +88,11 @@ public class SqlSyntaxParser extends SyntaxParser
 		mJoins.add("outer");
 		mJoins.add("right");
 		mJoins.add("left");
+	}
 
+
+	public SqlSyntaxParser()
+	{
 		Font plain = new Font("monospaced", Font.PLAIN, 14);
 		Font bold = new Font("monospaced", Font.BOLD, 14);
 		Font italic = new Font("monospaced", Font.ITALIC, 14);
@@ -114,6 +118,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		mStyles.put(JOIN, new Style(JOIN, plain, new Color(127,127,127), bg, false, false, true, true));
 		mStyles.put(OTHER, new Style(OTHER, plain, new Color(0,0,0), bg, false, false, true, true));
 	}
+
 
 
 	/**
