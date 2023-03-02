@@ -18,22 +18,22 @@ public class JavaSyntaxParser extends SyntaxParser
 	 */
 	public final static String BLOCKCOMMENT = "BLOCKCOMMENT";
 	/**
-	 * A style identifier which identifies the style used for parantheses, 
+	 * A style identifier which identifies the style used for parantheses,
 	 * brackets and curly brackets.
 	 */
 	public final static String BRACKETS = "BRACKETS";
 	/**
-	 * A style identifier which identifies the style used for character 
+	 * A style identifier which identifies the style used for character
 	 * literals such as 'a'.
 	 */
 	public final static String CHARACTERLITERAL = "CHARACTERLITERAL";
 	/**
-	 * A style identifier which identifies the style used for block 
+	 * A style identifier which identifies the style used for block
 	 * documentation comments.
 	 */
 	public final static String DOCUMENTATION = "DOCUMENTATION";
 	/**
-	 * A style identifier which identifies the style used for block 
+	 * A style identifier which identifies the style used for block
 	 * identifiers (package/class/variable names)
 	 */
 	public final static String IDENTIFIER = "IDENTIFIER";
@@ -46,7 +46,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	 */
 	public final static String METHODNAME = "METHODNAME";
 	/**
-	 * A style identifier which identifies the style used for numeric literals 
+	 * A style identifier which identifies the style used for numeric literals
 	 * such as 1.23e+45d.
 	 */
 	public final static String NUMERICLITERAL = "NUMERICLITERAL";
@@ -182,7 +182,7 @@ public class JavaSyntaxParser extends SyntaxParser
 			throw new IllegalStateException("Style is null. You must call the iterate method before calling this method.");
 		}
 
-		if (mCommentState == null) 
+		if (mCommentState == null)
 		{
 			return mTokenStyle;
 		}
@@ -208,7 +208,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		}
 	}
 
-	
+
 	protected boolean iterate()
 	{
 		if (mPendingMethodName != null)
@@ -239,7 +239,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		return true;
 	}
 
-	
+
 	protected String scanToken()
 	{
 		if (mTokenOffset >= mSourceLine.length() - 1)
@@ -335,13 +335,13 @@ public class JavaSyntaxParser extends SyntaxParser
 				mTokenStyle = mStyles.get(OPERATOR);
 				mTokenOffset++;
 				return ".";
-			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': 
-			case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N': 
-			case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U': 
+			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+			case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+			case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
 			case 'V': case 'W': case 'X': case 'Y': case 'Z':
-			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': 
-			case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n': 
-			case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': 
+			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+			case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+			case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
 			case 'v': case 'w': case 'x': case 'y': case 'z':
 			case '$': case '_':
 				return scanIdentifier();
@@ -392,11 +392,11 @@ public class JavaSyntaxParser extends SyntaxParser
 						return "*";
 					}
 				}
-			case '+': case '-': case ';': case ',': case '?': case ':': case '<': 
-			case '>': case '=': case '!': case '&': case '|': case '^': case '~': 
+			case '+': case '-': case ';': case ',': case '?': case ':': case '<':
+			case '>': case '=': case '!': case '&': case '|': case '^': case '~':
 			case '%':
 				return scanOperator();
-			case '[': case ']': case '(': case ')': case '{': case '}': 
+			case '[': case ']': case '(': case ')': case '{': case '}':
 				return scanBrackets();
 			case '\'':
 				return scanCharacterLiteral();
@@ -407,8 +407,8 @@ public class JavaSyntaxParser extends SyntaxParser
 				{
 					return scanHexNumericLiteral();
 				}
-			case '1': case '2': case '3': case '4': case '5': case '6': case '7': 
-			case '8': case '9': 
+			case '1': case '2': case '3': case '4': case '5': case '6': case '7':
+			case '8': case '9':
 				return scanNumericLiteral();
 			default:
 				mTokenStyle = mStyles.get(SYNTAXERROR);
@@ -609,16 +609,16 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			switch (mSourceLine.charAt(mTokenOffset + len))
 			{
-				case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': 
-				case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N': 
-				case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U': 
+				case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+				case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+				case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
 				case 'V': case 'W': case 'X': case 'Y': case 'Z':
-				case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': 
-				case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n': 
-				case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': 
+				case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+				case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+				case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
 				case 'v': case 'w': case 'x': case 'y': case 'z':
 				case '$': case '_':
-				case '0': case '1': case '2': case '3': case '4': case '5': case '6': 
+				case '0': case '1': case '2': case '3': case '4': case '5': case '6':
 				case '7': case '8': case '9':
 					len++;
 					break;
@@ -678,8 +678,8 @@ public class JavaSyntaxParser extends SyntaxParser
 					}
 					signFound = true;
 					break;
-				case '0': case '1': case '2': case '3': case '4': 
-				case '5': case '6': case '7': case '8': case '9': 
+				case '0': case '1': case '2': case '3': case '4':
+				case '5': case '6': case '7': case '8': case '9':
 					numberFound = true;
 					break;
 				case '.':
@@ -740,7 +740,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			switch (mSourceLine.charAt(mTokenOffset + len))
 			{
-				case '0': case '1': case '2': case '3': case '4': case '5': case '6': 
+				case '0': case '1': case '2': case '3': case '4': case '5': case '6':
 				case '7': case '8': case '9': case 'a': case 'b': case 'c': case 'd':
 				case 'e': case 'f': case 'A': case 'B': case 'C': case 'D': case 'E':
 				case 'F':
@@ -877,7 +877,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	protected String scanBrackets()
 	{
 		int o = mTokenOffset;
-	
+
 		outer: while (true)
 		{
 			switch (mSourceLine.charAt(o))
@@ -887,7 +887,7 @@ public class JavaSyntaxParser extends SyntaxParser
 					{
 						break outer;
 					}
-				case '[': case ']': case '(': case ')': case '{': case '}':  
+				case '[': case ']': case '(': case ')': case '{': case '}':
 					o++;
 					break;
 				default:
@@ -950,7 +950,7 @@ public class JavaSyntaxParser extends SyntaxParser
 						i++;
 						for (; i < len; i++)
 						{
-							if (s.charAt(i) == '\"' && s.charAt(i - 1) == '\"') 
+							if (s.charAt(i) == '\"' && s.charAt(i - 1) == '\"')
 							{
 								i++;
 								break;

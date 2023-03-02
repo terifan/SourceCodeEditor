@@ -235,7 +235,7 @@ public class SourceEditor extends JComponent implements Scrollable
 			if (mFindDialog == null)
 			{
 				mFindDialog = new FindDialog(this);
-				mFindDialog.pack();
+				mFindDialog.setSize(600, 150);
 			}
 			mFindDialog.setLocationRelativeTo(this);
 			mFindDialog.setVisible(true);

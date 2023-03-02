@@ -27,18 +27,16 @@ import javax.swing.SwingUtilities;
 
 public class FindDialog extends JDialog implements ActionListener
 {
-	private static FindDialog mFormInstance;
-
 	protected boolean mWasCanceled;
 	protected JButton mSearchButton;
 	protected JButton mReplaceButton;
 	protected JButton mReplaceAllButton;
 	protected JButton mReplaceAndSearchButton;
-	protected JCheckBox mCaseSensative;
-	protected JCheckBox mWholeWordsOnly;
-	protected JCheckBox mSearchBackwards;
-	protected JCheckBox mWrapSearch;
-	protected JCheckBox mSelectionOnly;
+	protected JCheckBoxEx mCaseSensative;
+	protected JCheckBoxEx mWholeWordsOnly;
+	protected JCheckBoxEx mSearchBackwards;
+	protected JCheckBoxEx mWrapSearch;
+	protected JCheckBoxEx mSelectionOnly;
 	protected SourceEditor mSearchField;
 	protected SourceEditor mReplaceField;
 	protected SourceEditor mSourceEditor;
@@ -47,14 +45,14 @@ public class FindDialog extends JDialog implements ActionListener
 	public FindDialog(SourceEditor aSourceEditor)
 	{
 		super(SwingUtilities.getWindowAncestor(aSourceEditor), "Search & Replace");
-		
+
 		mSourceEditor = aSourceEditor;
 
-		mCaseSensative = new JCheckBox("Case Sensative", false);
-		mWholeWordsOnly = new JCheckBox("Whole Words Only", false);
-		mSearchBackwards = new JCheckBox("Search Backwards", false);
-		mWrapSearch = new JCheckBox("Wrap Search", true);
-		mSelectionOnly = new JCheckBox("Selection Only", false);
+		mCaseSensative = new JCheckBoxEx("Case Sensative", false);
+		mWholeWordsOnly = new JCheckBoxEx("Whole Words Only", false);
+		mSearchBackwards = new JCheckBoxEx("Search Backwards", false);
+		mWrapSearch = new JCheckBoxEx("Wrap Search", true);
+		mSelectionOnly = new JCheckBoxEx("Selection Only", false);
 
 		mSearchButton = new JButton("Search");
 		mSearchButton.addActionListener(this);
@@ -81,13 +79,13 @@ public class FindDialog extends JDialog implements ActionListener
 
 		mSearchField.setAlternateMode(true);
 		mSearchField.addKeyListener(new FocusMover(mReplaceAllButton, mReplaceField));
-		JScrollPane searchPane = new JScrollPane(mSearchField);
+		JScrollPane searchInput = new JScrollPane(mSearchField);
 
 		mReplaceField.setAlternateMode(true);
 		mReplaceField.addKeyListener(new FocusMover(mSearchField, mCaseSensative));
-		JScrollPane replacePane = new JScrollPane(mReplaceField);
+		JScrollPane replaceInput = new JScrollPane(mReplaceField);
 
-		Font boldFont = mSearchButton.getFont().deriveFont(Font.BOLD);
+		Font font = mSearchButton.getFont();
 
 		JPanel buttonPanel = new JPanel(new GridLayout(4, 1, 0, 3));
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
@@ -114,12 +112,12 @@ public class FindDialog extends JDialog implements ActionListener
 		controlPanel.add(q, BorderLayout.EAST);
 
 		JPanel searchPanel = new JPanel(new BorderLayout(0, 0));
-		searchPanel.add(new JLabel("Search", boldFont, 50), BorderLayout.WEST);
-		searchPanel.add(searchPane, BorderLayout.CENTER);
+		searchPanel.add(new JLabelEx("Search", font, 50), BorderLayout.WEST);
+		searchPanel.add(searchInput, BorderLayout.CENTER);
 
 		JPanel replacePanel = new JPanel(new BorderLayout(0, 0));
-		replacePanel.add(new JLabel("Replace", boldFont, 50), BorderLayout.WEST);
-		replacePanel.add(replacePane, BorderLayout.CENTER);
+		replacePanel.add(new JLabelEx("Replace", font, 50), BorderLayout.WEST);
+		replacePanel.add(replaceInput, BorderLayout.CENTER);
 
 		JPanel inputPanel = new JPanel(new GridLayout(2, 1, 0, 5));
 		inputPanel.add(searchPanel);
@@ -152,7 +150,7 @@ public class FindDialog extends JDialog implements ActionListener
 		String search = mSearchField.getText().toString();
 		String replace = mReplaceField.getText().toString();
 		SourceEditor editor = mSourceEditor;
-		
+
 		if (search.length() == 0)
 		{
 			return;
@@ -215,39 +213,21 @@ public class FindDialog extends JDialog implements ActionListener
 	}
 
 
-	class JLabel extends javax.swing.JLabel
+	class JLabelEx extends javax.swing.JLabel
 	{
-		JLabel(String aLabel, Font aFont, int aWidth)
+		JLabelEx(String aLabel, Font aFont, int aWidth)
 		{
 			super(aLabel);
-			setForeground(Color.WHITE);
+			setForeground(Color.BLACK);
 			setFont(aFont);
-			setPreferredSize(new Dimension(15, 50));
-		}
-
-
-		@Override
-		public void paintComponent(Graphics g)
-		{
-//			Image image;
-//			if (getText().equals("Search"))
-//			{
-//				image = new ImageIcon(FindDialog.class.getResource("resources/search_label.gif").getPath()).getImage();
-//			}
-//			else
-//			{
-//				image = new ImageIcon(FindDialog.class.getResource("resources/replace_label.gif").getPath()).getImage();
-//			}
-
-			g.setColor(Color.WHITE);
-//			g.drawImage(image, 1, (getHeight() - image.getHeight(null)) / 2, null);
+			setPreferredSize(new Dimension(aWidth, 50));
 		}
 	}
 
 
-	class JCheckBox extends javax.swing.JCheckBox
+	class JCheckBoxEx extends javax.swing.JCheckBox
 	{
-		JCheckBox(String aLabel, boolean aChecked)
+		JCheckBoxEx(String aLabel, boolean aChecked)
 		{
 			super(aLabel, aChecked);
 		}
