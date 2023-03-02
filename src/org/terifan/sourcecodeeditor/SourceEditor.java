@@ -91,7 +91,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		setOverwriteTextEnabled(false);
 		setTabIndentsTextEnabled(true);
 		setWhitespaceSymbolEnabled(false);
-		setMargins(new Insets(0, 1, 0, 50));
+		setMargins(new Insets(0, 0, 0, 0));
 		setFontPointSize(13);
 		setLineSpacing(0);
 		setTabSize(4);
@@ -141,7 +141,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		super.registerKeyboardAction(actionListener, "copy", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "paste", KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "selectAll", KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
-		super.registerKeyboardAction(actionListener, "deleteLine", KeyStroke.getKeyStroke(KeyEvent.VK_R, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
+		super.registerKeyboardAction(actionListener, "deleteLine", KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "upperCase", KeyStroke.getKeyStroke(KeyEvent.VK_U, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "lowerCase", KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "find", KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
@@ -1695,11 +1695,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public StringBuffer getSelectedText()
+	public StringBuilder getSelectedText()
 	{
 		String lineBreak = "\n";
 
-		StringBuffer selection = new StringBuffer();
+		StringBuilder selection = new StringBuilder();
 
 		if (isTextSelected())
 		{
@@ -1980,22 +1980,26 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 	public SourceEditor cut()
 	{
-		if (!isTextSelected() && mAutoLineCopyCutEnabled)
-		{
-			setSelectionStart(0, mCaret.getCharacterPosition().y);
-			setSelectionEnd(mDocument.getLineLength(mCaret.getCharacterPosition().y), mCaret.getCharacterPosition().y);
-		}
-
-		StringBuffer selection = getSelectedText();
-		StringSelection stringSelection = new StringSelection(selection.toString());
-		getToolkit().getSystemClipboard().setContents(stringSelection, stringSelection);
-		mClipboardContent = mRectangularSelection ? selection.toString() : "";
-
 		if (isTextSelected())
 		{
+			StringBuilder selection = getSelectedText();
+			StringSelection stringSelection = new StringSelection(selection.toString());
+			getToolkit().getSystemClipboard().setContents(stringSelection, stringSelection);
+			mClipboardContent = mRectangularSelection ? selection.toString() : "";
+
 			replaceSelection("");
+			repaint();
 		}
-		repaint();
+		else if (mAutoLineCopyCutEnabled)
+		{
+			String selection = mDocument.getLine(mCaret.getCharacterPosition().y);
+			StringSelection stringSelection = new StringSelection(selection);
+			getToolkit().getSystemClipboard().setContents(stringSelection, stringSelection);
+			mClipboardContent = selection;
+
+			deleteLine();
+		}
+
 		return this;
 	}
 
@@ -2004,12 +2008,13 @@ public final class SourceEditor extends JComponent implements Scrollable
 	{
 		if (!isTextSelected() && mAutoLineCopyCutEnabled)
 		{
-			setSelectionStart(0, mCaret.getCharacterPosition().y);
-			setSelectionEnd(mDocument.getLineLength(mCaret.getCharacterPosition().y), mCaret.getCharacterPosition().y);
+			int y = mCaret.getCharacterPosition().y;
+			setSelectionStart(0, y);
+			setSelectionEnd(mDocument.getLineLength(y), y);
 			repaint();
 		}
 
-		StringBuffer selection = getSelectedText();
+		StringBuilder selection = getSelectedText();
 		StringSelection stringSelection = new StringSelection(selection.toString());
 		getToolkit().getSystemClipboard().setContents(stringSelection, stringSelection);
 		mClipboardContent = mRectangularSelection ? selection.toString() : "";
