@@ -5,15 +5,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import org.terifan.sourcecodeeditor.Document;
-import org.terifan.sourcecodeeditor.JavaSyntaxParser;
+import org.terifan.sourcecodeeditor.parsers.JavaSyntaxParser;
 import org.terifan.sourcecodeeditor.SourceEditor;
-import org.terifan.sourcecodeeditor.SqlSyntaxParser;
+import org.terifan.sourcecodeeditor.parsers.SqlSyntaxParser;
 import org.terifan.sourcecodeeditor.SyntaxParser;
-import org.terifan.sourcecodeeditor.TextSyntaxParser;
-import org.terifan.sourcecodeeditor.XmlSyntaxParser;
+import org.terifan.sourcecodeeditor.parsers.TextSyntaxParser;
+import org.terifan.sourcecodeeditor.parsers.XmlSyntaxParser;
 
 
-public class SimpleApp
+public class SampleApp
 {
 	public static void main(String... args)
 	{

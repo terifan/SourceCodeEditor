@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Caret extends Thread
+public class Caret extends Thread implements Serializable
 {
+	private final static long serialVersionUID = 1L;
+
 	private boolean mEnabled;
 	private boolean mIsHidden;
 	private boolean mVisible;

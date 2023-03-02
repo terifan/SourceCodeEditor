@@ -1,10 +1,14 @@
-package org.terifan.sourcecodeeditor;
+package org.terifan.sourcecodeeditor.parsers;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.terifan.sourcecodeeditor.Document;
+import org.terifan.sourcecodeeditor.Style;
+import org.terifan.sourcecodeeditor.SyntaxParser;
+import org.terifan.sourcecodeeditor.Token;
 
 
 /**
@@ -76,11 +80,11 @@ public class TextSyntaxParser extends SyntaxParser
 
 
 	/**
-	 * Scans the source code for the next token. This method set the values 
-	 * returned by getCommentState(), getTokenOffset(), getTokenStyle() and 
+	 * Scans the source code for the next token. This method set the values
+	 * returned by getCommentState(), getTokenOffset(), getTokenStyle() and
 	 * getToken().
 	 *
-	 * @return true if a token was found. A false value indicates that no more 
+	 * @return true if a token was found. A false value indicates that no more
 	 *         tokens exists in the current source line.
 	 */
 	public boolean iterate()
@@ -157,9 +161,9 @@ public class TextSyntaxParser extends SyntaxParser
 		Token prevToken = null;
 		while (iterate())
 		{
-			if (aOptimizeTokens && prevToken != null && prevToken.style.similar(mTokenStyle, aOptimizeWhitespace))
+			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
 			{
-				prevToken.token += mToken;
+				prevToken.append(mToken);
 			}
 			else
 			{

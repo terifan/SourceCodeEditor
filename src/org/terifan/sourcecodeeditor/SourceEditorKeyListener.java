@@ -3,11 +3,14 @@ package org.terifan.sourcecodeeditor;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Serializable;
 
 
-public class SourceEditorKeyListener implements KeyListener
+public class SourceEditorKeyListener implements KeyListener, Serializable
 {
+	private final static long serialVersionUID = 1L;
 	protected SourceEditor mSourceEditor;
+
 
 	protected SourceEditorKeyListener(SourceEditor aSourceEditor)
 	{

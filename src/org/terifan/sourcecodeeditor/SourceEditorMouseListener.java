@@ -3,11 +3,14 @@ package org.terifan.sourcecodeeditor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.Serializable;
 import javax.swing.SwingUtilities;
 
 
-public class SourceEditorMouseListener implements MouseListener
+public class SourceEditorMouseListener implements MouseListener, MouseMotionListener, Serializable
 {
+	private final static long serialVersionUID = 1L;
 	protected SourceEditor mSourceEditor;
 
 	protected SourceEditorMouseListener(SourceEditor aSourceEditor)
@@ -90,6 +93,35 @@ public class SourceEditorMouseListener implements MouseListener
 
 	@Override
 	public void mouseExited(MouseEvent e)
+	{
+	}
+
+
+	@Override
+	public void mouseDragged(MouseEvent aEvent)
+	{
+		if (SwingUtilities.isLeftMouseButton(aEvent))
+		{
+			Caret caret = mSourceEditor.getCaret();
+
+			mSourceEditor.setRectangularSelection(aEvent.isAltDown());
+
+			Point vp = caret.getVirtualPosition();
+
+			if (mSourceEditor.getSelectionStartUnmodified() == null)
+			{
+				mSourceEditor.setSelectionStartUnmodified(new Point(vp));
+			}
+
+			Point p = mSourceEditor.getSourceOffset(aEvent.getPoint());
+
+			caret.moveAbsolute(p.x, p.y, false, true, true);
+		}
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent e)
 	{
 	}
 }

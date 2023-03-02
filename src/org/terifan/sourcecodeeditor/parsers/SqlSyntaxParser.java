@@ -1,4 +1,4 @@
-package org.terifan.sourcecodeeditor;
+package org.terifan.sourcecodeeditor.parsers;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import org.terifan.sourcecodeeditor.Document;
+import org.terifan.sourcecodeeditor.Style;
+import org.terifan.sourcecodeeditor.SyntaxParser;
+import org.terifan.sourcecodeeditor.Token;
 
 
 public class SqlSyntaxParser extends SyntaxParser
@@ -22,10 +26,10 @@ public class SqlSyntaxParser extends SyntaxParser
 	public final static String STRINGLITERAL = "STRINGLITERAL";
 	public final static String SYNTAXERROR = "SYNTAXERROR";
 
-	private static HashSet<String> mKeywords;
-	private static HashSet<String> mFunctions;
-	private static HashSet<String> mJoins;
-	private static HashMap<String,Style> mStyles;
+	private final static HashSet<String> mKeywords;
+	private final static HashSet<String> mFunctions;
+	private final static HashSet<String> mJoins;
+	private final static HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -39,7 +43,7 @@ public class SqlSyntaxParser extends SyntaxParser
 
 	static
 	{
-		mKeywords = new HashSet<String>();
+		mKeywords = new HashSet<>();
 		mKeywords.add("with");
 		mKeywords.add("select");
 		mKeywords.add("delete");
@@ -65,7 +69,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		mKeywords.add("not");
 		mKeywords.add("last");
 
-		mFunctions = new HashSet<String>();
+		mFunctions = new HashSet<>();
 		mFunctions.add("to_date");
 		mFunctions.add("to_char");
 		mFunctions.add("count");
@@ -75,7 +79,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		mFunctions.add("convert");
 		mFunctions.add("substring");
 
-		mJoins = new HashSet<String>();
+		mJoins = new HashSet<>();
 		mJoins.add("and");
 		mJoins.add("or");
 		mJoins.add("like");
@@ -91,7 +95,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 14);
 		Color bg = Color.WHITE;
 
-		mStyles = new HashMap<String,Style>();
+		mStyles = new HashMap<>();
 		mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(0,0,153), bg, false, false, true, false));
 		mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, Color.WHITE, new Color(255,255,128), false, false, false, false));
 		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, false));
@@ -138,7 +142,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		return keys;
 	}
 
-	
+
 	protected void prepare(String aLine, boolean aOptimizeTokens, boolean aOptimizeWhitespace)
 	{
 		mSourceLine = aLine + "\u00B6";
@@ -881,9 +885,9 @@ public class SqlSyntaxParser extends SyntaxParser
 				style = mStyles.get(mCommentState);
 			}
 
-			if (aOptimizeTokens && prevToken != null && prevToken.style.similar(mTokenStyle, aOptimizeWhitespace))
+			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
 			{
-				prevToken.token += mToken;
+				prevToken.append(mToken);
 			}
 			else
 			{

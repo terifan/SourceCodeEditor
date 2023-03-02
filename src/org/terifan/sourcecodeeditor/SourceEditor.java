@@ -31,6 +31,7 @@ import javax.swing.UIManager;
 
 public class SourceEditor extends JComponent implements Scrollable
 {
+	private final static long serialVersionUID = 1L;
 	private final static boolean DEBUG_GRAPHICS = false;
 
 	private boolean mRectangularSelection;
@@ -43,10 +44,6 @@ public class SourceEditor extends JComponent implements Scrollable
 	private Point mSelectionEnd;
 	private Point mSelectionStart;
 	private String mClipboardContent; // used to manage rectangular selections
-	private SourceEditorMouseListener mMouseListener;
-	private SourceEditorMouseMotionListener mMouseMotionListener;
-	private SourceEditorKeyListener mKeyListener;
-	private SourceEditorFocusListener mFocusListener;
 	private JDialog mFindDialog;
 
 	// user preferences
@@ -65,7 +62,7 @@ public class SourceEditor extends JComponent implements Scrollable
 	private String mHighlightText;
 	private String mLineBreakSymbol;
 	private boolean mAlternateMode;
-	private Object mAntialiase;
+	private transient Object mAntialiase;
 
 	private SyntaxParser mInputSyntaxParser;
 	private SyntaxParser mOffsetSyntaxParser;
@@ -102,23 +99,29 @@ public class SourceEditor extends JComponent implements Scrollable
 		setAlternateMode(false);
 		setAntialiase(RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
-		mMouseListener = new SourceEditorMouseListener(this);
-		mMouseMotionListener = new SourceEditorMouseMotionListener(this);
-		mFocusListener = new SourceEditorFocusListener(this);
-		mKeyListener = new SourceEditorKeyListener(this);
-
-		addKeyListener(mKeyListener);
-		addMouseListener(mMouseListener);
-		addMouseMotionListener(mMouseMotionListener);
-		addFocusListener(mFocusListener);
-
-		mCaret = new Caret(this);
-		mCaret.setEnabled(false);
-		mCaret.start();
+		SourceEditorMouseListener mouseListener = new SourceEditorMouseListener(this);
+		addMouseListener(mouseListener);
+		addMouseMotionListener(mouseListener);
+		addKeyListener(new SourceEditorKeyListener(this));
+		addFocusListener(new SourceEditorFocusListener(this));
 
 		mRequestFocus = true;
 
 		registerDefaultKeyboardActions();
+	}
+
+
+	@Override
+	public void doLayout()
+	{
+		if (mCaret == null)
+		{
+			mCaret = new Caret(this);
+			mCaret.setEnabled(false);
+			mCaret.start();
+		}
+
+		super.doLayout();
 	}
 
 
@@ -130,14 +133,7 @@ public class SourceEditor extends JComponent implements Scrollable
 
 	private void registerDefaultKeyboardActions()
 	{
-		ActionListener actionListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent aEvent)
-			{
-				performAction(aEvent.getActionCommand());
-			}
-		};
+		ActionListener actionListener = aEvent -> performAction(aEvent.getActionCommand());
 
 		super.registerKeyboardAction(actionListener, "undo", KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
 		super.registerKeyboardAction(actionListener, "redo", KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK), JComponent.WHEN_FOCUSED);
@@ -154,95 +150,77 @@ public class SourceEditor extends JComponent implements Scrollable
 
 	public void performAction(String aAction)
 	{
-		if ("undo".equals(aAction))
-		{
-			undo();
-		}
-		else if ("redo".equals(aAction))
-		{
-			redo();
-		}
-		else if ("cut".equals(aAction))
-		{
-			cut();
-		}
-		else if ("copy".equals(aAction))
-		{
-			copy();
-		}
-		else if ("paste".equals(aAction))
-		{
-			paste();
-		}
-		else if ("deleteLine".equals(aAction))
-		{
-			deleteLine();
-		}
-		else if ("selectAll".equals(aAction))
-		{
-			selectAll();
-		}
-		else if ("upperCase".equals(aAction))
-		{
-			upperCase();
-		}
-		else if("lowerCase".equals(aAction))
-		{
-			lowerCase();
-		}
-		else if("lowerCase".equals(aAction))
-		{
-			deleteNextCharacter();
-		}
-		else if("deleteNextCharacter".equals(aAction))
-		{
-			deleteNextCharacter();
-		}
-		else if("deletePreviousCharacter".equals(aAction))
-		{
-			deletePreviousCharacter();
-		}
-		else if("deleteToken".equals(aAction))
-		{
-			deleteToken();
-		}
-		else if("moveCaretDocumentTop".equals(aAction))
-		{
-			moveCaretDocumentTop();
-		}
-		else if("moveCaretDocumentEnd".equals(aAction))
-		{
-			moveCaretDocumentEnd();
-		}
-		else if("moveCaretLineStart".equals(aAction))
-		{
-			moveCaretLineStart();
-		}
-		else if("moveCaretPageUp".equals(aAction))
-		{
-			moveCaretPageUp();
-		}
-		else if("moveCaretPageDown".equals(aAction))
-		{
-			moveCaretPageDown();
-		}
-		else if("resetSelection".equals(aAction))
-		{
-			resetSelection();
-		}
-		else if("find".equals(aAction))
-		{
-			if (mFindDialog == null)
-			{
-				mFindDialog = new FindDialog(this);
-				mFindDialog.setSize(600, 150);
-			}
-			mFindDialog.setLocationRelativeTo(this);
-			mFindDialog.setVisible(true);
-		}
-		else
+		if (null == aAction)
 		{
 			throw new IllegalArgumentException("Unsupported action: " + aAction);
+		}
+
+		switch (aAction)
+		{
+			case "undo":
+				undo();
+				break;
+			case "redo":
+				redo();
+				break;
+			case "cut":
+				cut();
+				break;
+			case "copy":
+				copy();
+				break;
+			case "paste":
+				paste();
+				break;
+			case "deleteLine":
+				deleteLine();
+				break;
+			case "selectAll":
+				selectAll();
+				break;
+			case "upperCase":
+				upperCase();
+				break;
+			case "lowerCase":
+				lowerCase();
+				break;
+			case "deleteNextCharacter":
+				deleteNextCharacter();
+				break;
+			case "deletePreviousCharacter":
+				deletePreviousCharacter();
+				break;
+			case "deleteToken":
+				deleteToken();
+				break;
+			case "moveCaretDocumentTop":
+				moveCaretDocumentTop();
+				break;
+			case "moveCaretDocumentEnd":
+				moveCaretDocumentEnd();
+				break;
+			case "moveCaretLineStart":
+				moveCaretLineStart();
+				break;
+			case "moveCaretPageUp":
+				moveCaretPageUp();
+				break;
+			case "moveCaretPageDown":
+				moveCaretPageDown();
+				break;
+			case "resetSelection":
+				resetSelection();
+				break;
+			case "find":
+				if (mFindDialog == null)
+				{
+					mFindDialog = new FindDialog(this);
+					mFindDialog.setSize(600, 150);
+				}	mFindDialog.setLocationRelativeTo(this);
+				mFindDialog.setVisible(true);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported action: " + aAction);
 		}
 	}
 
@@ -541,10 +519,9 @@ public class SourceEditor extends JComponent implements Scrollable
 
 	public void setFontPointSize(int aFontPointSize)
 	{
-		String[] keys = mPaintSyntaxParser.getStyleKeys();
-		for (int i = 0; i < keys.length; i++)
+		for (String key : mPaintSyntaxParser.getStyleKeys())
 		{
-			mPaintSyntaxParser.getStyle(keys[i]).setFontSize(aFontPointSize);
+			mPaintSyntaxParser.getStyle(key).setFontSize(aFontPointSize);
 		}
 	}
 
@@ -1242,12 +1219,8 @@ public class SourceEditor extends JComponent implements Scrollable
 			{
 				return false;
 			}
-			if (aColumn >= removeTabsFromOffset(selectionEnd.x, selectionEnd.y) + adjust)
-			{
-				return false;
-			}
 
-			return true;
+			return aColumn < removeTabsFromOffset(selectionEnd.x, selectionEnd.y) + adjust;
 		}
 		else
 		{
@@ -1255,12 +1228,8 @@ public class SourceEditor extends JComponent implements Scrollable
 			{
 				return false;
 			}
-			if (aRow == selectionEnd.y && aColumn >= removeTabsFromOffset(selectionEnd.x, selectionEnd.y))
-			{
-				return false;
-			}
 
-			return true;
+			return !(aRow == selectionEnd.y && aColumn >= removeTabsFromOffset(selectionEnd.x, selectionEnd.y));
 		}
 	}
 
@@ -1994,15 +1963,7 @@ public class SourceEditor extends JComponent implements Scrollable
 			String clipboardText = (String) (getToolkit().getSystemClipboard().getContents(this).getTransferData(DataFlavor.stringFlavor));
 			insertText(clipboardText, clipboardText.equals(mClipboardContent));
 		}
-		catch (IllegalStateException e)
-		{
-			throw new IllegalStateException(e);
-		}
-		catch (UnsupportedFlavorException e)
-		{
-			throw new IllegalStateException(e);
-		}
-		catch (IOException e)
+		catch (IllegalStateException | UnsupportedFlavorException | IOException e)
 		{
 			throw new IllegalStateException(e);
 		}
@@ -2516,26 +2477,26 @@ public class SourceEditor extends JComponent implements Scrollable
 	{
 		mInputSyntaxParser.initialize(mDocument, y);
 		int prevOfs = 0;
-		int prevLen = 0;
+//		int prevLen = 0;
 		for (Token token : mInputSyntaxParser.parse(mDocument, y, false, false))
 		{
 			int ofs = token.getOffset();
 			int len = token.length();
 
-			if (x >= ofs && x <= ofs+len)
+			if (x >= ofs && x <= ofs + len)
 			{
 				char c = mDocument.getCharAt(y, ofs);
 				if (ofs - len > 0 && Character.isWhitespace(c))
 				{
 					ofs = prevOfs;
-					len = prevLen;
+//					len = prevLen;
 				}
 				return ofs;
 			}
 			if (!Character.isWhitespace(token.getToken().charAt(0)))
 			{
 				prevOfs = ofs;
-				prevLen = len;
+//				prevLen = len;
 			}
 		}
 		return 0;

@@ -1,4 +1,4 @@
-package org.terifan.sourcecodeeditor;
+package org.terifan.sourcecodeeditor.parsers;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import org.terifan.sourcecodeeditor.Document;
+import org.terifan.sourcecodeeditor.Style;
+import org.terifan.sourcecodeeditor.SyntaxParser;
+import org.terifan.sourcecodeeditor.Token;
 
 
 /**
@@ -79,10 +83,10 @@ public class JavaSyntaxParser extends SyntaxParser
 	 */
 	public final static String ANNOTATION = "ANNOTATION";
 
-	private static HashSet<String> mKeywords;
-	private static HashSet<String> mPrimitives;
-	private static HashSet<String> mObjectTypes;
-	private static HashMap<String,Style> mStyles;
+	private final static HashSet<String> mKeywords;
+	private final static HashSet<String> mPrimitives;
+	private final static HashSet<String> mObjectTypes;
+	private final static HashMap<String, Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -97,7 +101,7 @@ public class JavaSyntaxParser extends SyntaxParser
 
 	static
 	{
-		mKeywords = new HashSet<String>();
+		mKeywords = new HashSet<>();
 		mKeywords.add("abstract");		mKeywords.add("assert");		mKeywords.add("break");
 		mKeywords.add("case");			mKeywords.add("catch");			mKeywords.add("class");
 		mKeywords.add("const");			mKeywords.add("continue");		mKeywords.add("default");
@@ -114,7 +118,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		mKeywords.add("volatile");		mKeywords.add("while");			mKeywords.add("true");
 		mKeywords.add("false");			mKeywords.add("null");
 
-		mPrimitives = new HashSet<String>();
+		mPrimitives = new HashSet<>();
 		mPrimitives.add("int");			mPrimitives.add("double");		mPrimitives.add("long");
 		mPrimitives.add("float");		mPrimitives.add("boolean");		mPrimitives.add("short");
 		mPrimitives.add("byte");		mPrimitives.add("char");
@@ -125,7 +129,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 14);
 		Color bg = Color.WHITE;
 
-		mStyles = new HashMap<String,Style>();
+		mStyles = new HashMap<>();
 		mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(160,160,160), bg, false, false, true, false));
 		mStyles.put(BRACKETS, new Style(BRACKETS, plain, Color.BLACK, bg, false, false, true, false));
 		mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(0,111,0), bg, false, false, true, false));
@@ -147,7 +151,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, true));
 		mStyles.put(ANNOTATION, new Style(ANNOTATION, plain, new Color(153,153,0), Color.WHITE, false, false, true, true));
 
-		mObjectTypes = new HashSet<String>();
+		mObjectTypes = new HashSet<>();
 	}
 
 
@@ -986,7 +990,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		}
 
 		prepare(aDocument.getLine(aRow), aOptimizeTokens, aOptimizeWhitespace);
-		ArrayList<Token> tokens = new ArrayList<Token>();
+		ArrayList<Token> tokens = new ArrayList<>();
 		Token prevToken = null;
 		while (iterate())
 		{
@@ -1000,9 +1004,9 @@ public class JavaSyntaxParser extends SyntaxParser
 				style = mStyles.get(mCommentState);
 			}
 
-			if (aOptimizeTokens && prevToken != null && prevToken.style.similar(mTokenStyle, aOptimizeWhitespace))
+			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
 			{
-				prevToken.token += mToken;
+				prevToken.append(mToken);
 			}
 			else
 			{

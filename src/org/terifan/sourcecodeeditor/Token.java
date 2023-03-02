@@ -3,10 +3,10 @@ package org.terifan.sourcecodeeditor;
 
 public class Token
 {
-	protected String token;
-	protected Style style;
-	protected int offset;
-	protected boolean comment;
+	private String mToken;
+	private Style mStyle;
+	private int mOffset;
+	private boolean mComment;
 
 
 	public Token()
@@ -14,41 +14,47 @@ public class Token
 	}
 
 
-	public Token(String token, Style style, int offset, boolean comment)
+	public Token(String aToken, Style aStyle, int aOffset, boolean aComment)
 	{
-		this.token = token;
-		this.style = style;
-		this.offset = offset;
-		this.comment = comment;
+		mToken = aToken;
+		mStyle = aStyle;
+		mOffset = aOffset;
+		mComment = aComment;
 	}
 
 
 	public Style getStyle()
 	{
-		return style;
+		return mStyle;
 	}
 
 
 	public String getToken()
 	{
-		return token;
+		return mToken;
 	}
 
 
 	public int getOffset()
 	{
-		return offset;
+		return mOffset;
 	}
 
 
 	public int length()
 	{
-		return token.length();
+		return mToken.length();
 	}
 
 
 	public boolean isComment()
 	{
-		return comment;
+		return mComment;
+	}
+
+
+	public void append(String aToken)
+	{
+		mToken += aToken;
 	}
 }

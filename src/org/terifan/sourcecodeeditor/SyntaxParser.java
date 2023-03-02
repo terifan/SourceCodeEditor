@@ -1,13 +1,16 @@
 package org.terifan.sourcecodeeditor;
 
+import java.io.Serializable;
 import java.util.List;
 
 
 /**
  * This class is used to split source code into tokens.
  */
-public abstract class SyntaxParser
+public abstract class SyntaxParser implements Serializable
 {
+	private final static long serialVersionUID = 1L;
+
 	/**
 	 * A style identifier which identifies the style used for selections.
 	 * Only the backgound color of this style is used.
@@ -26,7 +29,7 @@ public abstract class SyntaxParser
 	 */
 	public final static String LINEBREAK = "LINEBREAK";
 	/**
-	 * A style identifier which identifies the style used for highlighted text. 
+	 * A style identifier which identifies the style used for highlighted text.
 	 * Only the backgound color of this style is used.
 	 */
 	public final static String HIGHLIGHT = "HIGHLIGHT";
@@ -42,9 +45,9 @@ public abstract class SyntaxParser
 	public abstract String [] getStyleKeys();
 
 	/**
-	 * Initializes the parser and resets any internal state. This method is 
+	 * Initializes the parser and resets any internal state. This method is
 	 * called once before any calls are made to parse(). This
-	 * method traces the source code to figure out the style and comment state 
+	 * method traces the source code to figure out the style and comment state
 	 * for the source line 'aRow'.
 	 *
 	 * @param aDocument

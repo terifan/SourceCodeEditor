@@ -1,10 +1,14 @@
-package org.terifan.sourcecodeeditor;
+package org.terifan.sourcecodeeditor.parsers;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.terifan.sourcecodeeditor.Document;
+import org.terifan.sourcecodeeditor.Style;
+import org.terifan.sourcecodeeditor.SyntaxParser;
+import org.terifan.sourcecodeeditor.Token;
 
 
 public class XmlSyntaxParser extends SyntaxParser
@@ -31,7 +35,7 @@ public class XmlSyntaxParser extends SyntaxParser
 	private boolean mOptimizeWhitespace;
 	private int mInitializedRow;
 
-	
+
 	static
 	{
 		Font plain = new Font("monospaced", Font.PLAIN, 12);
@@ -105,7 +109,7 @@ public class XmlSyntaxParser extends SyntaxParser
 				mTokenOffset++;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -396,16 +400,16 @@ public class XmlSyntaxParser extends SyntaxParser
 		{
 			switch (mSourceLine.charAt(mTokenOffset + len))
 			{
-				case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': 
-				case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N': 
-				case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U': 
+				case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+				case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+				case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
 				case 'V': case 'W': case 'X': case 'Y': case 'Z':
-				case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': 
-				case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n': 
-				case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': 
+				case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+				case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+				case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
 				case 'v': case 'w': case 'x': case 'y': case 'z':
 				case '_': case '-': case '.':
-				case '0': case '1': case '2': case '3': case '4': case '5': case '6': 
+				case '0': case '1': case '2': case '3': case '4': case '5': case '6':
 				case '7': case '8': case '9':
 					if (errorPending)
 					{
@@ -529,7 +533,7 @@ public class XmlSyntaxParser extends SyntaxParser
 								i+=3;
 								for (; i < length; i++)
 								{
-									if (s.charAt(i) == '-' && s.charAt(i + 1) == '-' && s.charAt(i + 2) == '>') 
+									if (s.charAt(i) == '-' && s.charAt(i + 1) == '-' && s.charAt(i + 2) == '>')
 									{
 										mCommentState = null;
 										mInsideTag = false;
@@ -573,9 +577,9 @@ public class XmlSyntaxParser extends SyntaxParser
 				style = mStyles.get(mCommentState);
 			}
 
-			if (aOptimizeTokens && prevToken != null && prevToken.style.similar(mTokenStyle, aOptimizeWhitespace))
+			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
 			{
-				prevToken.token += mToken;
+				prevToken.append(mToken);
 			}
 			else
 			{

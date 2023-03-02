@@ -2,10 +2,12 @@ package org.terifan.sourcecodeeditor;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.Serializable;
 
 
-public class SourceEditorFocusListener implements FocusListener
+public class SourceEditorFocusListener implements FocusListener, Serializable
 {
+	private final static long serialVersionUID = 1L;
 	protected SourceEditor mSourceEditor;
 
 	protected SourceEditorFocusListener(SourceEditor aSourceEditor)
