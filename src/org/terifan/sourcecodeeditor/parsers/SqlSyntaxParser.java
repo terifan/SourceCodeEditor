@@ -100,8 +100,8 @@ public class SqlSyntaxParser extends SyntaxParser
 		Color bg = Color.WHITE;
 
 		mStyles = new HashMap<>();
-		mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(0,0,153), bg, false, false, true, false));
-		mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, Color.WHITE, new Color(255,255,128), false, false, false, false));
+		mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(0,0,153), bg, false, false, true, false));
+		mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, Color.WHITE, new Color(255,255,128), false, false, false, false));
 		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, false));
 		mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, Color.BLACK, bg, false, false, true, false));
 		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, false));

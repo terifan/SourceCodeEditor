@@ -21,9 +21,9 @@ public class JavaSyntaxParser extends SyntaxParser
 	/**
 	 * A style identifier which identifies the style used for block comments.
 	 */
-	public final static String BLOCKCOMMENT = "BLOCKCOMMENT";
+	public final static String COMMENT_BLOCK = "BLOCKCOMMENT";
 	/**
-	 * A style identifier which identifies the style used for parantheses,
+	 * A style identifier which identifies the style used for parentheses,
 	 * brackets and curly brackets.
 	 */
 	public final static String BRACKETS = "BRACKETS";
@@ -31,7 +31,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	 * A style identifier which identifies the style used for character
 	 * literals such as 'a'.
 	 */
-	public final static String CHARACTERLITERAL = "CHARACTERLITERAL";
+	public final static String LITERAL_CHARACTER = "CHARACTERLITERAL";
 	/**
 	 * A style identifier which identifies the style used for block
 	 * documentation comments.
@@ -49,16 +49,16 @@ public class JavaSyntaxParser extends SyntaxParser
 	/**
 	 * A style identifier which identifies the style used for method names.
 	 */
-	public final static String METHODNAME = "METHODNAME";
+	public final static String METHOD_USE = "METHODNAME";
 	/**
 	 * A style identifier which identifies the style used for numeric literals
 	 * such as 1.23e+45d.
 	 */
-	public final static String NUMERICLITERAL = "NUMERICLITERAL";
+	public final static String LITERAL_NUMERIC = "NUMERICLITERAL";
 	/**
 	 * A style identifier which identifies the style used for object types.
 	 */
-	public final static String OBJECTTYPE = "OBJECTTYPE";
+	public final static String OBJECT_TYPE = "OBJECTTYPE";
 	/**
 	 * A style identifier which identifies the style used for operators such as +/-*.
 	 */
@@ -66,15 +66,15 @@ public class JavaSyntaxParser extends SyntaxParser
 	/**
 	 * A style identifier which identifies the style used for single line comments.
 	 */
-	public final static String SINGLELINECOMMENT = "SINGLELINECOMMENT";
+	public final static String COMMENT_LINE = "SINGLELINECOMMENT";
 	/**
 	 * A style identifier which identifies the style used for string literals.
 	 */
-	public final static String STRINGLITERAL = "STRINGLITERAL";
+	public final static String LITERAL_STRING = "STRINGLITERAL";
 	/**
 	 * A style identifier which identifies the style used for syntax errors.
 	 */
-	public final static String SYNTAXERROR = "SYNTAXERROR";
+	public final static String SYNTAX_ERROR = "SYNTAXERROR";
 	/**
 	 * A style identifier which identifies the style used for primitives such as int, long.
 	 */
@@ -83,6 +83,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	 * A style identifier which identifies the style used for annotations.
 	 */
 	public final static String ANNOTATION = "ANNOTATION";
+	public final static String METHOD_DECLARATION = "METHODDECLARATION";
 
 	private final static HashSet<String> mKeywords;
 	private final static HashSet<String> mPrimitives;
@@ -128,23 +129,24 @@ public class JavaSyntaxParser extends SyntaxParser
 
 			mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(204, 120, 50), bg, false, false, true, true));
 			mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, new Color(170, 170, 170), bg, false, false, true, true));
-			mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(106, 135, 89), bg, false, false, true, false));
-			mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(106, 135, 89), bg, false, false, true, false));
+			mStyles.put(LITERAL_STRING, new Style(LITERAL_STRING, plain, new Color(106, 135, 89), bg, false, false, true, false));
+			mStyles.put(LITERAL_CHARACTER, new Style(LITERAL_CHARACTER, plain, new Color(106, 135, 89), bg, false, false, true, false));
 			mStyles.put(BRACKETS, new Style(BRACKETS, plain, new Color(200, 200, 200), bg, false, false, true, false));
-			mStyles.put(OBJECTTYPE, new Style(OBJECTTYPE, plain, new Color(152, 118, 170), bg, false, false, true, true));
+			mStyles.put(OBJECT_TYPE, new Style(OBJECT_TYPE, plain, new Color(152, 118, 170), bg, false, false, true, true));
 			mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, new Color(170, 170, 170), bg, false, false, true, false));
 			mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, new Color(170, 170, 170), new Color(70, 70, 0), false, false, true, true));
-			mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(COMMENT_LINE, new Style(COMMENT_LINE, italic, new Color(120, 120, 120), bg, false, false, true, false));
 			mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(255, 255, 255), bg, false, false, true, false));
-			mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(200, 100, 200), bg, false, false, true, true));
-			mStyles.put(METHODNAME, new Style(METHODNAME, plain, new Color(152, 118, 170), bg, false, false, true, true));
+			mStyles.put(LITERAL_NUMERIC, new Style(LITERAL_NUMERIC, plain, new Color(200, 100, 200), bg, false, false, true, true));
+			mStyles.put(METHOD_USE, new Style(METHOD_USE, plain, new Color(162, 178, 198), bg, false, false, true, true));
+			mStyles.put(METHOD_DECLARATION, new Style(METHOD_DECLARATION, plain, new Color(255,198,109), bg, false, false, true, true));
 			mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(33, 66, 131), false, false, false, true));
-			mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(120, 120, 120), bg, false, false, true, false));
-			mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(255, 255, 255), bg, false, false, true, true));
+			mStyles.put(COMMENT_BLOCK, new Style(COMMENT_BLOCK, italic, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(255, 255, 255), bg, false, false, true, true));
 			mStyles.put(PRIMITIVE, new Style(PRIMITIVE, plain, new Color(0, 200, 220), bg, false, false, true, true));
-			mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, plain, new Color(120, 120, 120), bg, false, false, true, false));
-			mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, bg, new Color(255, 255, 128), false, false, false, true));
-			mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(255, 0, 0), new Color(30, 30, 30), false, false, false, true));
+			mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, bold, new Color(120, 120, 120), bg, false, false, true, false));
+			mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, bg, new Color(255, 255, 128), false, false, false, true));
+			mStyles.put(SYNTAX_ERROR, new Style(SYNTAX_ERROR, bold, new Color(255, 0, 0), new Color(30, 30, 30), false, false, false, true));
 			mStyles.put(ANNOTATION, new Style(ANNOTATION, plain, new Color(153, 153, 0), Color.WHITE, false, false, true, true));
 		}
 		else
@@ -152,22 +154,22 @@ public class JavaSyntaxParser extends SyntaxParser
 			Color bg = Color.WHITE;
 			Color fg = Color.BLACK;
 
-			mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(160, 160, 160), bg, false, false, true, false));
+			mStyles.put(COMMENT_BLOCK, new Style(COMMENT_BLOCK, italic, new Color(160, 160, 160), bg, false, false, true, false));
 			mStyles.put(BRACKETS, new Style(BRACKETS, plain, fg, bg, false, false, true, false));
-			mStyles.put(CHARACTERLITERAL, new Style(CHARACTERLITERAL, plain, new Color(0, 111, 0), bg, false, false, true, false));
+			mStyles.put(LITERAL_CHARACTER, new Style(LITERAL_CHARACTER, plain, new Color(0, 111, 0), bg, false, false, true, false));
 			mStyles.put(DOCUMENTATION, new Style(DOCUMENTATION, plain, new Color(160, 160, 160), bg, false, false, true, false));
 			mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, fg, bg, false, false, true, true));
 			mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(0, 0, 220), bg, false, false, true, true));
-			mStyles.put(LINEBREAK, new Style(LINEBREAK, plain, new Color(0, 0, 153), bg, false, false, true, true));
-			mStyles.put(METHODNAME, new Style(METHODNAME, plain, new Color(0, 153, 153), bg, false, false, true, true));
-			mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(200, 0, 200), bg, false, false, true, true));
-			mStyles.put(OBJECTTYPE, new Style(OBJECTTYPE, plain, fg, bg, true, false, true, true));
+			mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(0, 0, 153), bg, false, false, true, true));
+			mStyles.put(METHOD_USE, new Style(METHOD_USE, plain, new Color(0, 153, 153), bg, false, false, true, true));
+			mStyles.put(LITERAL_NUMERIC, new Style(LITERAL_NUMERIC, plain, new Color(200, 0, 200), bg, false, false, true, true));
+			mStyles.put(OBJECT_TYPE, new Style(OBJECT_TYPE, plain, fg, bg, true, false, true, true));
 			mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(0, 0, 0), bg, false, false, true, false));
-			mStyles.put(SEARCHRESULT, new Style(SEARCHRESULT, plain, Color.WHITE, new Color(255, 255, 128), false, false, false, true));
+			mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, Color.WHITE, new Color(255, 255, 128), false, false, false, true));
 			mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176, 197, 227), false, false, false, true));
-			mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(160, 160, 160), bg, false, false, true, false));
-			mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(206, 123, 0), bg, false, false, true, false));
-			mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(0, 0, 0), new Color(255, 200, 200), false, false, false, true));
+			mStyles.put(COMMENT_LINE, new Style(COMMENT_LINE, italic, new Color(160, 160, 160), bg, false, false, true, false));
+			mStyles.put(LITERAL_STRING, new Style(LITERAL_STRING, plain, new Color(206, 123, 0), bg, false, false, true, false));
+			mStyles.put(SYNTAX_ERROR, new Style(SYNTAX_ERROR, bold, new Color(0, 0, 0), new Color(255, 200, 200), false, false, false, true));
 			mStyles.put(PRIMITIVE, new Style(PRIMITIVE, plain, new Color(0, 0, 220), bg, false, false, true, true));
 			mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, fg, bg, false, false, true, false));
 			mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, fg, new Color(225, 236, 247), false, false, true, true));
@@ -228,7 +230,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		mOptimizeTokens = aOptimizeTokens;
 		mOptimizeWhitespace = aOptimizeWhitespace;
 		mStringLiteralState = 0;
-		if (SINGLELINECOMMENT.equals(mCommentState))
+		if (COMMENT_LINE.equals(mCommentState))
 		{
 			mCommentState = null;
 		}
@@ -240,7 +242,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		if (mPendingMethodName != null)
 		{
 			mToken = mPendingMethodName;
-			mTokenStyle = mStyles.get(METHODNAME);
+			mTokenStyle = mStyles.get(METHOD_USE);
 			mTokenOffset += mPendingMethodName.length();
 			mPendingMethodName = null;
 			return true;
@@ -279,7 +281,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			if (mStringLiteralState == 2)
 			{
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = mStyles.get(SYNTAX_ERROR);
 			}
 			else if (mCommentState == null)
 			{
@@ -291,31 +293,28 @@ public class JavaSyntaxParser extends SyntaxParser
 				mTokenOffset++;
 				return " ";
 			}
+
+			String s = "";
+			if (mOptimizeWhitespace)
+			{
+				for (;;)
+				{
+					char d = mSourceLine.charAt(mTokenOffset);
+					if (!Character.isWhitespace(d))
+					{
+						break;
+					}
+					mTokenOffset++;
+					s += d;
+				}
+			}
 			else
 			{
-				String s = "";
-
-				if (mOptimizeWhitespace)
-				{
-					while (true)
-					{
-						char d = mSourceLine.charAt(mTokenOffset);
-						if (!Character.isWhitespace(d))
-						{
-							break;
-						}
-						mTokenOffset++;
-						s += d;
-					}
-				}
-				else
-				{
-					mTokenOffset++;
-					s = "\t";
-				}
-
-				return s;
+				mTokenOffset++;
+				s = "\t";
 			}
+
+			return s;
 		}
 
 		if (mStringLiteralState > 0)
@@ -323,11 +322,11 @@ public class JavaSyntaxParser extends SyntaxParser
 			return scanStringLiteral();
 		}
 
-		if (SINGLELINECOMMENT.equals(mCommentState))
-		{
-			return scanSingleLineComment();
-		}
-		else if (mCommentState != null)
+//		if (COMMENT_LINE.equals(mCommentState))
+//		{
+//			return scanSingleLineComment();
+//		}
+		if (mCommentState != null)
 		{
 			return scanBlockComment();
 		}
@@ -375,17 +374,14 @@ public class JavaSyntaxParser extends SyntaxParser
 				switch (mSourceLine.charAt(mTokenOffset + 1))
 				{
 					case '/':
-						mTokenStyle = mStyles.get(SINGLELINECOMMENT);
-						mCommentState = SINGLELINECOMMENT;
+						mTokenStyle = mStyles.get(COMMENT_LINE);
+						mCommentState = COMMENT_LINE;
 						if (mOptimizeTokens)
 						{
 							return scanSingleLineComment();
 						}
-						else
-						{
-							mTokenOffset += 2;
-							return "//";
-						}
+						mTokenOffset += 2;
+						return "//";
 					case '*':
 						if (mSourceLine.charAt(mTokenOffset + 2) == '*' && mSourceLine.charAt(mTokenOffset + 3) != '/')
 						{
@@ -396,8 +392,8 @@ public class JavaSyntaxParser extends SyntaxParser
 						}
 						else
 						{
-							mCommentState = BLOCKCOMMENT;
-							mTokenStyle = mStyles.get(BLOCKCOMMENT);
+							mCommentState = COMMENT_BLOCK;
+							mTokenStyle = mStyles.get(COMMENT_BLOCK);
 							mTokenOffset += 2;
 							return "/*";
 						}
@@ -405,7 +401,7 @@ public class JavaSyntaxParser extends SyntaxParser
 			case '*':
 				if (mSourceLine.charAt(mTokenOffset + 1) == '/')
 				{
-					mTokenStyle = mStyles.get(SYNTAXERROR);
+					mTokenStyle = mStyles.get(SYNTAX_ERROR);
 					mTokenOffset+=2;
 					return "*/";
 				}
@@ -433,11 +429,12 @@ public class JavaSyntaxParser extends SyntaxParser
 				{
 					return scanHexNumericLiteral();
 				}
+				return scanNumericLiteral();
 			case '1': case '2': case '3': case '4': case '5': case '6': case '7':
 			case '8': case '9':
 				return scanNumericLiteral();
 			default:
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = mStyles.get(SYNTAX_ERROR);
 				mTokenOffset++;
 				return Character.toString(c);
 		}
@@ -488,7 +485,7 @@ public class JavaSyntaxParser extends SyntaxParser
 	{
 		int offset = mTokenOffset;
 
-		outer: for (; offset < mSourceLine.length()-1; offset++)
+		outer: for (; offset < mSourceLine.length() - 1; offset++)
 		{
 			switch (mSourceLine.charAt(offset))
 			{
@@ -503,8 +500,8 @@ public class JavaSyntaxParser extends SyntaxParser
 			}
 		}
 
-		String s = mSourceLine.substring(mTokenOffset, offset);
-		mTokenOffset = offset;
+		String s = mSourceLine.substring(mTokenOffset, mSourceLine.length() - 1);
+		mTokenOffset = mSourceLine.length() - 1;
 		return s;
 	}
 
@@ -541,7 +538,7 @@ public class JavaSyntaxParser extends SyntaxParser
 
 		if (foundTerminator)
 		{
-			mTokenStyle = mStyles.get(STRINGLITERAL);
+			mTokenStyle = mStyles.get(LITERAL_STRING);
 			mStringLiteralState = 0;
 		}
 		else if (foundBreak)
@@ -566,16 +563,16 @@ public class JavaSyntaxParser extends SyntaxParser
 
 			if (mStringLiteralState == 1)
 			{
-				mTokenStyle = mStyles.get(STRINGLITERAL);
+				mTokenStyle = mStyles.get(LITERAL_STRING);
 			}
 			else if (mStringLiteralState == 2)
 			{
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = mStyles.get(SYNTAX_ERROR);
 			}
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = mStyles.get(SYNTAX_ERROR);
 			mStringLiteralState = 0;
 		}
 
@@ -615,11 +612,11 @@ public class JavaSyntaxParser extends SyntaxParser
 
 		if (foundTerminator && len == 1)
 		{
-			mTokenStyle = mStyles.get(CHARACTERLITERAL);
+			mTokenStyle = mStyles.get(LITERAL_CHARACTER);
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = mStyles.get(SYNTAX_ERROR);
 		}
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
@@ -653,6 +650,28 @@ public class JavaSyntaxParser extends SyntaxParser
 			}
 		}
 
+		boolean letterPrev = false;
+		for (int i = mTokenOffset; --i >= 0;)
+		{
+			char c = mSourceLine.charAt(i);
+			if (!Character.isWhitespace(c))
+			{
+				letterPrev = c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_' || c == '$';
+				break;
+			}
+		}
+
+		boolean paransNext = false;
+		for (int i = mTokenOffset + len; i < mSourceLine.length(); i++)
+		{
+			char c = mSourceLine.charAt(i);
+			if (!Character.isWhitespace(c))
+			{
+				paransNext = c == '(';
+				break;
+			}
+		}
+
 		String s = mSourceLine.substring(mTokenOffset, mTokenOffset + len);
 		mTokenOffset += len;
 
@@ -664,9 +683,17 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			mTokenStyle = mStyles.get(PRIMITIVE);
 		}
+		else if (letterPrev && paransNext)
+		{
+			mTokenStyle = mStyles.get(METHOD_DECLARATION);
+		}
+		else if (!letterPrev && paransNext)
+		{
+			mTokenStyle = mStyles.get(METHOD_USE);
+		}
 		else if (mObjectTypes.contains(s))
 		{
-			mTokenStyle = mStyles.get(OBJECTTYPE);
+			mTokenStyle = mStyles.get(OBJECT_TYPE);
 		}
 		else
 		{
@@ -745,11 +772,11 @@ public class JavaSyntaxParser extends SyntaxParser
 
 		if (errorFound || !numberFound)
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = mStyles.get(SYNTAX_ERROR);
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(NUMERICLITERAL);
+			mTokenStyle = mStyles.get(LITERAL_NUMERIC);
 		}
 
 		String s = mSourceLine.substring(mTokenOffset, o);
@@ -777,7 +804,7 @@ public class JavaSyntaxParser extends SyntaxParser
 			}
 		}
 
-		mTokenStyle = mStyles.get(NUMERICLITERAL);
+		mTokenStyle = mStyles.get(LITERAL_NUMERIC);
 		String s = mSourceLine.substring(mTokenOffset, mTokenOffset + len);
 		mTokenOffset += len;
 		return s;
@@ -800,7 +827,7 @@ public class JavaSyntaxParser extends SyntaxParser
 			}
 
 			s += temp;
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = mStyles.get(SYNTAX_ERROR);
 		}
 
 		if (mTokenStyle == null)
@@ -889,6 +916,7 @@ public class JavaSyntaxParser extends SyntaxParser
 				}
 				return ">";
 			case '<':
+				if (c == '>') return "<>";
 				if (c == '?') return "<?";
 				if (c == '=') return "<=";
 				if (c == '<')
@@ -963,8 +991,8 @@ public class JavaSyntaxParser extends SyntaxParser
 						}
 						else
 						{
-							mTokenStyle = mStyles.get(BLOCKCOMMENT);
-							mCommentState = BLOCKCOMMENT;
+							mTokenStyle = mStyles.get(COMMENT_BLOCK);
+							mCommentState = COMMENT_BLOCK;
 						}
 						i++;
 					}

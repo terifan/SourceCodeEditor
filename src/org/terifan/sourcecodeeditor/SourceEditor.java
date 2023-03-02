@@ -231,13 +231,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void undo()
+	public SourceEditor undo()
 	{
 		if (canUndo())
 		{
 			mDocument.getUndoManager().undo();
 			repaint();
 		}
+		return this;
 	}
 
 
@@ -247,23 +248,25 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void redo()
+	public SourceEditor redo()
 	{
 		if (canRedo())
 		{
 			mDocument.getUndoManager().redo();
 			repaint();
 		}
+		return this;
 	}
 
 
-	public void dontRequestFocus()
+	public SourceEditor dontRequestFocus()
 	{
 		mRequestFocus = false;
+		return this;
 	}
 
 
-	public void setSyntaxParser(SyntaxParser aSyntaxParser)
+	public SourceEditor setSyntaxParser(SyntaxParser aSyntaxParser)
 	{
 		if (aSyntaxParser == null)
 		{
@@ -278,10 +281,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mPixelOffsetSyntaxParser = mSyntaxParser.newInstance();
 
 		mPreferredSize = null;
+		return this;
 	}
 
 
-	public void setHighlightText(String aHighlightText)
+	public SourceEditor setHighlightText(String aHighlightText)
 	{
 		mHighlightText = aHighlightText;
 
@@ -289,6 +293,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mHighlightText = null;
 		}
+		return this;
 	}
 
 
@@ -298,9 +303,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setHighlightTextCaseSensative(boolean aState)
+	public SourceEditor setHighlightTextCaseSensative(boolean aState)
 	{
 		mHighlightTextCaseSensative = aState;
+		return this;
 	}
 
 
@@ -310,9 +316,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setTabIndentsTextEnabled(boolean aTabIndentsTextEnabled)
+	public SourceEditor setTabIndentsTextEnabled(boolean aTabIndentsTextEnabled)
 	{
 		mTabIndentsTextEnabled = aTabIndentsTextEnabled;
+		return this;
 	}
 
 
@@ -322,9 +329,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setAlternateMode(boolean aAlternateMode)
+	public SourceEditor setAlternateMode(boolean aAlternateMode)
 	{
 		mAlternateMode = aAlternateMode;
+		return this;
 	}
 
 
@@ -342,9 +350,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	 * @param aAntialiase
 	 *   a RenderingHints.VALUE_TEXT_ANTIALIAS_* value or null.
 	 */
-	public void setAntialiase(Object aAntialiase)
+	public SourceEditor setAntialiase(Object aAntialiase)
 	{
 		mAntialiase = aAntialiase;
+		return this;
 	}
 
 
@@ -354,9 +363,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setAutoLineCopyCutEnabled(boolean aAutoLineCopyCutEnabled)
+	public SourceEditor setAutoLineCopyCutEnabled(boolean aAutoLineCopyCutEnabled)
 	{
 		mAutoLineCopyCutEnabled = aAutoLineCopyCutEnabled;
+		return this;
 	}
 
 
@@ -366,9 +376,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setAutoIndentEnabled(boolean aAutoIndentEnabled)
+	public SourceEditor setAutoIndentEnabled(boolean aAutoIndentEnabled)
 	{
 		mAutoIndentEnabled = aAutoIndentEnabled;
+		return this;
 	}
 
 
@@ -378,9 +389,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setBoldCaretEnabled(boolean aBoldCaretEnabled)
+	public SourceEditor setBoldCaretEnabled(boolean aBoldCaretEnabled)
 	{
 		mBoldCaretEnabled = aBoldCaretEnabled;
+		return this;
 	}
 
 
@@ -390,9 +402,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setLineBreakSymbolEnabled(boolean aLineBreakSymbolEnabled)
+	public SourceEditor setLineBreakSymbolEnabled(boolean aLineBreakSymbolEnabled)
 	{
 		mLineBreakSymbolEnabled = aLineBreakSymbolEnabled;
+		return this;
 	}
 
 
@@ -402,9 +415,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setOverwriteTextEnabled(boolean aOverwriteTextEnabled)
+	public SourceEditor setOverwriteTextEnabled(boolean aOverwriteTextEnabled)
 	{
 		mOverwriteTextEnabled = aOverwriteTextEnabled;
+		return this;
 	}
 
 
@@ -414,9 +428,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setLineSpacing(int aLineSpacing)
+	public SourceEditor setLineSpacing(int aLineSpacing)
 	{
 		mLineSpacing = aLineSpacing;
+		return this;
 	}
 
 
@@ -426,9 +441,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setWhitespaceSymbolEnabled(boolean aWhitespaceSymbolEnabled)
+	public SourceEditor setWhitespaceSymbolEnabled(boolean aWhitespaceSymbolEnabled)
 	{
 		mWhitespaceSymbolEnabled = aWhitespaceSymbolEnabled;
+		return this;
 	}
 
 
@@ -438,9 +454,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setTabSize(int aTabSize)
+	public SourceEditor setTabSize(int aTabSize)
 	{
 		mTabSize = aTabSize;
+		return this;
 	}
 
 
@@ -450,9 +467,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setMargins(Insets aMargins)
+	public SourceEditor setMargins(Insets aMargins)
 	{
 		mMargins = aMargins;
+		return this;
 	}
 
 
@@ -462,9 +480,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setLineBreakSymbol(char aLineBreakSymbol)
+	public SourceEditor setLineBreakSymbol(char aLineBreakSymbol)
 	{
 		mLineBreakSymbol = Character.toString(aLineBreakSymbol);
+		return this;
 	}
 
 
@@ -486,7 +505,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setDocument(Document aDocument)
+	public SourceEditor setDocument(Document aDocument)
 	{
 		if (aDocument == null)
 		{
@@ -496,6 +515,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mDocument = aDocument;
 		mDocument.setParent(this);
 		recomputePreferredSize();
+		return this;
 	}
 
 
@@ -517,12 +537,13 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setFontPointSize(int aFontPointSize)
+	public SourceEditor setFontPointSize(int aFontPointSize)
 	{
 		for (String key : mPaintSyntaxParser.getStyleKeys())
 		{
 			mPaintSyntaxParser.getStyle(key).setFontSize(aFontPointSize);
 		}
+		return this;
 	}
 
 
@@ -532,7 +553,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setSelectionStart(int aColumn, int aRow)
+	public SourceEditor setSelectionStart(int aColumn, int aRow)
 	{
 		if (mSelectionStart == null)
 		{
@@ -542,6 +563,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mSelectionStart.move(includeTabsInOffset(aColumn, aRow), aRow);
 		}
+		return this;
 	}
 
 
@@ -555,9 +577,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	protected void setSelectionStartUnmodified(Point aPoint)
+	protected SourceEditor setSelectionStartUnmodified(Point aPoint)
 	{
 		mSelectionStart = aPoint;
+		return this;
 	}
 
 
@@ -567,7 +590,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setSelectionEnd(int aColumn, int aRow)
+	public SourceEditor setSelectionEnd(int aColumn, int aRow)
 	{
 		if (mSelectionEnd == null)
 		{
@@ -577,6 +600,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mSelectionEnd.move(includeTabsInOffset(aColumn, aRow), aRow);
 		}
+		return this;
 	}
 
 
@@ -590,9 +614,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	protected void setSelectionEndUnmodified(Point aPoint)
+	protected SourceEditor setSelectionEndUnmodified(Point aPoint)
 	{
 		mSelectionEnd = aPoint;
+		return this;
 	}
 
 
@@ -602,11 +627,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void replaceSelection(String aNewText)
+	public SourceEditor replaceSelection(String aNewText)
 	{
 		if (!isTextSelected())
 		{
-			return;
+			return this;
 		}
 
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "Replace selection"));
@@ -712,6 +737,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		insertText(aNewText);
 
 		mDocument.commitUndoableEdit();
+		return this;
 	}
 
 
@@ -727,25 +753,27 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setRectangularSelection(boolean aState)
+	public SourceEditor setRectangularSelection(boolean aState)
 	{
 		mRectangularSelection = aState;
+		return this;
 	}
 
 
-	public void insertText(String aText)
+	public SourceEditor insertText(String aText)
 	{
 		insertText(aText, false);
 
 		recomputePreferredSize();
+		return this;
 	}
 
 
-	public void insertText(String aText, boolean aRectangularText)
+	public SourceEditor insertText(String aText, boolean aRectangularText)
 	{
-		if (aText.length() == 0)
+		if (aText.isEmpty())
 		{
-			return;
+			return this;
 		}
 
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "insertText"));
@@ -925,6 +953,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mCaret.moveAbsolute(caret.x, caret.y, false, false, true);
 		mCaret.makePreferredPosition();
 		mRectangularSelection = false;
+		return this;
 	}
 
 
@@ -1038,12 +1067,12 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 				if (selectionIntersected || mLineBreakSymbolEnabled)
 				{
-					Style fontStyle = mPaintSyntaxParser.getStyle(SyntaxParser.LINEBREAK);
+					Style fontStyle = mPaintSyntaxParser.getStyle(SyntaxParser.LINE_BREAK);
 					Style colorStyle = token.isComment() ? token.getStyle() : fontStyle;
 
 					int w = fontStyle.getStringWidth(mLineBreakSymbol);
 
-					if (highlightRow || colorStyle.getBackground() != Color.WHITE)
+					if (highlightRow || !getBackground().equals(colorStyle.getBackground()))
 					{
 						g.setColor(colorStyle.getBackground());
 						g.fillRect(positionX + mMargins.left, y - getFontAscent(), w, getFontHeight());
@@ -1052,7 +1081,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 					Color fontColor = colorStyle.getForeground();
 					if (selectionIntersected)
 					{
-						fontColor = mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getBackground();
+						fontColor = mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getForeground();
 					}
 
 					g.setFont(fontStyle.getFont());
@@ -1110,7 +1139,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 			{
 				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : aToken.getStyle();
 
-				if (aIsSelection || aHighlightRow || style.getBackground() != Color.WHITE)
+				if (aIsSelection || aHighlightRow || !style.getBackground().equals(getBackground()))
 				{
 					g.setColor(style.getBackground());
 					g.fillRect(previousPositionX + mMargins.left, y - getFontAscent(), positionX - previousPositionX, getFontHeight());
@@ -1126,17 +1155,17 @@ public final class SourceEditor extends JComponent implements Scrollable
 				{
 					g.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
 
-					int h = mMargins.left + (previousPositionX + positionX) / 2;
+					int x = mMargins.left + (previousPositionX + positionX) / 2;
 					int v = y - getFontAscent() + getFontHeight() / 2;
 					if (s.equals(" "))
 					{
-						g.drawLine(h, v, h, v);
+						g.drawLine(x, v, x, v);
 					}
 					else
 					{
-						g.drawLine(h - 2, v, h + 2, v);
-						g.drawLine(h + 2, v, h, v - 2);
-						g.drawLine(h + 2, v, h, v + 2);
+						g.drawLine(x - 2, v, x + 2, v);
+						g.drawLine(x + 2, v, x, v - 2);
+						g.drawLine(x + 2, v, x, v + 2);
 					}
 				}
 			}
@@ -1148,17 +1177,17 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 			if (positionX + w >= aClipBounds.x)
 			{
-				Style xxxxxxxcolorStyle = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
+				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
 				Style colorStyle = /*aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) :*/ tokenStyle;
 
-				if (aHighlightRow && tokenStyle.isSupportHighlight() && xxxxxxxcolorStyle.isBackgroundOptional() && s.equalsIgnoreCase(mHighlightText))
+				if (aHighlightRow && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && s.equalsIgnoreCase(mHighlightText))
 				{
 					g.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
 					g.fillRect(positionX + mMargins.left, y - getFontAscent(), w, getFontHeight());
 				}
-				else if (xxxxxxxcolorStyle.getBackground() != Color.WHITE)
+				else if (!getBackground().equals(style.getBackground()))
 				{
-					g.setColor(xxxxxxxcolorStyle.getBackground());
+					g.setColor(style.getBackground());
 					g.fillRect(positionX + mMargins.left, y - getFontAscent(), w, getFontHeight());
 				}
 
@@ -1170,7 +1199,35 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 				g.setFont(tokenStyle.getFont());
 				g.setColor(colorStyle.getForeground());
-				g.drawString(s, positionX + mMargins.left, y);
+
+				if (s.contains("\t"))
+				{
+					for (int i = 0, tx = positionX + mMargins.left; i < s.length(); )
+					{
+						int j = s.indexOf('\t', i);
+						if (j == i)
+						{
+							int ts = mTabSize * g.getFontMetrics().stringWidth(" ");
+							tx = ((tx + ts) / ts) * ts;
+							i++;
+						}
+						else
+						{
+							if (j == -1)
+							{
+								j = s.length();
+							}
+							String t = s.substring(i, j);
+							g.drawString(t, tx, y);
+							tx += g.getFontMetrics().stringWidth(t);
+							i = j;
+						}
+					}
+				}
+				else
+				{
+					g.drawString(s, positionX + mMargins.left, y);
+				}
 
 				if (tokenStyle.isUnderlined())
 				{
@@ -1592,7 +1649,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void setText(String aText)
+	public SourceEditor setText(String aText)
 	{
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "Set text"));
 
@@ -1608,6 +1665,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mDocument.commitUndoableEdit();
 
 		recomputePreferredSize();
+		return this;
 	}
 
 
@@ -1882,7 +1940,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public void deleteLine()
+	public SourceEditor deleteLine()
 	{
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "Delete line"));
 
@@ -1916,10 +1974,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mCaret.makePreferredPosition();
 		mCaret.forceVisibility();
 		repaint();
+		return this;
 	}
 
 
-	public void cut()
+	public SourceEditor cut()
 	{
 		if (!isTextSelected() && mAutoLineCopyCutEnabled)
 		{
@@ -1937,10 +1996,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 			replaceSelection("");
 		}
 		repaint();
+		return this;
 	}
 
 
-	public void copy()
+	public SourceEditor copy()
 	{
 		if (!isTextSelected() && mAutoLineCopyCutEnabled)
 		{
@@ -1953,10 +2013,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		StringSelection stringSelection = new StringSelection(selection.toString());
 		getToolkit().getSystemClipboard().setContents(stringSelection, stringSelection);
 		mClipboardContent = mRectangularSelection ? selection.toString() : "";
+		return this;
 	}
 
 
-	public void paste()
+	public SourceEditor paste()
 	{
 		try
 		{
@@ -1968,24 +2029,26 @@ public final class SourceEditor extends JComponent implements Scrollable
 			throw new IllegalStateException(e);
 		}
 		repaint();
+		return this;
 	}
 
 
-	public void selectAll()
+	public SourceEditor selectAll()
 	{
 		setSelectionStart(0, 0);
 		setSelectionEnd(mDocument.getLineLength(mDocument.getLineCount() - 1), mDocument.getLineCount() - 1);
 		repaint();
+		return this;
 	}
 
 
-	public void deleteToken()
+	public SourceEditor deleteToken()
 	{
 		if (isTextSelected())
 		{
 			replaceSelection("");
 			mCaret.makePreferredPosition();
-			return;
+			return this;
 		}
 
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "Delete token"));
@@ -2019,16 +2082,17 @@ public final class SourceEditor extends JComponent implements Scrollable
 		}
 
 		mDocument.commitUndoableEdit();
+		return this;
 	}
 
 
-	public void deleteNextCharacter()
+	public SourceEditor deleteNextCharacter()
 	{
 		if (isTextSelected())
 		{
 			replaceSelection("");
 			mCaret.makePreferredPosition();
-			return;
+			return this;
 		}
 
 		mDocument.beginUndoableEdit(new UndoableEdit(this, "Delete next character"));
@@ -2052,96 +2116,109 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mCaret.makePreferredPosition();
 
 		mDocument.commitUndoableEdit();
+		return this;
 	}
 
 
-	public void indent()
+	public SourceEditor indent()
 	{
 		indentOutdentSelection(false);
+		return this;
 	}
 
 
-	public void outdent()
+	public SourceEditor outdent()
 	{
 		indentOutdentSelection(true);
+		return this;
 	}
 
 
-	public void moveCaretDocumentTop()
+	public SourceEditor moveCaretDocumentTop()
 	{
 		mCaret.moveAbsolute(0, 0, false, true, true);
 		mCaret.makePreferredPosition();
+		return this;
 	}
 
 
-	public void moveCaretLineStart()
+	public SourceEditor moveCaretLineStart()
 	{
 		mCaret.moveAbsolute(0, mCaret.getCharacterPosition().y, false, true, true);
 		mCaret.makePreferredPosition();
+		return this;
 	}
 
 
-	public void scrollPageUp()
+	public SourceEditor scrollPageUp()
 	{
 		int firstRow = Math.max(0, ((JViewport) getParent()).getViewPosition().y / (getFontHeight() + mLineSpacing) - getParent().getHeight() / (getFontHeight() + mLineSpacing));
 		int lastRow = Math.min(mDocument.getLineCount(), firstRow + getParent().getHeight() / (getFontHeight() + mLineSpacing));
 		scrollRectToVisible(new Rectangle(mMargins.left + mCaret.getPixelPosition().x, mMargins.top + (getFontHeight() + mLineSpacing) * firstRow, 1, (getFontHeight() + mLineSpacing) * (lastRow - firstRow)));
 		mCaret.paintImmediately();
+		return this;
 	}
 
 
-	public void moveCaretPageUp()
+	public SourceEditor moveCaretPageUp()
 	{
 		mCaret.moveRelative(0, -getParent().getHeight() / (getFontHeight() + mLineSpacing) + 1, true, true, true);
+		return this;
 	}
 
 
-	public void scrollPageDown()
+	public SourceEditor scrollPageDown()
 	{
 		int firstRow = (int) Math.ceil(((JViewport) getParent()).getViewPosition().y / (double) (getFontHeight() + mLineSpacing)) + getParent().getHeight() / (getFontHeight() + mLineSpacing);
 		int lastRow = Math.min(mDocument.getLineCount(), firstRow + getParent().getHeight() / (getFontHeight() + mLineSpacing)) + 1;
 		scrollRectToVisible(new Rectangle(mMargins.left + mCaret.getPixelPosition().x, mMargins.top + (getFontHeight() + mLineSpacing) * firstRow, 1, (getFontHeight() + mLineSpacing) * (lastRow - firstRow)));
 		mCaret.paintImmediately();
+		return this;
 	}
 
 
-	public void moveCaretPageDown()
+	public SourceEditor moveCaretPageDown()
 	{
 		mCaret.moveRelative(0, getParent().getHeight() / (getFontHeight() + mLineSpacing) - 1, true, true, true);
+		return this;
 	}
 
 
-	public void scrollLineUp()
+	public SourceEditor scrollLineUp()
 	{
 		int firstRow = Math.max(0, ((JViewport) getParent()).getViewPosition().y / (getFontHeight() + mLineSpacing) - 1);
 		int lastRow = Math.min(mDocument.getLineCount(), firstRow + getParent().getHeight() / (getFontHeight() + mLineSpacing));
 		scrollRectToVisible(new Rectangle(mMargins.left + mCaret.getPixelPosition().x, mMargins.top + (getFontHeight() + mLineSpacing) * firstRow, 1, (getFontHeight() + mLineSpacing) * (lastRow - firstRow)));
 		mCaret.paintImmediately();
+		return this;
 	}
 
 
-	public void moveCaretLineUp()
+	public SourceEditor moveCaretLineUp()
 	{
 		mCaret.moveRelative(0, -1, true, true, true);
+		return this;
 	}
 
 
-	public void scrollLineDown()
+	public SourceEditor scrollLineDown()
 	{
 		int firstRow = 1 + (int) Math.ceil(((JViewport) getParent()).getViewPosition().y / (double) (getFontHeight() + mLineSpacing));
 		int lastRow = Math.min(mDocument.getLineCount(), firstRow + getParent().getHeight() / (getFontHeight() + mLineSpacing)) + 1;
 		scrollRectToVisible(new Rectangle(mMargins.left + mCaret.getPixelPosition().x, mMargins.top + (getFontHeight() + mLineSpacing) * firstRow, 1, (getFontHeight() + mLineSpacing) * (lastRow - firstRow)));
 		mCaret.paintImmediately();
+		return this;
 	}
 
 
-	public void moveCaretLineDown()
+	public SourceEditor moveCaretLineDown()
 	{
 		mCaret.moveRelative(0, 1, true, true, true);
+		return this;
 	}
 
 
-	public void moveCaretPreviousToken()
+	public SourceEditor moveCaretPreviousToken()
 	{
 		int x = mCaret.getCharacterPosition().x;
 		int y = mCaret.getCharacterPosition().y;
@@ -2153,14 +2230,15 @@ public final class SourceEditor extends JComponent implements Scrollable
 				mCaret.moveRelative(mDocument.getLineLength(y - 1), -1, false, true, true);
 				mCaret.makePreferredPosition();
 			}
-			return;
+			return this;
 		}
 
 		mCaret.moveRelative(getPreviousTokenOffset(x, y)-x, 0, false, true, true);
+		return this;
 	}
 
 
-	public void moveCaretLeft()
+	public SourceEditor moveCaretLeft()
 	{
 		if (mCaret.getCharacterPosition().x == 0)
 		{
@@ -2174,10 +2252,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mCaret.moveRelative(-1, 0, false, true, true);
 		}
+		return this;
 	}
 
 
-	public void moveCaretNextToken()
+	public SourceEditor moveCaretNextToken()
 	{
 		int x = mCaret.getCharacterPosition().x;
 		int y = mCaret.getCharacterPosition().y;
@@ -2194,10 +2273,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mCaret.moveRelative(getNextTokenOffset(x, y, true)-x, 0, false, true, true);
 		}
+		return this;
 	}
 
 
-	public void moveCaretRight()
+	public SourceEditor moveCaretRight()
 	{
 		if (mCaret.getCharacterPosition().x == mDocument.getLineLength(mCaret.getCharacterPosition().y))
 		{
@@ -2211,25 +2291,28 @@ public final class SourceEditor extends JComponent implements Scrollable
 		{
 			mCaret.moveRelative(1, 0, false, true, true);
 		}
+		return this;
 	}
 
 
-	public void moveCaretDocumentEnd()
+	public SourceEditor moveCaretDocumentEnd()
 	{
 		mCaret.moveAbsolute(mDocument.getLineLength(mDocument.getLineCount() - 1), mDocument.getLineCount(), false, true, true);
 		mCaret.makePreferredPosition();
+		return this;
 	}
 
 
-	public void moveCaretLineEnd()
+	public SourceEditor moveCaretLineEnd()
 	{
 		int y = mCaret.getCharacterPosition().y;
 		mCaret.moveAbsolute(mDocument.getLineLength(y), y, false, true, true);
 		mCaret.makePreferredPosition();
+		return this;
 	}
 
 
-	public void deletePreviousCharacter()
+	public SourceEditor deletePreviousCharacter()
 	{
 		if (isTextSelected())
 		{
@@ -2264,10 +2347,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 			mDocument.commitUndoableEdit();
 		}
 		mCaret.makePreferredPosition();
+		return this;
 	}
 
 
-	public void insertBreak()
+	public SourceEditor insertBreak()
 	{
 		if (isTextSelected())
 		{
@@ -2312,10 +2396,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mCaret.makePreferredPosition();
 
 		mDocument.commitUndoableEdit();
+		return this;
 	}
 
 
-	public void upperCase()
+	public SourceEditor upperCase()
 	{
 		if (isTextSelected())
 		{
@@ -2326,10 +2411,11 @@ public final class SourceEditor extends JComponent implements Scrollable
 			mSelectionEnd = se;
 		}
 		repaint();
+		return this;
 	}
 
 
-	public void lowerCase()
+	public SourceEditor lowerCase()
 	{
 		if (isTextSelected())
 		{
@@ -2340,24 +2426,27 @@ public final class SourceEditor extends JComponent implements Scrollable
 			mSelectionEnd = se;
 		}
 		repaint();
+		return this;
 	}
 
 
-	public void scrollToCaret()
+	public SourceEditor scrollToCaret()
 	{
 		mCaret.scrollToCaret();
+		return this;
 	}
 
 
-	public void resetSelection()
+	public SourceEditor resetSelection()
 	{
 		mSelectionStart = null;
 		mSelectionEnd = null;
 		mRectangularSelection = false;
+		return this;
 	}
 
 
-	public void scrollToSelection()
+	public SourceEditor scrollToSelection()
 	{
 		Point p = getSelectionStart();
 		Point q = getSelectionEnd();
@@ -2381,6 +2470,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		}
 
 		scrollRectToVisible(new Rectangle(start.x, start.y, end.x, end.y));
+		return this;
 	}
 
 

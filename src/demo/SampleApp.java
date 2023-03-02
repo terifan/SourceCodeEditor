@@ -25,15 +25,18 @@ public class SampleApp
 			Document documentJava = new Document(
 				"package demo;\n"
 				+ "\n"
+				+ "/**\n"
+				+ " * documentation\n"
+				+ " */\n"
 				+ "class HelloWorld\n"
 				+ "{\n"
 				+ "	public static void main(String... args)\n"
 				+ "	{\n"
-				+ "		HashSet<String> test = new HashSet<>();\n"
+				+ "		HashSet<String> test/*ing*/ = new HashSet<>();\n"
 				+ "		try\n"
 				+ "		{\n"
 				+ "			int x = number();\n"
-				+ "			System.out.println(\"3 x 5 = \" + 3 * x);\n"
+				+ "//			System.out.println(\"3 x 5 = \" + 3 * x);\n"
 				+ "		}\n"
 				+ "		catch (Exception e)\n"
 				+ "		{\n"
@@ -43,7 +46,7 @@ public class SampleApp
 				+ "\n"
 				+ "	private static int number() throws Exception \n"
 				+ "	{\n"
-				+ "		return 5;\n"
+				+ "		return 5; //comment\n"
 				+ "	}\n"
 				+ "}\n"
 			);
@@ -99,7 +102,10 @@ public class SampleApp
 			);
 
 			JTabbedPane tabbedPane = new JTabbedPane();
-			tabbedPane.add("Java", new JScrollPane(new SourceEditor(parserJava, documentJava)));
+			tabbedPane.add("Java", new JScrollPane(new SourceEditor(parserJava, documentJava)
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(!true)
+			));
 			tabbedPane.add("SQL", new JScrollPane(new SourceEditor(parserSql, documentSql)));
 			tabbedPane.add("Xml", new JScrollPane(new SourceEditor(parserXml, documentXml)));
 //			tabbedPane.add("Json", new JScrollPane(new SourceEditor(parserJson, documentJson)));
