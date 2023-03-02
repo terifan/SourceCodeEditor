@@ -3,16 +3,18 @@ package org.terifan.sourcecodeeditor;
 import java.util.Stack;
 
 
-
-@SuppressWarnings("unchecked")
 public class UndoManager
 {
-	private Stack<UndoableEdit> mUndoableEdits = new Stack<UndoableEdit>();
-	private Stack<UndoableEdit> mRedoableEdits = new Stack<UndoableEdit>();
+	private final Stack<UndoableEdit> mUndoableEdits;
+	private final Stack<UndoableEdit> mRedoableEdits;
+
 
 	public UndoManager()
 	{
+		mRedoableEdits = new Stack<>();
+		mUndoableEdits = new Stack<>();
 	}
+
 
 	public void addEdit(UndoableEdit aUndoableEdit)
 	{
@@ -20,43 +22,62 @@ public class UndoManager
 		mRedoableEdits.clear();
 	}
 
+
 	public boolean canRedo()
 	{
-		return mRedoableEdits.size() > 0;
+		return !mRedoableEdits.isEmpty();
 	}
+
 
 	public boolean canUndo()
 	{
-		return mUndoableEdits.size() > 0;
+		return !mUndoableEdits.isEmpty();
 	}
+
 
 	public String getRedoPresentationName()
 	{
-		if (mRedoableEdits.size() == 0) throw new IllegalStateException("no redo edits exists");
+		if (mRedoableEdits.isEmpty())
+		{
+			throw new IllegalStateException("no redo edits exists");
+		}
 		return mRedoableEdits.peek().getPresentationName();
 	}
 
+
 	public String getUndoPresentationName()
 	{
-		if (mUndoableEdits.size() == 0) throw new IllegalStateException("no undo edits exists");
+		if (mUndoableEdits.isEmpty())
+		{
+			throw new IllegalStateException("no undo edits exists");
+		}
 		return mUndoableEdits.peek().getPresentationName();
 	}
 
+
 	public void undo()
 	{
-		if (mUndoableEdits.size() == 0) throw new IllegalStateException("no undo edits exists");
+		if (mUndoableEdits.isEmpty())
+		{
+			throw new IllegalStateException("no undo edits exists");
+		}
 		UndoableEdit edit = mUndoableEdits.pop();
 		edit.undo();
 		mRedoableEdits.push(edit);
 	}
 
+
 	public void redo()
 	{
-		if (mRedoableEdits.size() == 0) throw new IllegalStateException("no redo edits exists");
+		if (mRedoableEdits.isEmpty())
+		{
+			throw new IllegalStateException("no redo edits exists");
+		}
 		UndoableEdit edit = mRedoableEdits.pop();
 		edit.redo();
 		mUndoableEdits.push(edit);
 	}
+
 
 	public void discardAllEdits()
 	{

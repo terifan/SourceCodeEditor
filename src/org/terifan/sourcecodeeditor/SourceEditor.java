@@ -29,7 +29,7 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 
 
-public class SourceEditor extends JComponent implements Scrollable
+public final class SourceEditor extends JComponent implements Scrollable
 {
 	private final static long serialVersionUID = 1L;
 	private final static boolean DEBUG_GRAPHICS = false;
@@ -780,13 +780,13 @@ public class SourceEditor extends JComponent implements Scrollable
 				{
 					paste = stringTokenizer.next();
 
-					while (paste.indexOf("\r") > 0)
+					while (paste.indexOf('\r') > 0)
 					{
-						paste = paste.substring(0, paste.indexOf("\r")) + paste.substring(paste.indexOf("\r") + 1);
+						paste = paste.substring(0, paste.indexOf('\r')) + paste.substring(paste.indexOf('\r') + 1);
 					}
-					while (paste.indexOf("\n") > 0)
+					while (paste.indexOf('\n') > 0)
 					{
-						paste = paste.substring(0, paste.indexOf("\n")) + paste.substring(paste.indexOf("\n") + 1);
+						paste = paste.substring(0, paste.indexOf('\n')) + paste.substring(paste.indexOf('\n') + 1);
 					}
 				}
 
@@ -841,13 +841,13 @@ public class SourceEditor extends JComponent implements Scrollable
 			{
 				paste = stringTokenizer.next();
 
-				while (paste.indexOf("\r") > 0)
+				while (paste.indexOf('\r') > 0)
 				{
-					paste = paste.substring(0, paste.indexOf("\r")) + paste.substring(paste.indexOf("\r") + 1);
+					paste = paste.substring(0, paste.indexOf('\r')) + paste.substring(paste.indexOf('\r') + 1);
 				}
-				while (paste.indexOf("\n") > 0)
+				while (paste.indexOf('\n') > 0)
 				{
-					paste = paste.substring(0, paste.indexOf("\n")) + paste.substring(paste.indexOf("\n") + 1);
+					paste = paste.substring(0, paste.indexOf('\n')) + paste.substring(paste.indexOf('\n') + 1);
 				}
 
 				if (y < mDocument.getLineCount())
@@ -1423,7 +1423,7 @@ public class SourceEditor extends JComponent implements Scrollable
 			else
 			{
 				int tabSizePixels = getStyle(SyntaxParser.WHITESPACE).getCharWidth(' ') * mTabSize;
-				aPositionX = tabSizePixels * (int) Math.ceil((aPositionX + 1.0) / (double) tabSizePixels);
+				aPositionX = tabSizePixels * (int) Math.ceil((aPositionX + 1.0) / tabSizePixels);
 			}
 		}
 
@@ -2571,7 +2571,7 @@ public class SourceEditor extends JComponent implements Scrollable
 	{
 		if (getParent() instanceof JViewport)
 		{
-			return (((JViewport)getParent()).getHeight() > getPreferredSize().height);
+			return (getParent().getHeight() > getPreferredSize().height);
 		}
 		return false;
 	}
@@ -2582,7 +2582,7 @@ public class SourceEditor extends JComponent implements Scrollable
 	{
 		if (getParent() instanceof JViewport)
 		{
-			return (((JViewport)getParent()).getWidth() > getPreferredSize().width);
+			return (getParent().getWidth() > getPreferredSize().width);
 		}
 		return false;
 	}

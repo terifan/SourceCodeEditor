@@ -44,7 +44,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 12);
 		Color bg = Color.WHITE;
 
-		mStyles = new HashMap<String,Style>();
+		mStyles = new HashMap<>();
 		mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(0,160,0), bg, false, false, true, false));
 		mStyles.put(TAG, new Style(TAG, plain, new Color(0,0,220), bg, false, false, true, false));
 		mStyles.put(NAMESPACE, new Style(NAMESPACE, plain, new Color(180,0,0), bg, false, false, true, true));
@@ -68,7 +68,10 @@ public class XmlSyntaxParser extends SyntaxParser
 	public Style getStyle(String aIdentifier)
 	{
 		Style s = mStyles.get(aIdentifier);
-		if (s == null) throw new IllegalArgumentException("Style not found: " + aIdentifier);
+		if (s == null)
+		{
+			throw new IllegalArgumentException("Style not found: " + aIdentifier);
+		}
 		return s;
 	}
 
@@ -311,7 +314,7 @@ public class XmlSyntaxParser extends SyntaxParser
 				}
 				else
 				{
-					if ((int)c >= 32 && (int)c <= 127)
+					if (c >= 32 && c <= 127)
 					{
 						return scanText();
 					}
@@ -442,10 +445,22 @@ public class XmlSyntaxParser extends SyntaxParser
 		String s = mSourceLine.substring(mTokenOffset, mTokenOffset + len);
 		mTokenOffset += len;
 
-		if (isError || errorPending) mTokenStyle = mStyles.get(SYNTAXERROR);
-		else if (isNamespace) mTokenStyle = mStyles.get(NAMESPACE);
-		else if (isAttribute) mTokenStyle = mStyles.get(ATTRIBUTE);
-		else mTokenStyle = mStyles.get(ELEMENT);
+		if (isError || errorPending)
+		{
+			mTokenStyle = mStyles.get(SYNTAXERROR);
+		}
+		else if (isNamespace)
+		{
+			mTokenStyle = mStyles.get(NAMESPACE);
+		}
+		else if (isAttribute)
+		{
+			mTokenStyle = mStyles.get(ATTRIBUTE);
+		}
+		else
+		{
+			mTokenStyle = mStyles.get(ELEMENT);
+		}
 
 		return s;
 	}
@@ -482,7 +497,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		{
 			String s = aDocument.getLine(rowIndex) + "\u00B6";
 			int length = s.length();
-			if (mCommentState != null && s.indexOf(">") != -1)
+			if (mCommentState != null && s.contains(">"))
 			{
 				for (int i = 0; i < length; i++)
 				{
@@ -563,7 +578,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		}
 
 		prepare(aDocument.getLine(aRow), aOptimizeTokens, aOptimizeWhitespace);
-		ArrayList<Token> tokens = new ArrayList<Token>();
+		ArrayList<Token> tokens = new ArrayList<>();
 		Token prevToken = null;
 		while (iterate())
 		{

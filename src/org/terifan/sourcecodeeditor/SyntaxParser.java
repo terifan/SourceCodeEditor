@@ -1,6 +1,7 @@
 package org.terifan.sourcecodeeditor;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 
@@ -13,7 +14,7 @@ public abstract class SyntaxParser implements Serializable
 
 	/**
 	 * A style identifier which identifies the style used for selections.
-	 * Only the backgound color of this style is used.
+	 * Only the background color of this style is used.
 	 */
 	public final static String SELECTION = "SELECTION";
 	/**
@@ -30,7 +31,7 @@ public abstract class SyntaxParser implements Serializable
 	public final static String LINEBREAK = "LINEBREAK";
 	/**
 	 * A style identifier which identifies the style used for highlighted text.
-	 * Only the backgound color of this style is used.
+	 * Only the background color of this style is used.
 	 */
 	public final static String HIGHLIGHT = "HIGHLIGHT";
 
@@ -65,13 +66,9 @@ public abstract class SyntaxParser implements Serializable
 	{
 		try
 		{
-			return getClass().newInstance();
+			return getClass().getConstructor().newInstance();
 		}
-		catch (IllegalAccessException e)
-		{
-			throw new IllegalStateException(e);
-		}
-		catch (InstantiationException e)
+		catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e)
 		{
 			throw new IllegalStateException(e);
 		}

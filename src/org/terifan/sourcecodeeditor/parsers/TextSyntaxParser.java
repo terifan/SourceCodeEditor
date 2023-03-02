@@ -22,7 +22,7 @@ public class TextSyntaxParser extends SyntaxParser
 	 */
 	public final static String TEXT = "TEXT";
 
-	private static HashMap<String,Style> mStyles;
+	private final static HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
@@ -111,13 +111,13 @@ public class TextSyntaxParser extends SyntaxParser
 
 		if (c == '\t')
 		{
-			mTokenStyle = (Style)mStyles.get(WHITESPACE);
+			mTokenStyle = mStyles.get(WHITESPACE);
 			mTokenOffset++;
 			return "\t";
 		}
 		else if (c == ' ')
 		{
-			mTokenStyle = (Style)mStyles.get(WHITESPACE);
+			mTokenStyle = mStyles.get(WHITESPACE);
 			mTokenOffset++;
 			return " ";
 		}
@@ -133,7 +133,7 @@ public class TextSyntaxParser extends SyntaxParser
 			}
 		}
 
-		mTokenStyle = (Style)mStyles.get(TEXT);
+		mTokenStyle = mStyles.get(TEXT);
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
 
@@ -157,7 +157,7 @@ public class TextSyntaxParser extends SyntaxParser
 		}
 
 		prepare(aDocument.getLine(aRow), aOptimizeTokens, aOptimizeWhitespace);
-		ArrayList<Token> tokens = new ArrayList<Token>();
+		ArrayList<Token> tokens = new ArrayList<>();
 		Token prevToken = null;
 		while (iterate())
 		{

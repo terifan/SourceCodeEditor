@@ -10,7 +10,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 
-public class Document implements Serializable
+public final class Document implements Serializable
 {
 	private final static long serialVersionUID = 1L;
 	private final static boolean DEBUG = false;
@@ -25,7 +25,7 @@ public class Document implements Serializable
 	public Document()
 	{
 		mUndoManager = new UndoManager();
-		mSourceLines = new ArrayList<String>();
+		mSourceLines = new ArrayList<>();
 
 		new Add(0, "").redo();
 	}
@@ -35,7 +35,7 @@ public class Document implements Serializable
 	{
 		this();
 
-		try	(Reader in = new FileReader(aFile)) 
+		try	(Reader in = new FileReader(aFile))
 		{
 			load(in);
 		}
@@ -167,7 +167,7 @@ public class Document implements Serializable
 				while (true)
 				{
 					int prevOffset = offset;
-					offset = s.indexOf("\t", offset + 1);
+					offset = s.indexOf('\t', offset + 1);
 					if (offset == -1)
 					{
 						int x = s.length() - prevOffset - 1;
@@ -219,7 +219,7 @@ public class Document implements Serializable
 
 	public void removeAllLines()
 	{
-		Load load = new Load(new ArrayList<String>());
+		Load load = new Load(new ArrayList<>());
 		if (mUndoableEdit != null)
 		{
 			mUndoableEdit.addAction(load);
@@ -422,9 +422,9 @@ public class Document implements Serializable
 
 	class Set implements UndoableAction
 	{
-		private int mLineIndex;
-		private String mText;
-		private String mOldText;
+		private final int mLineIndex;
+		private final String mText;
+		private final String mOldText;
 
 		private Set(int aLineIndex, String aText)
 		{
@@ -451,8 +451,8 @@ public class Document implements Serializable
 
 	class Remove implements UndoableAction
 	{
-		private int mLineIndex;
-		private String mOldText;
+		private final int mLineIndex;
+		private final String mOldText;
 
 		private Remove(int aLineIndex)
 		{
@@ -478,8 +478,8 @@ public class Document implements Serializable
 
 	class Load implements UndoableAction
 	{
-		private ArrayList<String> mText;
-		private ArrayList<String> mOldText;
+		private final ArrayList<String> mText;
+		private final ArrayList<String> mOldText;
 
 		private Load(ArrayList<String> aText)
 		{
@@ -514,11 +514,7 @@ public class Document implements Serializable
 		{
 			return false;
 		}
-		if (!this.toString().equals(obj.toString()))
-		{
-			return false;
-		}
-		return true;
+		return this.toString().equals(obj.toString());
 	}
 
 

@@ -12,19 +12,19 @@ public class Caret extends Thread implements Serializable
 {
 	private final static long serialVersionUID = 1L;
 
+	private final Point mCaretCharacterPosition; // position of caret disregarding tabs and line lengths
+	private final Point mCaretPixelPosition;
+	private final Point mCaretVirtualPosition; // position of caret in regard of tabs and line lengths
+	private final Point mPreviousCaretPixelPosition;
+	private final SourceEditor mSourceEditor;
+	private final ArrayList<CaretListener> mCaretListeners;
+	private int mPreferredCaretVirtualPositionX;
+	private boolean mDispose;
 	private boolean mEnabled;
 	private boolean mIsHidden;
 	private boolean mVisible;
 	private boolean mWasDisabled;
 	private long mResync;
-	private Point mCaretCharacterPosition; // position of caret disregarding tabs and line lengths
-	private Point mCaretPixelPosition;
-	private Point mCaretVirtualPosition; // position of caret in regard of tabs and line lengths
-	private int mPreferredCaretVirtualPositionX;
-	private Point mPreviousCaretPixelPosition;
-	private SourceEditor mSourceEditor;
-	private ArrayList<CaretListener> mCaretListeners;
-	private boolean mDispose;
 
 
 	public Caret(SourceEditor aSourceEditor)
@@ -32,7 +32,7 @@ public class Caret extends Thread implements Serializable
 		super.setDaemon(true);
 
 		mSourceEditor = aSourceEditor;
-		mCaretListeners = new ArrayList<CaretListener>();
+		mCaretListeners = new ArrayList<>();
 		mCaretCharacterPosition = new Point();
 		mCaretVirtualPosition = new Point();
 		mCaretPixelPosition = new Point();
@@ -112,9 +112,9 @@ public class Caret extends Thread implements Serializable
 				visible = !visible;
 			}
 		}
-		catch (Exception e)
+		catch (Exception | Error e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(System.err);
 		}
 	}
 

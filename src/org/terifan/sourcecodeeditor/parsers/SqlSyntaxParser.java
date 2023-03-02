@@ -672,7 +672,10 @@ public class SqlSyntaxParser extends SyntaxParser
 		{
 			String temp = identifyOperatorAt(mTokenOffset + s.length());
 
-			if (temp == null) break;
+			if (temp == null)
+			{
+				break;
+			}
 
 			s += temp;
 			mTokenStyle = mStyles.get(SYNTAXERROR);
@@ -815,7 +818,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		{
 			String s = aDocument.getLine(rowIndex) + " ";
 
-			if (s.indexOf("/*") != -1 || s.indexOf("*/") != -1)
+			if (s.contains("/*") || s.contains("*/"))
 			{
 				boolean singleLineComment = false;
 				for (int i = 0, len = s.length(); i < len; i++)
@@ -849,7 +852,6 @@ public class SqlSyntaxParser extends SyntaxParser
 								break;
 							}
 						}
-						continue;
 					}
 				}
 
@@ -871,7 +873,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		}
 
 		prepare(aDocument.getLine(aRow), aOptimizeTokens, aOptimizeWhitespace);
-		ArrayList<Token> tokens = new ArrayList<Token>();
+		ArrayList<Token> tokens = new ArrayList<>();
 		Token prevToken = null;
 		while (iterate())
 		{

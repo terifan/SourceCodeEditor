@@ -772,7 +772,10 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			String temp = identifyOperatorAt(mTokenOffset + s.length());
 
-			if (temp == null) break;
+			if (temp == null)
+			{
+				break;
+			}
 
 			s += temp;
 			mTokenStyle = mStyles.get(SYNTAXERROR);
@@ -918,7 +921,7 @@ public class JavaSyntaxParser extends SyntaxParser
 		{
 			String s = aDocument.getLine(rowIndex) + " ";
 
-			if (s.indexOf("/*") != -1 || s.indexOf("*/") != -1)
+			if (s.contains("/*") || s.contains("*/"))
 			{
 				boolean singleLineComment = false;
 				for (int i = 0, len = s.length(); i < len; i++)
@@ -960,7 +963,6 @@ public class JavaSyntaxParser extends SyntaxParser
 								break;
 							}
 						}
-						continue;
 					}
 				}
 

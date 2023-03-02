@@ -6,17 +6,18 @@ import java.util.ArrayList;
 
 public class UndoableEdit
 {
-	private String mPresentationName;
+	private final SourceEditor mSourceEditor;
+	private final ArrayList<UndoableAction> mUndoableActions;
+	private final String mPresentationName;
 	private int mCaretStartPositionX;
 	private int mCaretStartPositionY;
 	private int mCaretEndPositionX;
 	private int mCaretEndPositionY;
-	private ArrayList<UndoableAction> mUndoableActions = new ArrayList();
-	private SourceEditor mSourceEditor;
 
 
 	public UndoableEdit(SourceEditor aSourceEditor, String aPresentationName)
 	{
+		this.mUndoableActions = new ArrayList();
 		mSourceEditor = aSourceEditor;
 		mPresentationName = aPresentationName;
 	}

@@ -5,10 +5,10 @@ import java.awt.Point;
 
 public class CaretEvent
 {
-	private SourceEditor mSourceEditor;
-	private Caret mCaret;
-	private Point mCharacterPosition;
-	private Point mVirtualPosition;
+	private final SourceEditor mSourceEditor;
+	private final Caret mCaret;
+	private final Point mCharacterPosition;
+	private final Point mVirtualPosition;
 
 
 	public CaretEvent(SourceEditor aSourceEditor, Caret aCaret, Point aCharacterPosition, Point aVirtualPosition)

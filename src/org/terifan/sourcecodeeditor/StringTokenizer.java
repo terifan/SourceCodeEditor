@@ -20,21 +20,21 @@ public class StringTokenizer implements Iterable<String>
 	public StringTokenizer(InputStream aSource, char aDelimiter)
 	{
 		mSource = new InputStreamReader(aSource);
-		mDelimiter = (int)aDelimiter;
+		mDelimiter = aDelimiter;
 	}
 
 
 	public StringTokenizer(Reader aSource, char aDelimiter)
 	{
 		mSource = aSource;
-		mDelimiter = (int)aDelimiter;
+		mDelimiter = aDelimiter;
 	}
 
 
 	public StringTokenizer(String aSource, char aDelimiter)
 	{
 		mSource = new StringReader(aSource);
-		mDelimiter = (int)aDelimiter;
+		mDelimiter = aDelimiter;
 	}
 
 

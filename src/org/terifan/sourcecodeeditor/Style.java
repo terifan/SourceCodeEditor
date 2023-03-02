@@ -79,13 +79,13 @@ public class Style
 		LineMetrics lm = mFont.getLineMetrics("", frc);
 
 		mFontHeight = (int)Math.ceil(lm.getHeight());
-		mFontDescent = (int)Math.round(lm.getDescent());
-		mFontAscent = (int)Math.round(lm.getAscent());
-		mFontUnderlineOffset = (int)Math.round(lm.getUnderlineOffset());
-		mFontUnderlineThickness = (int)Math.round(lm.getUnderlineThickness());
-		mFontStrikethroughOffset = (int)Math.round(lm.getStrikethroughOffset());
-		mFontStrikethroughThickness = (int)Math.round(lm.getStrikethroughThickness());
-		mFontLeading = (int)Math.round(lm.getLeading());
+		mFontDescent = Math.round(lm.getDescent());
+		mFontAscent = Math.round(lm.getAscent());
+		mFontUnderlineOffset = Math.round(lm.getUnderlineOffset());
+		mFontUnderlineThickness = Math.round(lm.getUnderlineThickness());
+		mFontStrikethroughOffset = Math.round(lm.getStrikethroughOffset());
+		mFontStrikethroughThickness = Math.round(lm.getStrikethroughThickness());
+		mFontLeading = Math.round(lm.getLeading());
 		mFontMonospaced = true;
 
 		int w0 = (int)mFont.getStringBounds("m", frc).getWidth();
@@ -122,12 +122,12 @@ public class Style
 				if (mFont.canDisplay((char)i))
 				{
 					int w = mCharWidths[i] = (int)mFont.getStringBounds(Character.toString((char)i), frc).getWidth();
-					
+
 					if (w != w0)
 					{
 						mFontMonospaced = false;
 					}
-	
+
 					for (int j=0; j<256; j++)
 					{
 						if (mFont.canDisplay((char)j))
@@ -142,7 +142,7 @@ public class Style
 		}
 */
 	}
-	
+
 	/**
 	 * Returns true if the font in this style is monospaced.
 	 */
@@ -185,7 +185,7 @@ public class Style
 	}
 
 	/**
-	 * Returns the height of the text. The height is equal to the sum of the 
+	 * Returns the height of the text. The height is equal to the sum of the
 	 * ascent, the descent and the leading.
 	 */
 	public int getFontHeight()
@@ -194,9 +194,9 @@ public class Style
 	}
 
 	/**
-	 * Returns the ascent of the text. The ascent is the distance from the 
-	 * baseline to the ascender line. The ascent usually represents the the 
-	 * height of the capital letters of the text. Some characters can extend 
+	 * Returns the ascent of the text. The ascent is the distance from the
+	 * baseline to the ascender line. The ascent usually represents the the
+	 * height of the capital letters of the text. Some characters can extend
 	 * above the ascender line.
 	 */
 	public int getFontAscent()
@@ -205,9 +205,9 @@ public class Style
 	}
 
 	/**
-	 * Returns the descent of the text. The descent is the distance from the 
-	 * baseline to the descender line. The descent usually represents the 
-	 * distance to the bottom of lower case letters like 'p'. Some characters 
+	 * Returns the descent of the text. The descent is the distance from the
+	 * baseline to the descender line. The descent usually represents the
+	 * distance to the bottom of lower case letters like 'p'. Some characters
 	 * can extend below the descender line.
 	 */
 	public int getFontDescent()
@@ -216,8 +216,8 @@ public class Style
 	}
 
 	/**
-	 * Returns the leading of the text. The leading is the recommended 
-	 * distance from the bottom of the descender line to the top of the next 
+	 * Returns the leading of the text. The leading is the recommended
+	 * distance from the bottom of the descender line to the top of the next
 	 * line.
 	 */
 	public int getFontLeading()
@@ -226,7 +226,7 @@ public class Style
 	}
 
 	/**
-	 * Returns the position of the strike-through line relative to the 
+	 * Returns the position of the strike-through line relative to the
 	 * baseline.
 	 */
 	public int getStrikethroughOffset()
@@ -236,7 +236,7 @@ public class Style
 
 	/**
 	 * Returns the thickness of the strike-through line.
-	 */ 
+	 */
 	public int getStrikethroughThickness()
 	{
 		return mFontStrikethroughThickness;
@@ -244,7 +244,7 @@ public class Style
 
 	/**
 	 * Returns the position of the underline relative to the baseline.
-	 */ 
+	 */
 	public int getUnderlineOffset()
 	{
 		return mFontUnderlineOffset;
@@ -252,7 +252,7 @@ public class Style
 
 	/**
 	 * Returns the thickness of the underline.
-	 */ 
+	 */
 	public int getUnderlineThickness()
 	{
 		return mFontUnderlineThickness;
@@ -260,7 +260,7 @@ public class Style
 
 	/**
 	 * Enables or disables strikethrough in this style.
-	 */ 
+	 */
 	public void setStrikethrough(boolean aStrikethrough)
 	{
 		mStrikethrough = aStrikethrough;
@@ -268,7 +268,7 @@ public class Style
 
 	/**
 	 * Returns true if the background is optional.
-	 */ 
+	 */
 	public boolean isBackgroundOptional()
 	{
 		return mBackgroundOptional;
@@ -276,7 +276,7 @@ public class Style
 
 	/**
 	 * Enables or disables underlining in this style.
-	 */ 
+	 */
 	public void setBackgroundOptional(boolean aBackgroundOptional)
 	{
 		mBackgroundOptional = aBackgroundOptional;
@@ -284,7 +284,7 @@ public class Style
 
 	/**
 	 * Returns true if this style is underlined.
-	 */ 
+	 */
 	public boolean isUnderlined()
 	{
 		return mUnderlined;
@@ -292,7 +292,7 @@ public class Style
 
 	/**
 	 * Enables or disables underlining in this style.
-	 */ 
+	 */
 	public void setUnderlined(boolean aUnderlined)
 	{
 		mUnderlined = aUnderlined;
@@ -300,7 +300,7 @@ public class Style
 
 	/**
 	 * Gets the foreground color in this style.
-	 */ 
+	 */
 	public Color getForeground()
 	{
 		return mForeground;
@@ -308,7 +308,7 @@ public class Style
 
 	/**
 	 * Sets the foreground color in this style.
-	 */ 
+	 */
 	public void setForeground(Color aColor)
 	{
 		mForeground = aColor;
@@ -316,7 +316,7 @@ public class Style
 
 	/**
 	 * Gets the background color in this style.
-	 */ 
+	 */
 	public Color getBackground()
 	{
 		return mBackground;
@@ -324,7 +324,7 @@ public class Style
 
 	/**
 	 * Sets the background color in this style.
-	 */ 
+	 */
 	public void setBackground(Color aColor)
 	{
 		mBackground = aColor;
@@ -332,7 +332,7 @@ public class Style
 
 	/**
 	 * Gets the font in this style.
-	 */ 
+	 */
 	public Font getFont()
 	{
 		return mFont;
@@ -340,7 +340,7 @@ public class Style
 
 	/**
 	 * Sets the font in this style.
-	 */ 
+	 */
 	public void setFont(Font aFont)
 	{
 		mFont = aFont;
@@ -350,7 +350,7 @@ public class Style
 
 	/**
 	 * Gets the name of this style.
-	 */ 
+	 */
 	public String getName()
 	{
 		return mName;
@@ -358,7 +358,7 @@ public class Style
 
 	/**
 	 * Sets the name of this style.
-	 */ 
+	 */
 	public void setName(String aName)
 	{
 		mName = aName;

@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -27,6 +26,8 @@ import javax.swing.SwingUtilities;
 
 public class FindDialog extends JDialog implements ActionListener
 {
+	private final static long serialVersionUID = 1L;
+
 	protected boolean mWasCanceled;
 	protected JButton mSearchButton;
 	protected JButton mReplaceButton;
@@ -156,65 +157,60 @@ public class FindDialog extends JDialog implements ActionListener
 			return;
 		}
 
-		if(command.equals("search") || command.equals("searchforwards") || command.equals("searchbackwards"))
+		switch (command)
 		{
-			if (command.equals("searchforwards"))
-			{
-				forward = true;
-			}
-			else if (command.equals("searchbackwards"))
-			{
-				forward = false;
-			}
-			if (editor.findText(search, forward, caseSensative, wrapSearch, wholeWordsOnly))
-			{
+			case "search":
+			case "searchforwards":
+			case "searchbackwards":
+				if (command.equals("searchforwards"))
+				{
+					forward = true;
+				}
+				else if (command.equals("searchbackwards"))
+				{
+					forward = false;
+				}	if (editor.findText(search, forward, caseSensative, wrapSearch, wholeWordsOnly))
+				{
+					editor.repaint();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "No search matches was found.", "Search and Replace", JOptionPane.INFORMATION_MESSAGE);
+				}
+				break;
+			case "replace":
+				if (editor.isTextSelected())
+				{
+					editor.replaceSelection(replace);
+					editor.repaint();
+				}
+				break;
+			case "replaceall":
+				Point caretPosition = new Point(editor.getCaret().getVirtualPosition());
+				int count = 0;
+				while (editor.findText(search, forward, caseSensative, wrapSearch, wholeWordsOnly))
+				{
+					editor.replaceSelection(replace);
+					count++;
+				}	editor.getCaret().moveAbsolute(caretPosition.x, caretPosition.y, true, false, true);
 				editor.repaint();
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(null, "No search matches was found.", "Search and Replace", JOptionPane.INFORMATION_MESSAGE);
-			}
-		}
-		else if (command.equals("replace"))
-		{
-			if (editor.isTextSelected())
-			{
-				editor.replaceSelection(replace);
-				editor.repaint();
-			}
-		}
-		else if (command.equals("replaceall"))
-		{
-			Point caretPosition = new Point(editor.getCaret().getVirtualPosition());
-
-			int count = 0;
-			while (editor.findText(search, forward, caseSensative, wrapSearch, wholeWordsOnly))
-			{
-				editor.replaceSelection(replace);
-				count++;
-			}
-
-			editor.getCaret().moveAbsolute(caretPosition.x, caretPosition.y, true, false, true);
-			editor.repaint();
-		}
-		else if (command.equals("replaceandsearch"))
-		{
-			if (editor.isTextSelected())
-			{
-				editor.replaceSelection(replace);
-			}
-
-			editor.repaint();
-		}
-		else
-		{
-			System.out.println("Unrecognized command:" + command);
+				break;
+			case "replaceandsearch":
+				if (editor.isTextSelected())
+				{
+					editor.replaceSelection(replace);
+				}	editor.repaint();
+				break;
+			default:
+				System.out.println("Unrecognized command:" + command);
+				break;
 		}
 	}
 
 
-	class JLabelEx extends javax.swing.JLabel
+	public static class JLabelEx extends javax.swing.JLabel
 	{
+		private final static long serialVersionUID = 1L;
 		JLabelEx(String aLabel, Font aFont, int aWidth)
 		{
 			super(aLabel);
@@ -225,8 +221,9 @@ public class FindDialog extends JDialog implements ActionListener
 	}
 
 
-	class JCheckBoxEx extends javax.swing.JCheckBox
+	public static class JCheckBoxEx extends javax.swing.JCheckBox
 	{
+		private final static long serialVersionUID = 1L;
 		JCheckBoxEx(String aLabel, boolean aChecked)
 		{
 			super(aLabel, aChecked);
