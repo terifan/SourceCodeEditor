@@ -68,6 +68,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private SyntaxParser mOffsetSyntaxParser;
 	private SyntaxParser mPaintSyntaxParser;
 	private SyntaxParser mPixelOffsetSyntaxParser;
+	private Color mHighlightCaretRow;
 
 
 	public SourceEditor(SyntaxParser aSyntaxParser, Document aDocument)
@@ -98,6 +99,8 @@ public final class SourceEditor extends JComponent implements Scrollable
 		setLineBreakSymbol('\u00B6');
 		setAlternateMode(false);
 		setAntialiase(RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
+		setHighlightCaretRow(new Color(50,50,50));
 
 		SourceEditorMouseListener mouseListener = new SourceEditorMouseListener(this);
 		addMouseListener(mouseListener);
@@ -353,6 +356,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 	public SourceEditor setAntialiase(Object aAntialiase)
 	{
 		mAntialiase = aAntialiase;
+		return this;
+	}
+
+
+	public Color getHighlightCaretRow()
+	{
+		return mHighlightCaretRow;
+	}
+
+
+	public SourceEditor setHighlightCaretRow(Color aHighlightCaretRow)
+	{
+		mHighlightCaretRow = aHighlightCaretRow;
 		return this;
 	}
 
@@ -999,9 +1015,12 @@ public final class SourceEditor extends JComponent implements Scrollable
 		boolean optimizeTokens = !mWhitespaceSymbolEnabled && getStyle(SyntaxParser.WHITESPACE).getBackground().equals(getBackground());
 		boolean optimizeWhitespace = !mWhitespaceSymbolEnabled;
 
+		int fontHeight = getFontHeight();
+		int fontAscent = getFontAscent();
+
 		Rectangle clipBounds = g.getClipBounds();
-		int firstRow = clipBounds.y / (getFontHeight() + mLineSpacing);
-		int lastRow = (clipBounds.y + clipBounds.height) / (getFontHeight() + mLineSpacing) - 1 + 2;
+		int firstRow = clipBounds.y / (fontHeight + mLineSpacing);
+		int lastRow = (clipBounds.y + clipBounds.height) / (fontHeight + mLineSpacing) - 1 + 2;
 
 		int lineCount = mDocument.getLineCount();
 		if (firstRow >= lineCount)
@@ -1028,7 +1047,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 			List<Token> tokens = mPaintSyntaxParser.parse(mDocument, rowIndex, optimizeTokens && !highlightRow, optimizeWhitespace);
 			int positionX = 0;
-			int y = getFontAscent() + rowIndex * (getFontHeight() + mLineSpacing) + mMargins.top;
+			int y = fontAscent + rowIndex * (fontHeight + mLineSpacing) + mMargins.top;
+
+			if (mHighlightCaretRow != null && rowIndex == mCaret.getCharacterPosition().y)
+			{
+				int h = fontHeight + mLineSpacing;
+				g.setColor(mHighlightCaretRow);
+				g.fillRect(0, mMargins.top + rowIndex * h, getWidth(), h);
+			}
 
 			Token token = null;
 			for (Token nextToken : tokens)
@@ -1075,7 +1101,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 					if (highlightRow || !getBackground().equals(colorStyle.getBackground()))
 					{
 						g.setColor(colorStyle.getBackground());
-						g.fillRect(positionX + mMargins.left, y - getFontAscent(), w, getFontHeight());
+						g.fillRect(positionX + mMargins.left, y - fontAscent, w, fontHeight);
 					}
 
 					Color fontColor = colorStyle.getForeground();
@@ -1117,6 +1143,9 @@ public final class SourceEditor extends JComponent implements Scrollable
 			s = s.substring(aTokenOffset, aTokenLength);
 		}
 
+		int fontHeight = getFontHeight();
+		int fontAscent = getFontAscent();
+
 		if (s.charAt(0) == '\t' || s.isBlank())
 		{
 			int previousPositionX = aPixelX;
@@ -1129,21 +1158,21 @@ public final class SourceEditor extends JComponent implements Scrollable
 				if (aIsSelection || aHighlightRow || !style.getBackground().equals(getBackground()))
 				{
 					g.setColor(style.getBackground());
-					g.fillRect(previousPositionX + mMargins.left, aPixelY - getFontAscent(), aPixelX - previousPositionX, getFontHeight());
+					g.fillRect(previousPositionX + mMargins.left, aPixelY - fontAscent, aPixelX - previousPositionX, fontHeight);
 				}
 
 				if (DEBUG_GRAPHICS)
 				{
 					g.setColor(new Color(192, 192, 192));
-					g.drawRect(previousPositionX + mMargins.left, aPixelY - getFontAscent(), aPixelX - previousPositionX, getFontHeight());
+					g.drawRect(previousPositionX + mMargins.left, aPixelY - fontAscent, aPixelX - previousPositionX, fontHeight);
 				}
 
 				if (mWhitespaceSymbolEnabled)
 				{
-					g.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
-
 					int x = mMargins.left + (previousPositionX + aPixelX) / 2;
-					int v = aPixelY - getFontAscent() + getFontHeight() / 2;
+					int v = aPixelY - fontAscent + fontHeight / 2;
+
+					g.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
 					if (s.equals(" "))
 					{
 						g.drawLine(x, v, x, v);
@@ -1171,18 +1200,18 @@ public final class SourceEditor extends JComponent implements Scrollable
 				if (aHighlightRow && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && s.equalsIgnoreCase(mHighlightText))
 				{
 					g.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
-					g.fillRect(x0, aPixelY - getFontAscent(), x1-x0, getFontHeight());
+					g.fillRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
 				}
 				else if (!getBackground().equals(style.getBackground()))
 				{
 					g.setColor(style.getBackground());
-					g.fillRect(x0, aPixelY - getFontAscent(), x1-x0, getFontHeight());
+					g.fillRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
 				}
 
 				if (DEBUG_GRAPHICS)
 				{
 					g.setColor(new Color(192, 192, 192));
-					g.drawRect(x0, aPixelY - getFontAscent(), x1-x0, getFontHeight());
+					g.drawRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
 				}
 
 				g.setFont(tokenStyle.getFont());

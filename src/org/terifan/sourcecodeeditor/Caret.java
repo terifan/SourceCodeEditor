@@ -290,6 +290,11 @@ public class Caret extends Thread implements Serializable
 			{
 				mCaretListeners.get(i).caretMoved(caretEvent);
 			}
+
+			if (aDeltaY != 0 && mSourceEditor.getHighlightCaretRow() != null)
+			{
+				mSourceEditor.repaint();
+			}
 		}
 	}
 
