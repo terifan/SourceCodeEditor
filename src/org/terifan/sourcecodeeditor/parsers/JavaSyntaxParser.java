@@ -125,7 +125,7 @@ public class JavaSyntaxParser extends SyntaxParser
 
 		if ("dark".equals(aName))
 		{
-			Color bg = new Color(43, 43, 43);
+			Color bg = new Color(40, 40, 40);
 
 			mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(204, 120, 50), bg, false, false, true, true));
 			mStyles.put(IDENTIFIER, new Style(IDENTIFIER, plain, new Color(170, 170, 170), bg, false, false, true, true));
