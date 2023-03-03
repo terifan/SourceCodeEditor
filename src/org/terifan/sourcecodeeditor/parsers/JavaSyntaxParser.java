@@ -322,10 +322,10 @@ public class JavaSyntaxParser extends SyntaxParser
 			return scanStringLiteral();
 		}
 
-//		if (COMMENT_LINE.equals(mCommentState))
-//		{
-//			return scanSingleLineComment();
-//		}
+		if (COMMENT_LINE.equals(mCommentState))
+		{
+			return scanSingleLineComment();
+		}
 		if (mCommentState != null)
 		{
 			return scanBlockComment();

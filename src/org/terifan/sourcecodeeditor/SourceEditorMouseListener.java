@@ -13,6 +13,7 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 	private final static long serialVersionUID = 1L;
 	protected SourceEditor mSourceEditor;
 
+
 	protected SourceEditorMouseListener(SourceEditor aSourceEditor)
 	{
 		mSourceEditor = aSourceEditor;
@@ -28,7 +29,7 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 		{
 			Caret caret = mSourceEditor.getCaret();
 			Point vp = caret.getVirtualPosition();
-			Point p = mSourceEditor.getSourceOffset(aEvent.getPoint());
+			Point p = mSourceEditor.convertMousePositionToSourcePosition(aEvent.getPoint());
 
 			if (aEvent.getClickCount() >= 2)
 			{
@@ -80,24 +81,6 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 
 
 	@Override
-	public void mouseClicked(MouseEvent e)
-	{
-	}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e)
-	{
-	}
-
-
-	@Override
-	public void mouseExited(MouseEvent e)
-	{
-	}
-
-
-	@Override
 	public void mouseDragged(MouseEvent aEvent)
 	{
 		if (SwingUtilities.isLeftMouseButton(aEvent))
@@ -113,10 +96,28 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 				mSourceEditor.setSelectionStartUnmodified(new Point(vp));
 			}
 
-			Point p = mSourceEditor.getSourceOffset(aEvent.getPoint());
+			Point p = mSourceEditor.convertMousePositionToSourcePosition(aEvent.getPoint());
 
 			caret.moveAbsolute(p.x, p.y, false, true, true);
 		}
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
 	}
 
 

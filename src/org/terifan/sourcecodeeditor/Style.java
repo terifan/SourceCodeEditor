@@ -25,38 +25,21 @@ public class Style
 	private int mFontUnderlineThickness;
 	private String mName;
 	private boolean mSupportHighlight;
-
 	private int mHashCode;
 
-//	private int [] mCharWidths;
-//	private int [][] mBiCharWidths;
-//	private static HashMap mCache = new HashMap();
 
 	/**
 	 * Constructs a new Style.
 	 *
-	 * @param aName
-	 *    A human readable name of this style.
-	 * @param aFont
-	 *    The font used.
-	 * @param aForeground
-	 *    The foreground color of this style.
-	 * @param aBackground
-	 *    The background color of this style.
-	 * @param aUnderlined
-	 *    Enables or disables underlining in this style.
-	 * @param aStrikethrough
-	 *    Enables or disables strikethrough in this style.
-	 * @param aBackgroundOptional
-	 *    Markes the background color as optional.
+	 * @param aName A human readable name of this style.
+	 * @param aFont The font used.
+	 * @param aForeground The foreground color of this style.
+	 * @param aBackground The background color of this style.
+	 * @param aUnderlined Enables or disables underlining in this style.
+	 * @param aStrikethrough Enables or disables strikethrough in this style.
+	 * @param aBackgroundOptional Background color is optional.
 	 */
 	public Style(String aName, Font aFont, Color aForeground, Color aBackground, boolean aUnderlined, boolean aStrikethrough, boolean aBackgroundOptional, boolean aSupportHighlight)
-	{
-		initialize(aName, aFont, aForeground, aBackground, aUnderlined, aStrikethrough, aBackgroundOptional, aSupportHighlight);
-	}
-
-
-	public void initialize(String aName, Font aFont, Color aForeground, Color aBackground, boolean aUnderlined, boolean aStrikethrough, boolean aBackgroundOptional, boolean aSupportHighlight)
 	{
 		mName = aName;
 		mFont = aFont;
@@ -67,13 +50,14 @@ public class Style
 		mBackgroundOptional = aBackgroundOptional;
 		mSupportHighlight = aSupportHighlight;
 
-		init();
+		initializeFont();
 	}
+
 
 	/**
 	 * Initializes the internal state of this object.
 	 */
-	private void init()
+	private void initializeFont()
 	{
 		FontRenderContext frc = new FontRenderContext(null, false, false);
 		LineMetrics lm = mFont.getLineMetrics("", frc);
@@ -90,66 +74,28 @@ public class Style
 
 		int w0 = (int)mFont.getStringBounds("m", frc).getWidth();
 
-		for (int i=0; i<256; i++)
+		for (int i = 0; i < 256; i++)
 		{
-			if (mFont.canDisplay((char)i))
+			if (mFont.canDisplay(i))
 			{
-				int w = (int)mFont.getStringBounds(Character.toString((char)i), frc).getWidth();
+				int w = (int)mFont.getStringBounds(Character.toString(i), frc).getWidth();
 				if (w != w0)
 				{
 					mFontMonospaced = false;
 				}
 			}
 		}
-
-/*
-		if (mCache.containsKey(mFont))
-		{
-			Style s = (Style)mCache.get(mFont);
-			mCharWidths = s.mCharWidths;
-			mBiCharWidths = s.mBiCharWidths;
-			mFontMonospaced = s.mFontMonospaced;
-		}
-		else
-		{
-			mCharWidths = new int[256];
-			mBiCharWidths = new int[256][256];
-
-			int w0 = (int)mFont.getStringBounds("m", frc).getWidth();
-
-			for (int i=0; i<256; i++)
-			{
-				if (mFont.canDisplay((char)i))
-				{
-					int w = mCharWidths[i] = (int)mFont.getStringBounds(Character.toString((char)i), frc).getWidth();
-
-					if (w != w0)
-					{
-						mFontMonospaced = false;
-					}
-
-					for (int j=0; j<256; j++)
-					{
-						if (mFont.canDisplay((char)j))
-						{
-							mBiCharWidths[i][j] = (int)Math.ceil(mFont.getStringBounds((char)i + "" + (char)j, frc).getWidth()) - w;
-						}
-					}
-				}
-			}
-
-			mCache.put(mFont, this);
-		}
-*/
 	}
 
+
 	/**
-	 * Returns true if the font in this style is monospaced.
+	 * Returns true if the font in this style is mono-spaced.
 	 */
 	public boolean isFontMonospaced()
 	{
 		return mFontMonospaced;
 	}
+
 
 	/**
 	 * Returns the total advance width for showing the specified String in this Style.
@@ -158,21 +104,6 @@ public class Style
 	{
 		FontRenderContext frc = new FontRenderContext(null, false, false);
 		return (int)mFont.getStringBounds(aText, frc).getWidth();
-
-/*
-		char [] chars = aText.toCharArray();
-		char prev = chars[0];
-		int width = mCharWidths[prev];
-
-		for (int i = 1, len = chars.length; i < len; i++)
-		{
-			char next = chars[i];
-			width += mBiCharWidths[prev][next];
-			prev = next;
-		}
-
-		return width;
-*/
 	}
 
 
@@ -184,40 +115,38 @@ public class Style
 		return getStringWidth(Character.toString(aChar));
 	}
 
+
 	/**
-	 * Returns the height of the text. The height is equal to the sum of the
-	 * ascent, the descent and the leading.
+	 * Returns the height of the text. The height is equal to the sum of the ascent, the descent and the leading.
 	 */
 	public int getFontHeight()
 	{
 		return mFontHeight;
 	}
 
+
 	/**
-	 * Returns the ascent of the text. The ascent is the distance from the
-	 * baseline to the ascender line. The ascent usually represents the the
-	 * height of the capital letters of the text. Some characters can extend
-	 * above the ascender line.
+	 * Returns the ascent of the text. The ascent is the distance from the baseline to the ascender line. The ascent usually represents the
+	 * the height of the capital letters of the text. Some characters can extend above the ascender line.
 	 */
 	public int getFontAscent()
 	{
 		return mFontAscent;
 	}
 
+
 	/**
-	 * Returns the descent of the text. The descent is the distance from the
-	 * baseline to the descender line. The descent usually represents the
-	 * distance to the bottom of lower case letters like 'p'. Some characters
-	 * can extend below the descender line.
+	 * Returns the descent of the text. The descent is the distance from the baseline to the descender line. The descent usually represents
+	 * the distance to the bottom of lower case letters like 'p'. Some characters can extend below the descender line.
 	 */
 	public int getFontDescent()
 	{
 		return mFontDescent;
 	}
 
+
 	/**
-	 * Returns the leading of the text. The leading is the recommended
-	 * distance from the bottom of the descender line to the top of the next
+	 * Returns the leading of the text. The leading is the recommended distance from the bottom of the descender line to the top of the next
 	 * line.
 	 */
 	public int getFontLeading()
@@ -225,14 +154,15 @@ public class Style
 		return mFontLeading;
 	}
 
+
 	/**
-	 * Returns the position of the strike-through line relative to the
-	 * baseline.
+	 * Returns the position of the strike-through line relative to the baseline.
 	 */
 	public int getStrikethroughOffset()
 	{
 		return mFontStrikethroughOffset;
 	}
+
 
 	/**
 	 * Returns the thickness of the strike-through line.
@@ -242,6 +172,7 @@ public class Style
 		return mFontStrikethroughThickness;
 	}
 
+
 	/**
 	 * Returns the position of the underline relative to the baseline.
 	 */
@@ -249,6 +180,7 @@ public class Style
 	{
 		return mFontUnderlineOffset;
 	}
+
 
 	/**
 	 * Returns the thickness of the underline.
@@ -258,13 +190,15 @@ public class Style
 		return mFontUnderlineThickness;
 	}
 
+
 	/**
-	 * Enables or disables strikethrough in this style.
+	 * Enables or disables strike-through in this style.
 	 */
 	public void setStrikethrough(boolean aStrikethrough)
 	{
 		mStrikethrough = aStrikethrough;
 	}
+
 
 	/**
 	 * Returns true if the background is optional.
@@ -274,6 +208,7 @@ public class Style
 		return mBackgroundOptional;
 	}
 
+
 	/**
 	 * Enables or disables underlining in this style.
 	 */
@@ -281,6 +216,7 @@ public class Style
 	{
 		mBackgroundOptional = aBackgroundOptional;
 	}
+
 
 	/**
 	 * Returns true if this style is underlined.
@@ -290,6 +226,7 @@ public class Style
 		return mUnderlined;
 	}
 
+
 	/**
 	 * Enables or disables underlining in this style.
 	 */
@@ -297,6 +234,7 @@ public class Style
 	{
 		mUnderlined = aUnderlined;
 	}
+
 
 	/**
 	 * Gets the foreground color in this style.
@@ -306,6 +244,7 @@ public class Style
 		return mForeground;
 	}
 
+
 	/**
 	 * Sets the foreground color in this style.
 	 */
@@ -313,6 +252,7 @@ public class Style
 	{
 		mForeground = aColor;
 	}
+
 
 	/**
 	 * Gets the background color in this style.
@@ -322,6 +262,7 @@ public class Style
 		return mBackground;
 	}
 
+
 	/**
 	 * Sets the background color in this style.
 	 */
@@ -329,6 +270,7 @@ public class Style
 	{
 		mBackground = aColor;
 	}
+
 
 	/**
 	 * Gets the font in this style.
@@ -338,15 +280,16 @@ public class Style
 		return mFont;
 	}
 
+
 	/**
 	 * Sets the font in this style.
 	 */
 	public void setFont(Font aFont)
 	{
 		mFont = aFont;
-
-		init();
+		initializeFont();
 	}
+
 
 	/**
 	 * Gets the name of this style.
@@ -356,6 +299,7 @@ public class Style
 		return mName;
 	}
 
+
 	/**
 	 * Sets the name of this style.
 	 */
@@ -363,6 +307,7 @@ public class Style
 	{
 		mName = aName;
 	}
+
 
 	/**
 	 * Returns the point size of this Font, rounded to an integer.
@@ -372,13 +317,14 @@ public class Style
 		return mFont.getSize();
 	}
 
+
 	/**
 	 * Sets the point size of this Font.
 	 */
 	public void setFontSize(int aFontSize)
 	{
 		mFont = mFont.deriveFont((float)aFontSize);
-		init();
+		initializeFont();
 	}
 
 

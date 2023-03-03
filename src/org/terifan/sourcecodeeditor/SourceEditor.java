@@ -541,7 +541,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	{
 		for (String key : mPaintSyntaxParser.getStyleKeys())
 		{
-			mPaintSyntaxParser.getStyle(key).setFontSize(aFontPointSize);
+//			mPaintSyntaxParser.getStyle(key).setFontSize(aFontPointSize);
 		}
 		return this;
 	}
@@ -1469,18 +1469,18 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	private int incrementWhitespace(int aPositionX, String aWhitespace)
+	private int incrementWhitespace(int aPositionX, String aText)
 	{
-		for (int i = 0, len = aWhitespace.length(); i < len; i++)
+		for (int i = 0, len = aText.length(); i < len; i++)
 		{
-			if (aWhitespace.charAt(i) == ' ')
+			if (aText.charAt(i) == ' ')
 			{
 				aPositionX += getStyle(SyntaxParser.WHITESPACE).getCharWidth(' ');
 			}
 			else
 			{
 				int tabSizePixels = getStyle(SyntaxParser.WHITESPACE).getCharWidth(' ') * mTabSize;
-				aPositionX = tabSizePixels * (int) Math.ceil((aPositionX + 1.0) / tabSizePixels);
+				aPositionX = tabSizePixels * (int)Math.ceil((aPositionX + 1.0) / tabSizePixels);
 			}
 		}
 
@@ -1488,7 +1488,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	Point getSourceOffset(Point aMousePoint)
+	Point convertMousePositionToSourcePosition(Point aMousePoint)
 	{
 		int y = (aMousePoint.y - mMargins.top) / (getFontHeight() + mLineSpacing);
 
@@ -1496,32 +1496,32 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		String sourceLine = mDocument.getLine(y);
 
-		if (isFontMonospaced())
-		{
-			int o = (int) Math.round((aMousePoint.x - mMargins.left) / (double) mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getCharWidth('m'));
-
-			int a = 0;
-			int x = 0;
-			while (o > x && x < sourceLine.length())
-			{
-				if (sourceLine.charAt(x) == '\t')
-				{
-					o += (a % mTabSize) - mTabSize + 1;
-					a = mTabSize * (a / mTabSize) + mTabSize;
-					if (o <= x)
-					{
-						break;
-					}
-				}
-				else
-				{
-					a++;
-				}
-				x++;
-			}
-
-			return new Point(x, y);
-		}
+//		if (isFontMonospaced())
+//		{
+//			int o = (int) Math.round((aMousePoint.x - mMargins.left) / (double) mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getCharWidth('m'));
+//
+//			int a = 0;
+//			int x = 0;
+//			while (o > x && x < sourceLine.length())
+//			{
+//				if (sourceLine.charAt(x) == '\t')
+//				{
+//					o += (a % mTabSize) - mTabSize + 1;
+//					a = mTabSize * (a / mTabSize) + mTabSize;
+//					if (o <= x)
+//					{
+//						break;
+//					}
+//				}
+//				else
+//				{
+//					a++;
+//				}
+//				x++;
+//			}
+//
+//			return new Point(x, y);
+//		}
 
 		mOffsetSyntaxParser.initialize(mDocument, y);
 		int positionX = 0;
@@ -1530,14 +1530,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 		for (Token token : mOffsetSyntaxParser.parse(mDocument, y, true, false))
 		{
 			String s = token.getToken();
-
+			System.out.println("#"+s+"#");
 			if (Character.isWhitespace(s.charAt(0)))
 			{
 				positionX = incrementWhitespace(positionX, s);
 
 				if (positionX + mMargins.left >= aMousePoint.x)
 				{
-					offsetX = token.getOffset()+token.length() - 1;
+					offsetX = token.getOffset() + token.length() - 1;
 					break;
 				}
 			}
