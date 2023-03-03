@@ -26,7 +26,7 @@ public class SampleApp
 				"package demo;\n"
 				+ "\n"
 				+ "/**\n"
-				+ " * documentation\n"
+				+ " * documentation\thello\t\t\tworld\n"
 				+ " */\n"
 				+ "class HelloWorld\n"
 				+ "{\n"

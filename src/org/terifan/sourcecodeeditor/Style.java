@@ -8,6 +8,8 @@ import java.awt.font.LineMetrics;
 
 public class Style
 {
+	private final static FontRenderContext FRC = new FontRenderContext(null, false, false);
+
 	private boolean mStrikethrough;
 	private boolean mUnderlined;
 	private boolean mFontMonospaced;
@@ -102,8 +104,7 @@ public class Style
 	 */
 	public int getStringWidth(String aText)
 	{
-		FontRenderContext frc = new FontRenderContext(null, false, false);
-		return (int)mFont.getStringBounds(aText, frc).getWidth();
+		return (int)mFont.getStringBounds(aText, FRC).getWidth();
 	}
 
 
@@ -112,7 +113,7 @@ public class Style
 	 */
 	public int getCharWidth(char aChar)
 	{
-		return getStringWidth(Character.toString(aChar));
+		return (int)mFont.getStringBounds(new char[]{aChar}, 0, 1, FRC).getWidth();
 	}
 
 

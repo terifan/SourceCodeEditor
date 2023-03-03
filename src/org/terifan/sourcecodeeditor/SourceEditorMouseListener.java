@@ -29,7 +29,7 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 		{
 			Caret caret = mSourceEditor.getCaret();
 			Point vp = caret.getVirtualPosition();
-			Point p = mSourceEditor.convertMousePositionToSourcePosition(aEvent.getPoint());
+			Point p = mSourceEditor.getSourceOffset(aEvent.getPoint());
 
 			if (aEvent.getClickCount() >= 2)
 			{
@@ -96,7 +96,7 @@ public class SourceEditorMouseListener implements MouseListener, MouseMotionList
 				mSourceEditor.setSelectionStartUnmodified(new Point(vp));
 			}
 
-			Point p = mSourceEditor.convertMousePositionToSourcePosition(aEvent.getPoint());
+			Point p = mSourceEditor.getSourceOffset(aEvent.getPoint());
 
 			caret.moveAbsolute(p.x, p.y, false, true, true);
 		}
