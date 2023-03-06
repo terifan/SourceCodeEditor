@@ -66,24 +66,31 @@ public class Caret extends Thread implements Serializable
 
 		try
 		{
+			int caretBlinkRate = mSourceEditor.getCaretBlinkRate();
+			long sleepTime = caretBlinkRate;
 			boolean visible = true;
-			long sleepTime = 500;
+
 			sleep(sleepTime);
+
 			while (!mDispose)
 			{
 				// handle token highlight
 				Point p = mCaretCharacterPosition;
+
 				if (p.equals(prevPosition))
 				{
 					Style style = mSourceEditor.getTokenStyleAt(p.x, p.y);
+
 					if (style != null && style.isSupportHighlight())
 					{
 						int x1 = mSourceEditor.getNextTokenOffset(p.x, p.y, false);
 						int x0 = mSourceEditor.getPreviousTokenOffset(x1, p.y);
-						String s = mSourceEditor.getDocument().getLine(p.y).substring(x0, x1).trim();
-						if (!s.equals(mSourceEditor.getHighlightText()))
+
+						String text = mSourceEditor.getDocument().getLine(p.y).substring(x0, x1).trim();
+
+						if (!text.equals(mSourceEditor.getHighlightText()))
 						{
-							mSourceEditor.setHighlightText(s);
+							mSourceEditor.setHighlightText(text);
 							mSourceEditor.repaint();
 						}
 					}
@@ -97,14 +104,14 @@ public class Caret extends Thread implements Serializable
 				if (mResync != 0)
 				{
 					visible = true;
-					sleepTime = Math.max(500 - (System.currentTimeMillis() - mResync), 0);
+					sleepTime = Math.max(caretBlinkRate - (System.currentTimeMillis() - mResync), 0);
 					mResync = 0;
 				}
 				else
 				{
 					mVisible = visible;
 					paintCaret(mSourceEditor.getGraphics());
-					sleepTime = 500;
+					sleepTime = caretBlinkRate;
 				}
 
 				sleep(sleepTime);
@@ -143,7 +150,7 @@ public class Caret extends Thread implements Serializable
 	{
 		int x = mPreviousCaretPixelPosition.x + mSourceEditor.getMargins().left;
 		int y = mPreviousCaretPixelPosition.y + mSourceEditor.getMargins().top;
-		mSourceEditor.repaint(Math.max(x - 1, 0), y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
+		mSourceEditor.repaint(x, y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
 	}
 
 
@@ -165,7 +172,7 @@ public class Caret extends Thread implements Serializable
 				if (mEnabled || mWasDisabled)
 				{
 					mWasDisabled = false;
-					mSourceEditor.repaint(Math.max(x - 1, 0), y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
+					mSourceEditor.repaint(x, y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
 				}
 			}
 
@@ -173,11 +180,18 @@ public class Caret extends Thread implements Serializable
 			{
 				int x = mCaretPixelPosition.x + mSourceEditor.getMargins().left;
 				int y = mCaretPixelPosition.y + mSourceEditor.getMargins().top;
-				aGraphics.setColor(Color.BLACK);
-				aGraphics.setXORMode(Color.WHITE);
-				if (mSourceEditor.getBoldCaretEnabled())
+				if (mSourceEditor.getCaretColor() != null)
 				{
-					aGraphics.drawLine(x - 1, y, x - 1, y + mSourceEditor.getFontHeight() - 1);
+					aGraphics.setColor(mSourceEditor.getCaretColor());
+				}
+				else
+				{
+					aGraphics.setColor(Color.BLACK);
+					aGraphics.setXORMode(Color.WHITE);
+				}
+				if (mSourceEditor.isBoldCaretEnabled())
+				{
+					aGraphics.drawLine(x + 1, y, x + 1, y + mSourceEditor.getFontHeight() - 1);
 				}
 				aGraphics.drawLine(x, y, x, y + mSourceEditor.getFontHeight() - 1);
 				aGraphics.setPaintMode();
@@ -191,7 +205,7 @@ public class Caret extends Thread implements Serializable
 				mWasDisabled = false;
 				int x = mPreviousCaretPixelPosition.x + mSourceEditor.getMargins().left;
 				int y = mPreviousCaretPixelPosition.y + mSourceEditor.getMargins().top;
-				mSourceEditor.repaint(Math.max(x - 1, 0), y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
+				mSourceEditor.repaint(x, y, 2, mSourceEditor.getFontHeight() + mSourceEditor.getLineSpacing());
 			}
 			mIsHidden = true;
 		}

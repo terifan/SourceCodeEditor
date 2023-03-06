@@ -59,6 +59,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private Insets mMargins;
 	private int mFontSize;
 	private int mLineSpacing;
+	private int mCaretBlinkRate;
 	private int mTabSize;
 	private String mHighlightText;
 	private char mLineBreakSymbol;
@@ -70,6 +71,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private SyntaxParser mPaintSyntaxParser;
 	private SyntaxParser mPixelOffsetSyntaxParser;
 	private Color mHighlightCaretRow;
+	private Color mCaretColor;
 
 
 	public SourceEditor(SyntaxParser aSyntaxParser, Document aDocument)
@@ -88,6 +90,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		setAutoIndentEnabled(true);
 		setAutoLineCopyCutEnabled(true);
 		setBoldCaretEnabled(false);
+		setCaretBlinkRate(350);
 		setHighlightTextCaseSensative(false);
 		setLineBreakSymbolEnabled(false);
 		setOverwriteTextEnabled(false);
@@ -230,6 +233,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
+	public int getCaretBlinkRate()
+	{
+		return mCaretBlinkRate;
+	}
+
+
+	public SourceEditor setCaretBlinkRate(int aCaretBlinkRate)
+	{
+		mCaretBlinkRate = aCaretBlinkRate;
+		return this;
+	}
+
+
 	public boolean canUndo()
 	{
 		return mDocument.getUndoManager().canUndo();
@@ -315,7 +331,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getHighlightTextCaseSensative()
+	public boolean isHighlightTextCaseSensative()
 	{
 		return mHighlightTextCaseSensative;
 	}
@@ -328,7 +344,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getAlternateMode()
+	public boolean isAlternateMode()
 	{
 		return mAlternateMode;
 	}
@@ -375,7 +391,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getTabIndentsTextEnabled()
+	public boolean isTabIndentsTextEnabled()
 	{
 		return mTabIndentsTextEnabled;
 	}
@@ -388,7 +404,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getAutoLineCopyCutEnabled()
+	public boolean isAutoLineCopyCutEnabled()
 	{
 		return mAutoLineCopyCutEnabled;
 	}
@@ -401,7 +417,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getAutoIndentEnabled()
+	public boolean isAutoIndentEnabled()
 	{
 		return mAutoIndentEnabled;
 	}
@@ -414,9 +430,26 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getBoldCaretEnabled()
+	public boolean isBoldCaretEnabled()
 	{
 		return mBoldCaretEnabled;
+	}
+
+
+	public Color getCaretColor()
+	{
+		return mCaretColor;
+	}
+
+
+	/**
+	 * @param aCaretColor
+	 *   null or the caret color. If null then the caret is the inverted (xor) of background.
+	 */
+	public SourceEditor setCaretColor(Color aCaretColor)
+	{
+		mCaretColor = aCaretColor;
+		return this;
 	}
 
 
@@ -440,7 +473,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getLineBreakSymbolEnabled()
+	public boolean isLineBreakSymbolEnabled()
 	{
 		return mLineBreakSymbolEnabled;
 	}
@@ -453,7 +486,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getOverwriteTextEnabled()
+	public boolean isOverwriteTextEnabled()
 	{
 		return mOverwriteTextEnabled;
 	}
@@ -479,7 +512,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public boolean getWhitespaceSymbolEnabled()
+	public boolean isWhitespaceSymbolEnabled()
 	{
 		return mWhitespaceSymbolEnabled;
 	}
