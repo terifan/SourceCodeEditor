@@ -62,7 +62,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private int mCaretBlinkRate;
 	private int mTabSize;
 	private String mHighlightText;
-	private char mLineBreakSymbol;
+	private String mLineBreakSymbol;
 	private boolean mAlternateMode;
 	private transient Object mAntialiase;
 
@@ -546,14 +546,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 	public SourceEditor setLineBreakSymbol(char aLineBreakSymbol)
 	{
-		mLineBreakSymbol = aLineBreakSymbol;
+		mLineBreakSymbol = Character.toString(aLineBreakSymbol);
 		return this;
 	}
 
 
 	public char getLineBreakSymbol()
 	{
-		return mLineBreakSymbol;
+		return mLineBreakSymbol.charAt(0);
 	}
 
 
@@ -1065,6 +1065,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		int fontHeight = getFontHeight();
 		int fontAscent = getFontAscent();
+		int editorW = getWidth();
 
 		Rectangle clipBounds = g.getClipBounds();
 		int firstRow = clipBounds.y / (fontHeight + mLineSpacing);
@@ -1087,7 +1088,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		mPaintSyntaxParser.initialize(mDocument, firstRow);
 
 		g.setColor(getBackground());
-		g.fillRect(0, 0, getWidth(), getHeight());
+		g.fillRect(0, 0, editorW, getHeight());
 
 		for (int rowIndex = firstRow; rowIndex <= lastRow; rowIndex++)
 		{
@@ -1101,7 +1102,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 			{
 				int h = fontHeight + mLineSpacing;
 				g.setColor(mHighlightCaretRow);
-				g.fillRect(0, mMargins.top + rowIndex * h, getWidth(), h);
+				g.fillRect(0, mMargins.top + rowIndex * h, editorW, h);
 			}
 
 			Token token = null;
@@ -1144,15 +1145,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 					Style fontStyle = mPaintSyntaxParser.getStyle(SyntaxParser.LINE_BREAK);
 					Style colorStyle = token.isComment() ? token.getStyle() : fontStyle;
 
-					int w = fontStyle.getCharWidth(mLineBreakSymbol);
+					int w = fontStyle.getStringWidth(mLineBreakSymbol);
 
 					if (mPaintFullRowSelectionEnabled)
 					{
 						g.setColor(mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getBackground());
-						g.fillRect(positionX + mMargins.left, y - fontAscent, getWidth() - (positionX + mMargins.left), fontHeight);
+						g.fillRect(positionX + mMargins.left, y - fontAscent, editorW - (positionX + mMargins.left), fontHeight);
 					}
-
-					if (highlightText || !getBackground().equals(colorStyle.getBackground()))
+					else if (highlightText || !getBackground().equals(colorStyle.getBackground()))
 					{
 						g.setColor(colorStyle.getBackground());
 						g.fillRect(positionX + mMargins.left, y - fontAscent, w, fontHeight);
@@ -1166,12 +1166,12 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 					g.setFont(fontStyle.getFont());
 					g.setColor(fontColor);
-					g.drawString(Character.toString(mLineBreakSymbol), positionX + mMargins.left, y);
+					g.drawString(mLineBreakSymbol, positionX + mMargins.left, y);
 
-					positionX += fontStyle.getCharWidth(mLineBreakSymbol);
+					positionX += w;
 				}
 
-				if (positionX + mMargins.left + mMargins.right > getWidth())
+				if (positionX + mMargins.left + mMargins.right > editorW)
 				{
 					mPreferredSize = null;
 					revalidate();
@@ -1200,104 +1200,61 @@ public final class SourceEditor extends JComponent implements Scrollable
 		int fontHeight = getFontHeight();
 		int fontAscent = getFontAscent();
 
-//		if (text.charAt(0) == '\t' || text.isBlank())
-//		{
-//			int prevX = aPixelX;
-//			aPixelX = advancePosition(aPixelX, text, aToken.getStyle());
-//
-//			if (aPixelX >= aClipBounds.x)
-//			{
-//				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : aToken.getStyle();
-//
-//				if (aIsSelection || aHighlightText || !style.getBackground().equals(getBackground()))
-//				{
-//					aGraphics.setColor(style.getBackground());
-//					aGraphics.fillRect(prevX + mMargins.left, aPixelY - fontAscent, aPixelX - prevX, fontHeight);
-//				}
-//
-//				if (DEBUG_GRAPHICS)
-//				{
-//					aGraphics.setColor(new Color(192, 192, 192));
-//					aGraphics.drawRect(prevX + mMargins.left, aPixelY - fontAscent, aPixelX - prevX, fontHeight);
-//				}
-//
-//				if (mWhitespaceSymbolEnabled)
-//				{
-//					int x = mMargins.left + (prevX + aPixelX) / 2;
-//					int v = aPixelY - fontAscent + fontHeight / 2;
-//
-//					aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
-//					if (text.charAt(0) == ' ') //text.equals(" "))
-//					{
-//						aGraphics.drawLine(x, v, x, v);
-//					}
-//					else
-//					{
-//						aGraphics.drawLine(x - 2, v, x + 2, v);
-//						aGraphics.drawLine(x + 2, v, x, v - 2);
-//						aGraphics.drawLine(x + 2, v, x, v + 2);
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-			Style tokenStyle = aToken.getStyle();
-			int x0 = aPixelX + mMargins.left;
-			int x1 = advancePosition(x0, text, tokenStyle);
+		Style tokenStyle = aToken.getStyle();
+		int x0 = aPixelX + mMargins.left;
+		int x1 = advancePosition(x0, text, tokenStyle);
 
-			if (x1 >= aClipBounds.x)
+		if (x1 >= aClipBounds.x)
+		{
+			Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
+			Style colorStyle = tokenStyle;
+
+			if (aHighlightText && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && text.equalsIgnoreCase(mHighlightText))
 			{
-				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
-				Style colorStyle = tokenStyle;
-
-				if (aHighlightText && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && text.equalsIgnoreCase(mHighlightText))
-				{
-					aGraphics.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
-					aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
-				}
-				else if (!getBackground().equals(style.getBackground()))
-				{
-					aGraphics.setColor(style.getBackground());
-					aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
-				}
-
-				if (DEBUG_GRAPHICS)
-				{
-					aGraphics.setColor(new Color(192, 192, 192));
-					aGraphics.drawRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
-				}
-
-				aGraphics.setFont(tokenStyle.getFont());
-				aGraphics.setColor(colorStyle.getForeground());
-				aGraphics.drawString(text, x0, aPixelY);
-
-				if (tokenStyle.isUnderlined())
-				{
-					aGraphics.drawLine(x0, aPixelY + 1, x1, aPixelY + 1);
-				}
-
-				if (mWhitespaceSymbolEnabled && (text.startsWith(" ") || text.startsWith("\t")))
-				{
-					int x = (x0 + x1) / 2;
-					int v = aPixelY - fontAscent + fontHeight / 2;
-
-					aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
-					if (text.charAt(0) == ' ')
-					{
-						aGraphics.drawLine(x, v, x, v);
-					}
-					else
-					{
-						aGraphics.drawLine(x - 2, v, x + 2, v);
-						aGraphics.drawLine(x + 2, v, x, v - 2);
-						aGraphics.drawLine(x + 2, v, x, v + 2);
-					}
-				}
+				aGraphics.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
+				aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
+			}
+			else if (!getBackground().equals(style.getBackground()))
+			{
+				aGraphics.setColor(style.getBackground());
+				aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
 			}
 
-			aPixelX = x1;
-//		}
+			if (DEBUG_GRAPHICS)
+			{
+				aGraphics.setColor(new Color(192, 192, 192));
+				aGraphics.drawRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
+			}
+
+			aGraphics.setFont(tokenStyle.getFont());
+			aGraphics.setColor(colorStyle.getForeground());
+			aGraphics.drawString(text, x0, aPixelY);
+
+			if (tokenStyle.isUnderlined())
+			{
+				aGraphics.drawLine(x0, aPixelY + 1, x1, aPixelY + 1);
+			}
+
+			if (mWhitespaceSymbolEnabled && (text.startsWith(" ") || text.startsWith("\t")))
+			{
+				int x = (x0 + x1) / 2;
+				int v = aPixelY - fontAscent + fontHeight / 2;
+
+				aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
+				if (text.charAt(0) == ' ')
+				{
+					aGraphics.drawLine(x, v, x, v);
+				}
+				else
+				{
+					aGraphics.drawLine(x - 2, v, x + 2, v);
+					aGraphics.drawLine(x + 2, v, x, v - 2);
+					aGraphics.drawLine(x + 2, v, x, v + 2);
+				}
+			}
+		}
+
+		aPixelX = x1;
 
 		return aPixelX;
 	}
