@@ -483,26 +483,33 @@ public class JavaSyntaxParser extends SyntaxParser
 
 	protected String scanSingleLineComment()
 	{
-		int offset = mTokenOffset;
-
-		outer: for (; offset < mSourceLine.length() - 1; offset++)
+		int nextOffset = -1;
+		outer: for (int o = mTokenOffset; o < mSourceLine.length(); o++)
 		{
-			switch (mSourceLine.charAt(offset))
+			switch (mSourceLine.charAt(o))
 			{
 				case ' ':
 					if (mOptimizeTokens)
 					{
 						break;
 					}
+					nextOffset = o;
 					break outer;
 				case '\t':
+					nextOffset = o;
 					break outer;
 			}
 		}
-
-		String s = mSourceLine.substring(mTokenOffset, mSourceLine.length() - 1);
-		mTokenOffset = mSourceLine.length() - 1;
-		return s;
+		int o = mTokenOffset;
+		if (nextOffset == -1)
+		{
+			mTokenOffset = mSourceLine.length() - 1;
+		}
+		else
+		{
+			mTokenOffset = nextOffset;
+		}
+		return mSourceLine.substring(o, mTokenOffset);
 	}
 
 

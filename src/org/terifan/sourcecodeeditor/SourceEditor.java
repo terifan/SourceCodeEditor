@@ -55,6 +55,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private boolean mOverwriteTextEnabled;
 	private boolean mTabIndentsTextEnabled;
 	private boolean mWhitespaceSymbolEnabled;
+	private boolean mPaintFullRowSelectionEnabled;
 	private Insets mMargins;
 	private int mFontSize;
 	private int mLineSpacing;
@@ -92,6 +93,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 		setOverwriteTextEnabled(false);
 		setTabIndentsTextEnabled(true);
 		setWhitespaceSymbolEnabled(false);
+		setPaintFullRowSelectionEnabled(true);
 		setMargins(new Insets(0, 0, 0, 0));
 		setFontPointSize(13);
 		setLineSpacing(0);
@@ -415,6 +417,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 	public boolean getBoldCaretEnabled()
 	{
 		return mBoldCaretEnabled;
+	}
+
+
+	public boolean isPaintFullRowSelectionEnabled()
+	{
+		return mPaintFullRowSelectionEnabled;
+	}
+
+
+	public SourceEditor setPaintFullRowSelectionEnabled(boolean aPaintFullRowSelectionEnabled)
+	{
+		mPaintFullRowSelectionEnabled = aPaintFullRowSelectionEnabled;
+		return this;
 	}
 
 
@@ -1043,9 +1058,9 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		for (int rowIndex = firstRow; rowIndex <= lastRow; rowIndex++)
 		{
-			boolean highlightRow = mHighlightText != null && mDocument.getLine(rowIndex).contains(mHighlightText);
+			boolean highlightText = mHighlightText != null && mDocument.getLine(rowIndex).contains(mHighlightText);
 
-			List<Token> tokens = mPaintSyntaxParser.parse(mDocument, rowIndex, optimizeTokens && !highlightRow, optimizeWhitespace);
+			List<Token> tokens = mPaintSyntaxParser.parse(mDocument, rowIndex, optimizeTokens && !highlightText, optimizeWhitespace);
 			int positionX = 0;
 			int y = fontAscent + rowIndex * (fontHeight + mLineSpacing) + mMargins.top;
 
@@ -1070,19 +1085,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 					{
 						if (selectionIntersect.x > 0)
 						{
-							positionX = paintString(g, false, positionX, y, 0, selectionIntersect.x, clipBounds, highlightRow, token);
+							positionX = paintToken(g, positionX, y, token, 0, selectionIntersect.x, clipBounds, highlightText, false);
 						}
 
-						positionX = paintString(g, true, positionX, y, selectionIntersect.x, selectionIntersect.y, clipBounds, highlightRow, token);
+						positionX = paintToken(g, positionX, y, token, selectionIntersect.x, selectionIntersect.y, clipBounds, highlightText, true);
 
 						if (selectionIntersect.y < len)
 						{
-							positionX = paintString(g, false, positionX, y, selectionIntersect.y, len, clipBounds, highlightRow, token);
+							positionX = paintToken(g, positionX, y, token, selectionIntersect.y, len, clipBounds, highlightText, false);
 						}
 					}
 					else
 					{
-						positionX = paintString(g, false, positionX, y, -1, -1, clipBounds, highlightRow, token);
+						positionX = paintToken(g, positionX, y, token, -1, -1, clipBounds, highlightText, false);
 					}
 				}
 			}
@@ -1098,7 +1113,13 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 					int w = fontStyle.getCharWidth(mLineBreakSymbol);
 
-					if (highlightRow || !getBackground().equals(colorStyle.getBackground()))
+					if (mPaintFullRowSelectionEnabled)
+					{
+						g.setColor(mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getBackground());
+						g.fillRect(positionX + mMargins.left, y - fontAscent, getWidth() - (positionX + mMargins.left), fontHeight);
+					}
+
+					if (highlightText || !getBackground().equals(colorStyle.getBackground()))
 					{
 						g.setColor(colorStyle.getBackground());
 						g.fillRect(positionX + mMargins.left, y - fontAscent, w, fontHeight);
@@ -1129,103 +1150,121 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	private int paintString(Graphics g, boolean aIsSelection, int aPixelX, int aPixelY, int aTokenOffset, int aTokenLength, Rectangle aClipBounds, boolean aHighlightRow, Token aToken)
+	private int paintToken(Graphics aGraphics, int aPixelX, int aPixelY, Token aToken, int aTokenOffset, int aTokenLength, Rectangle aClipBounds, boolean aHighlightText, boolean aIsSelection)
 	{
 		if (aTokenOffset != -1 && aTokenOffset == aTokenLength)
 		{
 			return aPixelX;
 		}
 
-		String s = aToken.getToken();
+		String text = aToken.getToken();
 
 		if (aTokenOffset != -1)
 		{
-			s = s.substring(aTokenOffset, aTokenLength);
+			text = text.substring(aTokenOffset, aTokenLength);
 		}
 
 		int fontHeight = getFontHeight();
 		int fontAscent = getFontAscent();
 
-		if (s.charAt(0) == '\t' || s.isBlank())
-		{
-			int previousPositionX = aPixelX;
-			aPixelX = advancePosition(aPixelX, s, aToken.getStyle());
-
-			if (aPixelX >= aClipBounds.x)
-			{
-				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : aToken.getStyle();
-
-				if (aIsSelection || aHighlightRow || !style.getBackground().equals(getBackground()))
-				{
-					g.setColor(style.getBackground());
-					g.fillRect(previousPositionX + mMargins.left, aPixelY - fontAscent, aPixelX - previousPositionX, fontHeight);
-				}
-
-				if (DEBUG_GRAPHICS)
-				{
-					g.setColor(new Color(192, 192, 192));
-					g.drawRect(previousPositionX + mMargins.left, aPixelY - fontAscent, aPixelX - previousPositionX, fontHeight);
-				}
-
-				if (mWhitespaceSymbolEnabled)
-				{
-					int x = mMargins.left + (previousPositionX + aPixelX) / 2;
-					int v = aPixelY - fontAscent + fontHeight / 2;
-
-					g.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
-					if (s.equals(" "))
-					{
-						g.drawLine(x, v, x, v);
-					}
-					else
-					{
-						g.drawLine(x - 2, v, x + 2, v);
-						g.drawLine(x + 2, v, x, v - 2);
-						g.drawLine(x + 2, v, x, v + 2);
-					}
-				}
-			}
-		}
-		else
-		{
+//		if (text.charAt(0) == '\t' || text.isBlank())
+//		{
+//			int prevX = aPixelX;
+//			aPixelX = advancePosition(aPixelX, text, aToken.getStyle());
+//
+//			if (aPixelX >= aClipBounds.x)
+//			{
+//				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : aToken.getStyle();
+//
+//				if (aIsSelection || aHighlightText || !style.getBackground().equals(getBackground()))
+//				{
+//					aGraphics.setColor(style.getBackground());
+//					aGraphics.fillRect(prevX + mMargins.left, aPixelY - fontAscent, aPixelX - prevX, fontHeight);
+//				}
+//
+//				if (DEBUG_GRAPHICS)
+//				{
+//					aGraphics.setColor(new Color(192, 192, 192));
+//					aGraphics.drawRect(prevX + mMargins.left, aPixelY - fontAscent, aPixelX - prevX, fontHeight);
+//				}
+//
+//				if (mWhitespaceSymbolEnabled)
+//				{
+//					int x = mMargins.left + (prevX + aPixelX) / 2;
+//					int v = aPixelY - fontAscent + fontHeight / 2;
+//
+//					aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
+//					if (text.charAt(0) == ' ') //text.equals(" "))
+//					{
+//						aGraphics.drawLine(x, v, x, v);
+//					}
+//					else
+//					{
+//						aGraphics.drawLine(x - 2, v, x + 2, v);
+//						aGraphics.drawLine(x + 2, v, x, v - 2);
+//						aGraphics.drawLine(x + 2, v, x, v + 2);
+//					}
+//				}
+//			}
+//		}
+//		else
+//		{
 			Style tokenStyle = aToken.getStyle();
 			int x0 = aPixelX + mMargins.left;
-			int x1 = advancePosition(x0, s, tokenStyle);
+			int x1 = advancePosition(x0, text, tokenStyle);
 
 			if (x1 >= aClipBounds.x)
 			{
 				Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
 				Style colorStyle = tokenStyle;
 
-				if (aHighlightRow && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && s.equalsIgnoreCase(mHighlightText))
+				if (aHighlightText && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && text.equalsIgnoreCase(mHighlightText))
 				{
-					g.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
-					g.fillRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
+					aGraphics.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
+					aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
 				}
 				else if (!getBackground().equals(style.getBackground()))
 				{
-					g.setColor(style.getBackground());
-					g.fillRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
+					aGraphics.setColor(style.getBackground());
+					aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
 				}
 
 				if (DEBUG_GRAPHICS)
 				{
-					g.setColor(new Color(192, 192, 192));
-					g.drawRect(x0, aPixelY - fontAscent, x1-x0, fontHeight);
+					aGraphics.setColor(new Color(192, 192, 192));
+					aGraphics.drawRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
 				}
 
-				g.setFont(tokenStyle.getFont());
-				g.setColor(colorStyle.getForeground());
-				g.drawString(s, x0, aPixelY);
+				aGraphics.setFont(tokenStyle.getFont());
+				aGraphics.setColor(colorStyle.getForeground());
+				aGraphics.drawString(text, x0, aPixelY);
 
 				if (tokenStyle.isUnderlined())
 				{
-					g.drawLine(x0, aPixelY + 1, x1, aPixelY + 1);
+					aGraphics.drawLine(x0, aPixelY + 1, x1, aPixelY + 1);
+				}
+
+				if (mWhitespaceSymbolEnabled && (text.startsWith(" ") || text.startsWith("\t")))
+				{
+					int x = (x0 + x1) / 2;
+					int v = aPixelY - fontAscent + fontHeight / 2;
+
+					aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
+					if (text.charAt(0) == ' ')
+					{
+						aGraphics.drawLine(x, v, x, v);
+					}
+					else
+					{
+						aGraphics.drawLine(x - 2, v, x + 2, v);
+						aGraphics.drawLine(x + 2, v, x, v - 2);
+						aGraphics.drawLine(x + 2, v, x, v + 2);
+					}
 				}
 			}
 
 			aPixelX = x1;
-		}
+//		}
 
 		return aPixelX;
 	}
