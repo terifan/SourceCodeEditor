@@ -20,6 +20,7 @@ public final class Document implements Serializable
 	private transient UndoManager mUndoManager;
 	private ArrayList<String> mSourceLines;
 	private boolean mModified;
+	private int mUndoableEditDepth;
 
 
 	public Document()
@@ -28,6 +29,17 @@ public final class Document implements Serializable
 		mSourceLines = new ArrayList<>();
 
 		new Add(0, "").redo();
+	}
+
+
+	public Document(Document aSource) throws IOException
+	{
+		this();
+
+		mSourceLines.clear();
+		mSourceLines.addAll(aSource.mSourceLines);
+
+		mModified = false;
 	}
 
 
@@ -374,8 +386,16 @@ public final class Document implements Serializable
 
 	public void beginUndoableEdit(UndoableEdit aUndoableEdit)
 	{
-		mUndoableEdit = aUndoableEdit;
-		mUndoableEdit.setCaretStartPosition(mSourceEditor.getCaret().getCharacterPosition());
+		if (mUndoableEditDepth == 0)
+		{
+			mUndoableEdit = aUndoableEdit;
+			mUndoableEdit.saveStartState();
+		}
+		else
+		{
+			mUndoableEdit.addSubAction(aUndoableEdit.getPresentationName());
+		}
+		mUndoableEditDepth++;
 
 		if (DEBUG) System.out.println("Begin "+mUndoableEdit.getPresentationName());
 	}
@@ -383,10 +403,18 @@ public final class Document implements Serializable
 
 	public void commitUndoableEdit()
 	{
-		if (mUndoManager != null && mUndoableEdit != null && !mUndoableEdit.isEmpty())
+		mUndoableEditDepth--;
+		if (mUndoableEditDepth == 0)
 		{
-			mUndoableEdit.setCaretEndPosition(mSourceEditor.getCaret().getCharacterPosition());
-			mUndoManager.addEdit(mUndoableEdit);
+			if (mUndoableEdit != null && !mUndoableEdit.isEmpty())
+			{
+				mUndoableEdit.saveEndState();
+				mUndoManager.addEdit(mUndoableEdit);
+			}
+		}
+		else if (mUndoableEditDepth < 0)
+		{
+			throw new IllegalStateException("More calls made to commit than to begin.");
 		}
 
 		if (DEBUG) System.out.println("Commit "+mUndoableEdit.getPresentationName());

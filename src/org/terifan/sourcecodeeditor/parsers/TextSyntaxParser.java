@@ -1,12 +1,8 @@
 package org.terifan.sourcecodeeditor.parsers;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.terifan.sourcecodeeditor.Document;
-import org.terifan.sourcecodeeditor.Style;
 import org.terifan.sourcecodeeditor.SyntaxParser;
 import org.terifan.sourcecodeeditor.Token;
 
@@ -22,51 +18,16 @@ public class TextSyntaxParser extends SyntaxParser
 	 */
 	public final static String TEXT = "TEXT";
 
-	private final HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
-	private Style mTokenStyle;
+	private String mTokenStyle;
 	private boolean mOptimizeWhitespace;
 	private int mInitializedRow;
 
 
 	public TextSyntaxParser()
 	{
-		Font plain = new Font("monospaced", Font.PLAIN, 12);
-		Color bg = Color.WHITE;
-
-		mStyles = new HashMap<String,Style>();
-		mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(0,0,153), bg, false, false, true, false));
-		mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, Color.WHITE, new Color(255,255,128), false, false, true, false));
-		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, false));
-		mStyles.put(TEXT, new Style(TEXT, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, false));
-	}
-
-
-	/**
-	 * Return the style matching to a style identifier.
-	 */
-	@Override
-	public Style getStyle(String aIdentifier)
-	{
-		Style s = (Style)mStyles.get(aIdentifier);
-		if (s == null) throw new IllegalArgumentException("Style not found: " + aIdentifier);
-		return s;
-	}
-
-
-	/**
-	 * Return an array with all style keys.
-	 */
-	@Override
-	public String [] getStyleKeys()
-	{
-		String [] keys = new String[mStyles.size()];
-		mStyles.keySet().toArray(keys);
-		return keys;
 	}
 
 
@@ -111,13 +72,13 @@ public class TextSyntaxParser extends SyntaxParser
 
 		if (c == '\t')
 		{
-			mTokenStyle = mStyles.get(WHITESPACE);
+			mTokenStyle = WHITESPACE;
 			mTokenOffset++;
 			return "\t";
 		}
 		else if (c == ' ')
 		{
-			mTokenStyle = mStyles.get(WHITESPACE);
+			mTokenStyle = WHITESPACE;
 			mTokenOffset++;
 			return " ";
 		}
@@ -133,7 +94,7 @@ public class TextSyntaxParser extends SyntaxParser
 			}
 		}
 
-		mTokenStyle = mStyles.get(TEXT);
+		mTokenStyle = TEXT;
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
 
@@ -161,15 +122,15 @@ public class TextSyntaxParser extends SyntaxParser
 		Token prevToken = null;
 		while (iterate())
 		{
-			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
-			{
-				prevToken.append(mToken);
-			}
-			else
-			{
+//			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
+//			{
+//				prevToken.append(mToken);
+//			}
+//			else
+//			{
 				prevToken = new Token(mToken, mTokenStyle, mTokenOffset-mToken.length(), false);
 				tokens.add(prevToken);
-			}
+//			}
 		}
 		return tokens;
 	}

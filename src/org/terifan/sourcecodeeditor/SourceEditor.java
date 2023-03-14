@@ -1,5 +1,6 @@
 package org.terifan.sourcecodeeditor;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -9,6 +10,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -34,6 +36,9 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private final static long serialVersionUID = 1L;
 	private final static boolean DEBUG_GRAPHICS = false;
 
+	private final static BasicStroke INDENT_LINE_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0f, new float[]{1f,1f}, 0f);
+
+	private StyleMap mStyleMap;
 	private boolean mRectangularSelection;
 	private boolean mRequestFocus;
 	private Caret mCaret;
@@ -52,10 +57,14 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private boolean mBoldCaretEnabled;
 	private boolean mHighlightTextCaseSensative;
 	private boolean mLineBreakSymbolEnabled;
+	private boolean mSelectedLineBreakSymbolEnabled;
 	private boolean mOverwriteTextEnabled;
-	private boolean mTabIndentsTextEnabled;
+	private boolean mTabIndentsTextBlockEnabled;
 	private boolean mWhitespaceSymbolEnabled;
 	private boolean mPaintFullRowSelectionEnabled;
+	private boolean mHighlightCaretRowEnabled;
+	private boolean mIndentLinesEnabled;
+	private boolean mMultilineEnabled;
 	private Insets mMargins;
 	private int mFontSize;
 	private int mLineSpacing;
@@ -63,26 +72,25 @@ public final class SourceEditor extends JComponent implements Scrollable
 	private int mTabSize;
 	private String mHighlightText;
 	private String mLineBreakSymbol;
-	private boolean mAlternateMode;
 	private transient Object mAntialiase;
 
 	private SyntaxParser mInputSyntaxParser;
 	private SyntaxParser mOffsetSyntaxParser;
 	private SyntaxParser mPaintSyntaxParser;
 	private SyntaxParser mPixelOffsetSyntaxParser;
-	private Color mHighlightCaretRow;
-	private Color mCaretColor;
 
 
-	public SourceEditor(SyntaxParser aSyntaxParser, Document aDocument)
+	public SourceEditor(SyntaxParser aSyntaxParser, Document aDocument, StyleMap aStyles)
 	{
 		// Disable arrow keys in any ancestor JScrollPane
 		UIManager.getDefaults().put("ScrollPane.ancestorInputMap", new UIDefaults.LazyInputMap(new Object[] {}));
 
+		mStyleMap = aStyles;
+
 		setOpaque(true);
 		setDocument(aDocument);
 		setSyntaxParser(aSyntaxParser);
-		setBackground(mPaintSyntaxParser.getStyle(SyntaxParser.WHITESPACE).getBackground());
+		setBackground(getStyle(SyntaxParser.WHITESPACE).getBackground());
 		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		setFocusTraversalKeysEnabled(false);
 		setFocusable(true);
@@ -93,19 +101,21 @@ public final class SourceEditor extends JComponent implements Scrollable
 		setCaretBlinkRate(350);
 		setHighlightTextCaseSensative(false);
 		setLineBreakSymbolEnabled(false);
+		setSelectedLineBreakSymbolEnabled(false);
 		setOverwriteTextEnabled(false);
-		setTabIndentsTextEnabled(true);
+		setTabIndentsTextBlockEnabled(true);
 		setWhitespaceSymbolEnabled(false);
 		setPaintFullRowSelectionEnabled(true);
+		setHighlightCaretRowEnabled(true);
+		setIndentLinesEnabled(true);
 		setMargins(new Insets(0, 0, 0, 0));
 		setFontPointSize(13);
 		setLineSpacing(0);
 		setTabSize(4);
 		setLineBreakSymbol('\u00B6');
-		setAlternateMode(false);
+		setMultiline(true);
 		setAntialiase(RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
-
-		setHighlightCaretRow(new Color(50,50,50));
+		setFocusTraversalKeysEnabled(false);
 
 		SourceEditorMouseListener mouseListener = new SourceEditorMouseListener(this);
 		addMouseListener(mouseListener);
@@ -337,22 +347,32 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public SourceEditor setTabIndentsTextEnabled(boolean aTabIndentsTextEnabled)
+	public boolean isTabIndentsTextBlockEnabled()
 	{
-		mTabIndentsTextEnabled = aTabIndentsTextEnabled;
+		return mTabIndentsTextBlockEnabled;
+	}
+
+
+	public SourceEditor setTabIndentsTextBlockEnabled(boolean aTabIndentsTextBlockEnabled)
+	{
+		mTabIndentsTextBlockEnabled = aTabIndentsTextBlockEnabled;
 		return this;
 	}
 
 
-	public boolean isAlternateMode()
+	public boolean isMultiline()
 	{
-		return mAlternateMode;
+		return mMultilineEnabled;
 	}
 
 
-	public SourceEditor setAlternateMode(boolean aAlternateMode)
+	/**
+	 * @param aMultiline
+	 *   if true disables the enter and tab keys and instead control+enter and control+tab must be pressed.
+	 */
+	public SourceEditor setMultiline(boolean aMultiline)
 	{
-		mAlternateMode = aAlternateMode;
+		mMultilineEnabled = aMultiline;
 		return this;
 	}
 
@@ -378,28 +398,35 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public Color getHighlightCaretRow()
+	public boolean isHighlightCaretRowEnabled()
 	{
-		return mHighlightCaretRow;
+		return mHighlightCaretRowEnabled;
 	}
 
 
-	public SourceEditor setHighlightCaretRow(Color aHighlightCaretRow)
+	public SourceEditor setHighlightCaretRowEnabled(boolean aState)
 	{
-		mHighlightCaretRow = aHighlightCaretRow;
+		mHighlightCaretRowEnabled = aState;
 		return this;
-	}
-
-
-	public boolean isTabIndentsTextEnabled()
-	{
-		return mTabIndentsTextEnabled;
 	}
 
 
 	public SourceEditor setAutoLineCopyCutEnabled(boolean aAutoLineCopyCutEnabled)
 	{
 		mAutoLineCopyCutEnabled = aAutoLineCopyCutEnabled;
+		return this;
+	}
+
+
+	public boolean isIndentLinesEnabled()
+	{
+		return mIndentLinesEnabled;
+	}
+
+
+	public SourceEditor setIndentLinesEnabled(boolean aIndentLinesEnabled)
+	{
+		mIndentLinesEnabled = aIndentLinesEnabled;
 		return this;
 	}
 
@@ -436,23 +463,6 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public Color getCaretColor()
-	{
-		return mCaretColor;
-	}
-
-
-	/**
-	 * @param aCaretColor
-	 *   null or the caret color. If null then the caret is the inverted (xor) of background.
-	 */
-	public SourceEditor setCaretColor(Color aCaretColor)
-	{
-		mCaretColor = aCaretColor;
-		return this;
-	}
-
-
 	public boolean isPaintFullRowSelectionEnabled()
 	{
 		return mPaintFullRowSelectionEnabled;
@@ -476,6 +486,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 	public boolean isLineBreakSymbolEnabled()
 	{
 		return mLineBreakSymbolEnabled;
+	}
+
+
+	public SourceEditor setSelectedLineBreakSymbolEnabled(boolean aSelectedLineBreakSymbolEnabled)
+	{
+		mSelectedLineBreakSymbolEnabled = aSelectedLineBreakSymbolEnabled;
+		return this;
+	}
+
+
+	public boolean isSelectedLineBreakSymbolEnabled()
+	{
+		return mSelectedLineBreakSymbolEnabled;
 	}
 
 
@@ -589,10 +612,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public Style getStyle(String aIdentifier)
-	{
-		return mPaintSyntaxParser.getStyle(aIdentifier);
-	}
+//	public Style getStyle(String aIdentifier)
+//	{
+//		return mPaintSyntaxParser.getStyle(aIdentifier);
+//	}
 
 
 	public int getFontSize()
@@ -603,9 +626,9 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 	public SourceEditor setFontPointSize(int aFontPointSize)
 	{
-		for (String key : mPaintSyntaxParser.getStyleKeys())
+		for (Style style : mStyleMap.values())
 		{
-			mPaintSyntaxParser.getStyle(key).setFontSize(aFontPointSize);
+			style.setFontSize(aFontPointSize);
 		}
 		return this;
 	}
@@ -613,7 +636,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 	public int getFontPointSize()
 	{
-		return mPaintSyntaxParser.getStyle(SyntaxParser.WHITESPACE).getFont().getSize();
+		return getStyle(SyntaxParser.WHITESPACE).getFont().getSize();
 	}
 
 
@@ -688,6 +711,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 	protected Point getSelectionEndUnmodified()
 	{
 		return mSelectionEnd;
+	}
+
+
+	public StyleMap getStyleMap()
+	{
+		return mStyleMap;
+	}
+
+
+	public SourceEditor setStyleMap(StyleMap aStyleMap)
+	{
+		this.mStyleMap = aStyleMap;
+		return this;
 	}
 
 
@@ -817,7 +853,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	public SourceEditor setRectangularSelection(boolean aState)
+	/**
+	 * Internal method to set the current state if the user is making a rectangular selection.
+	 */
+	SourceEditor setRectangularSelection(boolean aState)
 	{
 		mRectangularSelection = aState;
 		return this;
@@ -1065,6 +1104,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		int fontHeight = getFontHeight();
 		int fontAscent = getFontAscent();
+		int fontDescent = getFontDescent();
 		int editorW = getWidth();
 
 		Rectangle clipBounds = g.getClipBounds();
@@ -1096,13 +1136,18 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 			List<Token> tokens = mPaintSyntaxParser.parse(mDocument, rowIndex, optimizeTokens && !highlightText, optimizeWhitespace);
 			int positionX = 0;
-			int y = fontAscent + rowIndex * (fontHeight + mLineSpacing) + mMargins.top;
+			int lineHeight = fontHeight + mLineSpacing;
+			int y0 = mMargins.top + rowIndex * lineHeight;
+			int y = y0 + lineHeight/2 + fontDescent/2;
 
-			if (mHighlightCaretRow != null && rowIndex == mCaret.getCharacterPosition().y)
+			if (mHighlightCaretRowEnabled && rowIndex == mCaret.getCharacterPosition().y)
 			{
-				int h = fontHeight + mLineSpacing;
-				g.setColor(mHighlightCaretRow);
-				g.fillRect(0, mMargins.top + rowIndex * h, editorW, h);
+				Color bg = getStyle(SyntaxParser.HIGHLIGHT_CARET_ROW).getBackground();
+				if (bg != null)
+				{
+					g.setColor(bg);
+					g.fillRect(0, y0, editorW, lineHeight);
+				}
 			}
 
 			Token token = null;
@@ -1119,54 +1164,61 @@ public final class SourceEditor extends JComponent implements Scrollable
 					{
 						if (selectionIntersect.x > 0)
 						{
-							positionX = paintToken(g, positionX, y, token, 0, selectionIntersect.x, clipBounds, highlightText, false);
+							positionX = paintToken(g, positionX, y, y0, lineHeight, token, 0, selectionIntersect.x, clipBounds, highlightText, false);
 						}
 
-						positionX = paintToken(g, positionX, y, token, selectionIntersect.x, selectionIntersect.y, clipBounds, highlightText, true);
+						positionX = paintToken(g, positionX, y, y0, lineHeight, token, selectionIntersect.x, selectionIntersect.y, clipBounds, highlightText, true);
 
 						if (selectionIntersect.y < len)
 						{
-							positionX = paintToken(g, positionX, y, token, selectionIntersect.y, len, clipBounds, highlightText, false);
+							positionX = paintToken(g, positionX, y, y0, lineHeight, token, selectionIntersect.y, len, clipBounds, highlightText, false);
 						}
 					}
 					else
 					{
-						positionX = paintToken(g, positionX, y, token, -1, -1, clipBounds, highlightText, false);
+						positionX = paintToken(g, positionX, y, y0, lineHeight, token, -1, -1, clipBounds, highlightText, false);
 					}
 				}
 			}
 
-			if (token != null)
+			boolean rowSelected = !mRectangularSelection && mPaintFullRowSelectionEnabled && isTextSelected() && rowIndex < mDocument.getLineCount() - 1 && intersectSelection(mDocument.getLineLength(rowIndex), rowIndex);
+
+			if (token != null || mLineBreakSymbolEnabled || mSelectedLineBreakSymbolEnabled || rowSelected)
 			{
 				boolean selectionIntersected = isTextSelected() && intersectSelection(mDocument.getLineLength(rowIndex), rowIndex);
 
 				if (selectionIntersected || mLineBreakSymbolEnabled)
 				{
-					Style fontStyle = mPaintSyntaxParser.getStyle(SyntaxParser.LINE_BREAK);
-					Style colorStyle = token.isComment() ? token.getStyle() : fontStyle;
+					Style style = token != null && token.isComment() ? getStyle(token.getStyle()) : getStyle(SyntaxParser.LINE_BREAK);
+					int w = style.getStringWidth(mLineBreakSymbol);
 
-					int w = fontStyle.getStringWidth(mLineBreakSymbol);
-
-					if (mPaintFullRowSelectionEnabled)
+					if (rowSelected)
 					{
-						g.setColor(mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getBackground());
-						g.fillRect(positionX + mMargins.left, y - fontAscent, editorW - (positionX + mMargins.left), fontHeight);
-					}
-					else if (highlightText || !getBackground().equals(colorStyle.getBackground()))
-					{
-						g.setColor(colorStyle.getBackground());
-						g.fillRect(positionX + mMargins.left, y - fontAscent, w, fontHeight);
+						g.setColor(getStyle(SyntaxParser.SELECTION).getBackground());
+						g.fillRect(positionX + mMargins.left, y0, editorW - (positionX + mMargins.left), lineHeight);
 					}
 
-					Color fontColor = colorStyle.getForeground();
-					if (selectionIntersected)
+					if (rowIndex < mDocument.getLineCount() - 1)
 					{
-						fontColor = mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION).getForeground();
-					}
+						if (!getBackground().equals(style.getBackground()))
+						{
+							g.setColor(style.getBackground());
+							g.fillRect(positionX + mMargins.left, y0, w, lineHeight);
+						}
 
-					g.setFont(fontStyle.getFont());
-					g.setColor(fontColor);
-					g.drawString(mLineBreakSymbol, positionX + mMargins.left, y);
+						Color foreground = getStyle(SyntaxParser.WHITESPACE).getForeground();
+						if (selectionIntersected)
+						{
+							foreground = getStyle(SyntaxParser.SELECTION).getForeground();
+						}
+
+						if (mLineBreakSymbolEnabled || mSelectedLineBreakSymbolEnabled && selectionIntersected)
+						{
+							g.setFont(style.getFont());
+							g.setColor(foreground);
+							g.drawString(mLineBreakSymbol, positionX + mMargins.left, y);
+						}
+					}
 
 					positionX += w;
 				}
@@ -1177,20 +1229,56 @@ public final class SourceEditor extends JComponent implements Scrollable
 					revalidate();
 				}
 			}
+
+			if (mHighlightCaretRowEnabled && rowIndex == mCaret.getCharacterPosition().y)
+			{
+				Color fg = getStyle(SyntaxParser.HIGHLIGHT_CARET_ROW).getForeground();
+				if (fg != null)
+				{
+					g.setColor(fg);
+					g.drawRect(0, y0, editorW, lineHeight - 1);
+				}
+			}
+			if (mIndentLinesEnabled)
+			{
+				Stroke stroke = g.getStroke();
+				g.setColor(getStyle(SyntaxParser.INDENT_LINE).getForeground());
+				g.setStroke(INDENT_LINE_STROKE);
+				for (int x = getLineIndent(tokens), w = mTabSize * getStyle(SyntaxParser.WHITESPACE).getCharWidth(' '), i = w; i < x; i += w)
+				{
+					g.drawLine(i, y - fontAscent, i, y - fontAscent + lineHeight);
+				}
+				g.setStroke(stroke);
+			}
 		}
 
 		mCaret.paintCaret(g);
 	}
 
 
-	private int paintToken(Graphics aGraphics, int aPixelX, int aPixelY, Token aToken, int aTokenOffset, int aTokenLength, Rectangle aClipBounds, boolean aHighlightText, boolean aIsSelection)
+	public int getLineIndent(List<Token> aTokens)
+	{
+		int x = mMargins.left;
+		for (Token nextToken : aTokens)
+		{
+			if (!nextToken.getText().isBlank())
+			{
+				break;
+			}
+			x = advancePosition(x, nextToken.getText(), nextToken.getStyle());
+		}
+		return x;
+	}
+
+
+	private int paintToken(Graphics2D aGraphics, int aPixelX, int aPixelY, int aRowY, int aLineHeight, Token aToken, int aTokenOffset, int aTokenLength, Rectangle aClipBounds, boolean aHighlightText, boolean aIsSelection)
 	{
 		if (aTokenOffset != -1 && aTokenOffset == aTokenLength)
 		{
 			return aPixelX;
 		}
 
-		String text = aToken.getToken();
+		String text = aToken.getText();
 
 		if (aTokenOffset != -1)
 		{
@@ -1200,30 +1288,30 @@ public final class SourceEditor extends JComponent implements Scrollable
 		int fontHeight = getFontHeight();
 		int fontAscent = getFontAscent();
 
-		Style tokenStyle = aToken.getStyle();
 		int x0 = aPixelX + mMargins.left;
-		int x1 = advancePosition(x0, text, tokenStyle);
+		int x1 = advancePosition(x0, text, aToken.getStyle());
+		Style tokenStyle = mStyleMap.get(aToken.getStyle());
 
 		if (x1 >= aClipBounds.x)
 		{
-			Style style = aIsSelection ? mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION) : tokenStyle;
+			Style style = aIsSelection ? getStyle(SyntaxParser.SELECTION) : tokenStyle;
 			Style colorStyle = tokenStyle;
 
 			if (aHighlightText && tokenStyle.isSupportHighlight() && style.isBackgroundOptional() && text.equalsIgnoreCase(mHighlightText))
 			{
-				aGraphics.setColor(getStyle(SyntaxParser.HIGHLIGHT).getBackground());
-				aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
+				aGraphics.setColor(getStyle(SyntaxParser.HIGHLIGHT_WORD).getBackground());
+				aGraphics.fillRect(x0, aRowY, x1 - x0, aLineHeight);
 			}
 			else if (!getBackground().equals(style.getBackground()))
 			{
 				aGraphics.setColor(style.getBackground());
-				aGraphics.fillRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
+				aGraphics.fillRect(x0, aRowY, x1 - x0, aLineHeight);
 			}
 
 			if (DEBUG_GRAPHICS)
 			{
 				aGraphics.setColor(new Color(192, 192, 192));
-				aGraphics.drawRect(x0, aPixelY - fontAscent, x1 - x0, fontHeight);
+				aGraphics.drawRect(x0, aRowY, x1 - x0, aLineHeight);
 			}
 
 			aGraphics.setFont(tokenStyle.getFont());
@@ -1240,7 +1328,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 				int x = (x0 + x1) / 2;
 				int v = aPixelY - fontAscent + fontHeight / 2;
 
-				aGraphics.setColor((aToken.isComment() && !aIsSelection ? aToken.getStyle() : style).getForeground());
+				aGraphics.setColor(getStyle(SyntaxParser.WHITESPACE).getForeground());
 				if (text.charAt(0) == ' ')
 				{
 					aGraphics.drawLine(x, v, x, v);
@@ -1410,12 +1498,10 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		int virtualOffset = 0;
 		int characterOffset = 0;
-		int offset = aTargetVirtualOffset;
 		while (aTargetVirtualOffset > virtualOffset && characterOffset < sourceLine.length())
 		{
 			if (sourceLine.charAt(characterOffset) == '\t')
 			{
-				offset += (virtualOffset % mTabSize) - mTabSize + 1;
 				if (aTargetVirtualOffset < virtualOffset)
 				{
 					break;
@@ -1501,8 +1587,8 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		for (Token token : mOffsetSyntaxParser.parse(mDocument, y, true, false))
 		{
-			String s = token.getToken();
-			Style style = token.getStyle();
+			String s = token.getText();
+			String style = token.getStyle();
 			int x1 = advancePosition(positionX, s, style);
 
 			if (x1 >= aMousePoint.x - mMargins.left)
@@ -1550,7 +1636,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 		for (Token token : mPixelOffsetSyntaxParser.parse(mDocument, aRow, false, false))
 		{
-			String s = token.getToken();
+			String s = token.getText();
 
 			if (Character.isWhitespace(s.charAt(0)))
 			{
@@ -1723,19 +1809,19 @@ public final class SourceEditor extends JComponent implements Scrollable
 
 	int getFontHeight()
 	{
-		return mPaintSyntaxParser.getStyle(SyntaxParser.WHITESPACE).getFontHeight();
+		return getStyle(SyntaxParser.WHITESPACE).getFontHeight();
 	}
 
 
 	int getFontAscent()
 	{
-		return mPaintSyntaxParser.getStyle(SyntaxParser.WHITESPACE).getFontAscent();
+		return getStyle(SyntaxParser.WHITESPACE).getFontAscent();
 	}
 
 
-	boolean isFontMonospaced()
+	int getFontDescent()
 	{
-		return mPaintSyntaxParser.getStyle(SyntaxParser.WHITESPACE).isFontMonospaced();
+		return getStyle(SyntaxParser.WHITESPACE).getFontDescent();
 	}
 
 
@@ -2541,7 +2627,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 				}
 				return ofs;
 			}
-			if (!Character.isWhitespace(token.getToken().charAt(0)))
+			if (!Character.isWhitespace(token.getText().charAt(0)))
 			{
 				prevOfs = ofs;
 //				prevLen = len;
@@ -2585,7 +2671,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 				{
 					o++;
 				}
-				return token.getStyle();
+				return getStyle(token.getStyle());
 			}
 		}
 		return null;
@@ -2639,7 +2725,7 @@ public final class SourceEditor extends JComponent implements Scrollable
 	@Override
 	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction)
 	{
-		Style style = mPaintSyntaxParser.getStyle(SyntaxParser.SELECTION);
+		Style style = getStyle(SyntaxParser.WHITESPACE);
 
 		switch (orientation)
 		{
@@ -2653,14 +2739,16 @@ public final class SourceEditor extends JComponent implements Scrollable
 	}
 
 
-	private int advancePosition(int aPixelX, String aText, Style aStyle)
+	private int advancePosition(int aPixelX, String aText, String aStyle)
 	{
+		Style style = getStyle(aStyle);
+
 		for (int i = 0; i < aText.length(); )
 		{
 			int j = aText.indexOf('\t', i);
 			if (j == i)
 			{
-				int ts = mTabSize * aStyle.getCharWidth(' ');
+				int ts = mTabSize * style.getCharWidth(' ');
 				aPixelX = ((aPixelX + ts) / ts) * ts;
 				i++;
 			}
@@ -2670,11 +2758,29 @@ public final class SourceEditor extends JComponent implements Scrollable
 				{
 					j = aText.length();
 				}
-				aPixelX += aStyle.getStringWidth(aText.substring(i, j));
+				aPixelX += style.getStringWidth(aText.substring(i, j));
 				i = j;
 			}
 		}
 
 		return aPixelX;
+	}
+
+
+	public Style getStyle(String aIdentifier)
+	{
+		Style s = mStyleMap.get(aIdentifier);
+		if (s == null)
+		{
+			throw new IllegalArgumentException("Style not found: " + aIdentifier);
+		}
+		return s;
+	}
+
+
+	public void clearSelection()
+	{
+		mSelectionStart = null;
+		mSelectionEnd = null;
 	}
 }

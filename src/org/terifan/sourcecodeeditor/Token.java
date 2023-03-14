@@ -3,8 +3,8 @@ package org.terifan.sourcecodeeditor;
 
 public class Token
 {
-	private String mToken;
-	private Style mStyle;
+	private String mText;
+	private String mStyle;
 	private int mOffset;
 	private boolean mComment;
 
@@ -14,24 +14,24 @@ public class Token
 	}
 
 
-	public Token(String aToken, Style aStyle, int aOffset, boolean aComment)
+	public Token(String aText, String aStyle, int aOffset, boolean aComment)
 	{
-		mToken = aToken;
+		mText = aText;
 		mStyle = aStyle;
 		mOffset = aOffset;
 		mComment = aComment;
 	}
 
 
-	public Style getStyle()
+	public String getStyle()
 	{
 		return mStyle;
 	}
 
 
-	public String getToken()
+	public String getText()
 	{
-		return mToken;
+		return mText;
 	}
 
 
@@ -43,7 +43,7 @@ public class Token
 
 	public int length()
 	{
-		return mToken.length();
+		return mText.length();
 	}
 
 
@@ -55,6 +55,6 @@ public class Token
 
 	public void append(String aToken)
 	{
-		mToken += aToken;
+		mText += aToken;
 	}
 }

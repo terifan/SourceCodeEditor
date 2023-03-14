@@ -1,12 +1,22 @@
 package demo;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import javax.swing.AbstractAction;
+import static javax.swing.Action.SELECTED_KEY;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import org.terifan.sourcecodeeditor.Document;
 import org.terifan.sourcecodeeditor.parsers.JavaSyntaxParser;
 import org.terifan.sourcecodeeditor.SourceEditor;
+import org.terifan.sourcecodeeditor.StyleSheet;
 import org.terifan.sourcecodeeditor.parsers.SqlSyntaxParser;
 import org.terifan.sourcecodeeditor.SyntaxParser;
 import org.terifan.sourcecodeeditor.parsers.TextSyntaxParser;
@@ -15,6 +25,9 @@ import org.terifan.sourcecodeeditor.parsers.XmlSyntaxParser;
 
 public class SampleApp
 {
+	private static JTabbedPane tabbedPane;
+
+
 	public static void main(String... args)
 	{
 		try
@@ -28,6 +41,7 @@ public class SampleApp
 				+ "/**\n"
 				+ " * documentation\thello\t\t\tworld\n"
 				+ " */\n"
+				+ "@Sample\n"
 				+ "class HelloWorld\n"
 				+ "{\n"
 				+ "	public static void main(String... args)\n"
@@ -36,7 +50,7 @@ public class SampleApp
 				+ "		try\n"
 				+ "		{\n"
 				+ "			int x = number();\n"
-				+ "//			System.out.println(\"3 x 5 = \" + 3 * x);\n"
+				+ "//			System.out.println(\"3 * X = \" + 3 * x);\n"
 				+ "		}\n"
 				+ "		catch (Exception e)\n"
 				+ "		{\n"
@@ -65,18 +79,20 @@ public class SampleApp
 			Document documentXml = new Document(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 				"<books xmlns=\"http://www.contoso.com/books\">\n" +
-				"  <book genre=\"novel\" ISBN=\"1-861001-57-8\" publicationdate=\"1823-01-28\">\n" +
-				"    <title>Pride And Prejudice</title>\n" +
-				"    <price>24.95</price>\n" +
-				"  </book>\n" +
-				"  <book genre=\"novel\" ISBN=\"1-861002-30-1\" publicationdate=\"1985-01-01\">\n" +
-				"    <title>The Handmaid's Tale</title>\n" +
-				"    <price>29.95</price>\n" +
-				"  </book>\n" +
-				"  <book genre=\"novel\" ISBN=\"1-861001-45-3\" publicationdate=\"1811-01-01\">\n" +
-				"    <title>Sense and Sensibility</title>\n" +
-				"    <price>19.95</price>\n" +
-				"  </book>\n" +
+				"    <book genre=\"novel\" ISBN=\"1-861001-57-8\" publicationdate=\"1823-01-28\">\n" +
+				"        <title>Pride And Prejudice</title>\n" +
+				"        <price>24.95</price>\n" +
+				"    </book>\n" +
+				"<!--\n" +
+				"    <book genre=\"novel\" ISBN=\"1-861002-30-1\" publicationdate=\"1985-01-01\">\n" +
+				"        <title>The Handmaid's Tale</title>\n" +
+				"        <price>29.95</price>\n" +
+				"    </book>\n" +
+				"-->\n" +
+				"    <book genre=\"novel\" ISBN=\"1-861001-45-3\" publicationdate=\"1811-01-01\">\n" +
+				"        <title>Sense and Sensibility</title>\n" +
+				"        <price>19.95</price>\n" +
+				"    </book>\n" +
 				"</books>\n"
 			);
 
@@ -101,20 +117,40 @@ public class SampleApp
 				"If you want to pry open the XmlDocument class and see how it's implemented, see the Reference Source."
 			);
 
-			JTabbedPane tabbedPane = new JTabbedPane();
-			tabbedPane.add("Java", new JScrollPane(new SourceEditor(parserJava, documentJava)
+			tabbedPane = new JTabbedPane();
+			add(tabbedPane, "Java Dark", new SourceEditor(parserJava, documentJava, StyleSheet.installJava("monospaced", 14, "dark"))
 				.setWhitespaceSymbolEnabled(true)
-				.setLineBreakSymbolEnabled(!true)
-			));
-			tabbedPane.add("SQL", new JScrollPane(new SourceEditor(parserSql, documentSql)));
-			tabbedPane.add("Xml", new JScrollPane(new SourceEditor(parserXml, documentXml)));
-//			tabbedPane.add("Json", new JScrollPane(new SourceEditor(parserJson, documentJson)));
-//			tabbedPane.add("Html", new JScrollPane(new SourceEditor(parserHtml, documentHtml)));
-			tabbedPane.add("Text", new JScrollPane(new SourceEditor(parserText, documentText)));
+				.setLineBreakSymbolEnabled(true)
+			);
+			add(tabbedPane, "Java Light", new SourceEditor(new JavaSyntaxParser(), new Document(documentJava), StyleSheet.installJava("monospaced", 14, ""))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+			add(tabbedPane, "SQL", new SourceEditor(parserSql, documentSql, StyleSheet.installSql("monospaced", 14, ""))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+			add(tabbedPane, "Xml Dark", new SourceEditor(parserXml, documentXml, StyleSheet.installXml("monospaced", 14, "dark"))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+			add(tabbedPane, "Xml Light", new SourceEditor(parserXml, new Document(documentXml), StyleSheet.installXml("monospaced", 14, ""))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+//			add(tabbedPane, "Json", new SourceEditor(parserJson, documentJson)));
+//			add(tabbedPane, "Html", new SourceEditor(parserHtml, documentHtml)));
+			add(tabbedPane, "Text", new SourceEditor(parserText, documentText, StyleSheet.installText("monospaced", 14, ""))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+
+			JPanel panel = new JPanel(new BorderLayout());
+			panel.add(tabbedPane, BorderLayout.CENTER);
 
 			JFrame frame = new JFrame();
-			frame.add(tabbedPane);
-			frame.setSize(1024, 768);
+			frame.add(panel);
+			frame.setSize(1400, 768);
 			frame.setLocationRelativeTo(null);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
@@ -123,5 +159,50 @@ public class SampleApp
 		{
 			e.printStackTrace(System.out);
 		}
+	}
+
+	private static void add(JTabbedPane aTabbedPane, String aName, SourceEditor aEditor)
+	{
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(createToolbar(aEditor), BorderLayout.NORTH);
+		panel.add(new JScrollPane(aEditor), BorderLayout.CENTER);
+		aTabbedPane.add(aName, panel);
+	}
+
+	private static JToolBar createToolbar(SourceEditor aEditor)
+	{
+		JToolBar toolbar = new JToolBar();
+		toolbar.add(newButton(aEditor, "Multiline", e -> e.isMultiline(), (e, b) -> e.setMultiline(b)));
+		toolbar.add(newButton(aEditor, "AutoIndent", e -> e.isAutoIndentEnabled(), (e, b) -> e.setAutoIndentEnabled(b)));
+		toolbar.add(newButton(aEditor, "BoldCaret", e -> e.isBoldCaretEnabled(), (e, b) -> e.setBoldCaretEnabled(b)));
+		toolbar.add(newButton(aEditor, "HighlightCaretRow", e -> e.isHighlightCaretRowEnabled(), (e, b) -> e.setHighlightCaretRowEnabled(b)));
+		toolbar.add(newButton(aEditor, "HighlightTextCaseSensative", e -> e.isHighlightTextCaseSensative(), (e, b) -> e.setHighlightTextCaseSensative(b)));
+		toolbar.add(newButton(aEditor, "IndentLines", e -> e.isIndentLinesEnabled(), (e, b) -> e.setIndentLinesEnabled(b)));
+		toolbar.add(newButton(aEditor, "LineBreakSymbol", e -> e.isLineBreakSymbolEnabled(), (e, b) -> e.setLineBreakSymbolEnabled(b)));
+		toolbar.add(newButton(aEditor, "SelectedLineBreakSymbol", e -> e.isSelectedLineBreakSymbolEnabled(), (e, b) -> e.setSelectedLineBreakSymbolEnabled(b)));
+		toolbar.add(newButton(aEditor, "OverwriteText", e -> e.isOverwriteTextEnabled(), (e, b) -> e.setOverwriteTextEnabled(b)));
+		toolbar.add(newButton(aEditor, "PaintFullRowSelection", e -> e.isPaintFullRowSelectionEnabled(), (e, b) -> e.setPaintFullRowSelectionEnabled(b)));
+		toolbar.add(newButton(aEditor, "TabIndentsText", e -> e.isTabIndentsTextBlockEnabled(), (e, b) -> e.setTabIndentsTextBlockEnabled(b)));
+		toolbar.add(newButton(aEditor, "WhitespaceSymbol", e -> e.isWhitespaceSymbolEnabled(), (e, b) -> e.setWhitespaceSymbolEnabled(b)));
+		return toolbar;
+	}
+
+	public static JToggleButton newButton(SourceEditor aEditor, String aLabel, Function<SourceEditor, Boolean> aIsSelected, BiConsumer<SourceEditor,Boolean> aUpdate)
+	{
+		JToggleButton button = new JToggleButton(new AbstractAction(aLabel)
+		{
+			{
+				putValue(SELECTED_KEY, aIsSelected.apply(aEditor));
+			}
+			@Override
+			public void actionPerformed(ActionEvent aEvent)
+			{
+				aUpdate.accept(aEditor, ((JToggleButton)aEvent.getSource()).isSelected());
+				aEditor.repaint();
+			}
+		});
+		button.setFocusPainted(false);
+		button.setFocusable(false);
+		return button;
 	}
 }

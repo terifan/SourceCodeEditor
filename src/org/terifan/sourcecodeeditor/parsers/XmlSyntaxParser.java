@@ -1,12 +1,8 @@
 package org.terifan.sourcecodeeditor.parsers;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.terifan.sourcecodeeditor.Document;
-import org.terifan.sourcecodeeditor.Style;
 import org.terifan.sourcecodeeditor.SyntaxParser;
 import org.terifan.sourcecodeeditor.Token;
 
@@ -15,20 +11,19 @@ public class XmlSyntaxParser extends SyntaxParser
 {
 	public final static String TAG = "TAG";
 	public final static String NAMESPACE = "NAMESPACE";
-	public final static String BLOCKCOMMENT = "BLOCKCOMMENT";
-	public final static String STRINGLITERAL = "STRINGLITERAL";
+	public final static String COMMENT_BLOCK = "COMMENT_BLOCK";
+	public final static String LITERAL_STRING = "LITERAL_STRING";
 	public final static String ATTRIBUTE = "ATTRIBUTE";
 	public final static String ELEMENT = "ELEMENT";
 	public final static String TEXT = "TEXT";
-	public final static String SYNTAXERROR = "SYNTAXERROR";
+	public final static String SYNTAX_ERROR = "SYNTAX_ERROR";
 	public final static String OPERATOR = "OPERATOR";
 	public final static String AMP = "AMP";
 
-	private final HashMap<String, Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
-	private Style mTokenStyle;
+	private String mTokenStyle;
 	private String mCommentState;
 	private boolean mInsideTag;
 	private boolean mOptimizeTokens;
@@ -38,50 +33,6 @@ public class XmlSyntaxParser extends SyntaxParser
 
 	public XmlSyntaxParser()
 	{
-		Font plain = new Font("monospaced", Font.PLAIN, 12);
-		Font bold = new Font("monospaced", Font.BOLD, 12);
-		Font italic = new Font("monospaced", Font.ITALIC, 12);
-		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 12);
-		Color bg = Color.WHITE;
-
-		mStyles = new HashMap<>();
-		mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(0,160,0), bg, false, false, true, false));
-		mStyles.put(TAG, new Style(TAG, plain, new Color(0,0,220), bg, false, false, true, false));
-		mStyles.put(NAMESPACE, new Style(NAMESPACE, plain, new Color(180,0,0), bg, false, false, true, true));
-		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, true));
-		mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(0,0,220), bg, false, false, true, true));
-		mStyles.put(TEXT, new Style(TEXT, plain, new Color(0,0,0), bg, false, false, true, true));
-		mStyles.put(ELEMENT, new Style(ELEMENT, plain, new Color(180,0,0), bg, false, false, true, true));
-		mStyles.put(ATTRIBUTE, new Style(ATTRIBUTE, plain, new Color(255,0,0), bg, false, false, true, true));
-		mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(0,102,0), bg, false, false, true, false));
-		mStyles.put(AMP, new Style(AMP, plain, new Color(234,202,21), bg, false, false, true, true));
-
-		mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, Color.WHITE, new Color(255,255,128), false, false, true, false));
-		mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(0,0,0), new Color(255,200,200), false, false, false, false));
-		mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, false));
-		mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(0,0,153), bg, false, false, true, false));
-	}
-
-
-	@Override
-	public Style getStyle(String aIdentifier)
-	{
-		Style s = mStyles.get(aIdentifier);
-		if (s == null)
-		{
-			throw new IllegalArgumentException("Style not found: " + aIdentifier);
-		}
-		return s;
-	}
-
-
-	@Override
-	public String [] getStyleKeys()
-	{
-		String [] keys = new String[mStyles.size()];
-		mStyles.keySet().toArray(keys);
-		return keys;
 	}
 
 
@@ -130,7 +81,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		{
 			if (mCommentState == null)
 			{
-				mTokenStyle = mStyles.get(WHITESPACE);
+				mTokenStyle = WHITESPACE;
 			}
 
 			if (c == ' ')
@@ -169,7 +120,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		{
 			if (mCommentState == null)
 			{
-				mTokenStyle = mStyles.get(WHITESPACE);
+				mTokenStyle = WHITESPACE;
 			}
 			mTokenOffset++;
 			return " ";
@@ -178,7 +129,7 @@ public class XmlSyntaxParser extends SyntaxParser
 		{
 			if (mCommentState == null)
 			{
-				mTokenStyle = mStyles.get(WHITESPACE);
+				mTokenStyle = WHITESPACE;
 			}
 			mTokenOffset++;
 			return "\t";
@@ -197,29 +148,29 @@ public class XmlSyntaxParser extends SyntaxParser
 			case '<':
 				if (d == '/' || d == '?')
 				{
-					mTokenStyle = mStyles.get(TAG);
+					mTokenStyle = TAG;
 					mTokenOffset+=2;
 					mInsideTag = true;
 					return "<" + mSourceLine.charAt(mTokenOffset-1);
 				}
 				else if (d == '!' && mSourceLine.charAt(mTokenOffset+2) == '-' && mSourceLine.charAt(mTokenOffset+3) == '-')
 				{
-					mCommentState = BLOCKCOMMENT;
-					mTokenStyle = mStyles.get(BLOCKCOMMENT);
+					mCommentState = COMMENT_BLOCK;
+					mTokenStyle = COMMENT_BLOCK;
 					mTokenOffset+=4;
 					mInsideTag = true;
 					return "<!--";
 				}
 				else if (d == '!')
 				{
-					mTokenStyle = mStyles.get(TAG);
+					mTokenStyle = TAG;
 					mTokenOffset+=2;
 					mInsideTag = true;
 					return "<" + mSourceLine.charAt(mTokenOffset-1);
 				}
 				else
 				{
-					mTokenStyle = mStyles.get(TAG);
+					mTokenStyle = TAG;
 					mTokenOffset++;
 					mInsideTag = true;
 					return "<";
@@ -227,27 +178,27 @@ public class XmlSyntaxParser extends SyntaxParser
 			case '>':
 				if (!mInsideTag)
 				{
-					mTokenStyle = mStyles.get(SYNTAXERROR);
+					mTokenStyle = SYNTAX_ERROR;
 					mTokenOffset++;
 					return Character.toString(c);
 				}
-				mTokenStyle = mStyles.get(TAG);
+				mTokenStyle = TAG;
 				mTokenOffset++;
 				mInsideTag = false;
 				return ">";
 			case '=':
-				mTokenStyle = mStyles.get(OPERATOR);
+				mTokenStyle = OPERATOR;
 				mTokenOffset++;
 				return "=";
 			case '/':
 				if (d == '>' && mInsideTag)
 				{
-					mTokenStyle = mStyles.get(TAG);
+					mTokenStyle = TAG;
 					mTokenOffset+=2;
 					mInsideTag = false;
 					return "/>";
 				}
-				mTokenStyle = mStyles.get(TEXT);
+				mTokenStyle = TEXT;
 				mTokenOffset++;
 				return "/";
 			case '&':
@@ -257,7 +208,7 @@ public class XmlSyntaxParser extends SyntaxParser
 					{
 						if (mSourceLine.charAt(i) == ';' && i > mTokenOffset+2)
 						{
-							mTokenStyle = mStyles.get(AMP);
+							mTokenStyle = AMP;
 							s = mSourceLine.substring(mTokenOffset, i+1);
 							mTokenOffset=i+1;
 							return s;
@@ -267,7 +218,7 @@ public class XmlSyntaxParser extends SyntaxParser
 							break;
 						}
 					}
-					mTokenStyle = mStyles.get(SYNTAXERROR);
+					mTokenStyle = SYNTAX_ERROR;
 					s = mSourceLine.substring(mTokenOffset, mSourceLine.length()-1);
 					mTokenOffset=mSourceLine.length()-1;
 					return s;
@@ -278,24 +229,24 @@ public class XmlSyntaxParser extends SyntaxParser
 					{
 						if (mSourceLine.charAt(i) == ';' && i > mTokenOffset+2)
 						{
-							mTokenStyle = mStyles.get(AMP);
+							mTokenStyle = AMP;
 							s = mSourceLine.substring(mTokenOffset, i+1);
 							mTokenOffset=i+1;
 							return s;
 						}
 					}
-					mTokenStyle = mStyles.get(SYNTAXERROR);
+					mTokenStyle = SYNTAX_ERROR;
 					s = mSourceLine.substring(mTokenOffset, mSourceLine.length()-1);
 					mTokenOffset=mSourceLine.length()-1;
 					return s;
 				}
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = SYNTAX_ERROR;
 				mTokenOffset++;
 				return Character.toString(c);
 			case '?':
 				if (d == '>')
 				{
-					mTokenStyle = mStyles.get(TAG);
+					mTokenStyle = TAG;
 					mTokenOffset+=2;
 					mInsideTag = false;
 					return "?>";
@@ -320,7 +271,7 @@ public class XmlSyntaxParser extends SyntaxParser
 					}
 				}
 
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = SYNTAX_ERROR;
 				mTokenOffset++;
 				return Character.toString(c);
 		}
@@ -379,11 +330,11 @@ public class XmlSyntaxParser extends SyntaxParser
 
 		if (foundTerminator)
 		{
-			mTokenStyle = mStyles.get(STRINGLITERAL);
+			mTokenStyle = LITERAL_STRING;
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 		}
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
@@ -447,19 +398,19 @@ public class XmlSyntaxParser extends SyntaxParser
 
 		if (isError || errorPending)
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 		}
 		else if (isNamespace)
 		{
-			mTokenStyle = mStyles.get(NAMESPACE);
+			mTokenStyle = NAMESPACE;
 		}
 		else if (isAttribute)
 		{
-			mTokenStyle = mStyles.get(ATTRIBUTE);
+			mTokenStyle = ATTRIBUTE;
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(ELEMENT);
+			mTokenStyle = ELEMENT;
 		}
 
 		return s;
@@ -481,7 +432,7 @@ public class XmlSyntaxParser extends SyntaxParser
 
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
-		mTokenStyle = mStyles.get(TEXT);
+		mTokenStyle = TEXT;
 
 		return s;
 	}
@@ -542,8 +493,8 @@ public class XmlSyntaxParser extends SyntaxParser
 
 							if (s.charAt(i + 1) == '!' && s.charAt(i + 2) == '-' && s.charAt(i + 3) == '-')
 							{
-								mTokenStyle = mStyles.get(BLOCKCOMMENT);
-								mCommentState = BLOCKCOMMENT;
+								mTokenStyle = COMMENT_BLOCK;
+								mCommentState = COMMENT_BLOCK;
 
 								i+=3;
 								for (; i < length; i++)
@@ -582,25 +533,25 @@ public class XmlSyntaxParser extends SyntaxParser
 		Token prevToken = null;
 		while (iterate())
 		{
-			Style style;
+			String style;
 			if (mCommentState == null)
 			{
 				style = mTokenStyle;
 			}
 			else
 			{
-				style = mStyles.get(mCommentState);
+				style = mCommentState;
 			}
 
-			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
-			{
-				prevToken.append(mToken);
-			}
-			else
-			{
+//			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
+//			{
+//				prevToken.append(mToken);
+//			}
+//			else
+//			{
 				prevToken = new Token(mToken, style, mTokenOffset-mToken.length(), mCommentState != null);
 				tokens.add(prevToken);
-			}
+//			}
 		}
 		return tokens;
 	}

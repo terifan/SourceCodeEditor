@@ -20,7 +20,7 @@ public abstract class SyntaxParser implements Serializable
 	/**
 	 * A style identifier which identifies the style used for search results.
 	 */
-	public final static String SEARCH_RESULT = "SEARCHRESULT";
+	public final static String SEARCH_RESULT = "SEARCH_RESULT";
 	/**
 	 * A style identifier which identifies the style used for white space.
 	 */
@@ -28,22 +28,16 @@ public abstract class SyntaxParser implements Serializable
 	/**
 	 * A style identifier which identifies the style used for line breaks (paragrah symbols).
 	 */
-	public final static String LINE_BREAK = "LINEBREAK";
+	public final static String LINE_BREAK = "LINE_BREAK";
 	/**
 	 * A style identifier which identifies the style used for highlighted text.
 	 * Only the background color of this style is used.
 	 */
-	public final static String HIGHLIGHT = "HIGHLIGHT";
+	public final static String HIGHLIGHT_WORD = "HIGHLIGHT_WORD";
 
-	/**
-	 * Return the style matching to a style identifier.
-	 */
-	public abstract Style getStyle(String aIdentifier);
-
-	/**
-	 * Return an array with all style keys.
-	 */
-	public abstract String [] getStyleKeys();
+	public final static String CARET = "CARET";
+	public final static String HIGHLIGHT_CARET_ROW = "HIGHLIGHT_CARET_ROW";
+	public final static String INDENT_LINE = "INDENT_LINE";
 
 	/**
 	 * Initializes the parser and resets any internal state. This method is

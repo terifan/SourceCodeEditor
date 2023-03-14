@@ -25,7 +25,6 @@ public class Style
 	private int mFontStrikethroughThickness;
 	private int mFontUnderlineOffset;
 	private int mFontUnderlineThickness;
-	private String mName;
 	private boolean mSupportHighlight;
 	private int mHashCode;
 
@@ -38,12 +37,11 @@ public class Style
 	 * @param aForeground The foreground color of this style.
 	 * @param aBackground The background color of this style.
 	 * @param aUnderlined Enables or disables underlining in this style.
-	 * @param aStrikethrough Enables or disables strikethrough in this style.
+	 * @param aStrikethrough Enables or disables strike-through in this style.
 	 * @param aBackgroundOptional Background color is optional.
 	 */
-	public Style(String aName, Font aFont, Color aForeground, Color aBackground, boolean aUnderlined, boolean aStrikethrough, boolean aBackgroundOptional, boolean aSupportHighlight)
+	public Style(Font aFont, Color aForeground, Color aBackground, boolean aUnderlined, boolean aStrikethrough, boolean aBackgroundOptional, boolean aSupportHighlight)
 	{
-		mName = aName;
 		mFont = aFont;
 		mForeground = aForeground;
 		mBackground = aBackground;
@@ -293,24 +291,6 @@ public class Style
 
 
 	/**
-	 * Gets the name of this style.
-	 */
-	public String getName()
-	{
-		return mName;
-	}
-
-
-	/**
-	 * Sets the name of this style.
-	 */
-	public void setName(String aName)
-	{
-		mName = aName;
-	}
-
-
-	/**
 	 * Returns the point size of this Font, rounded to an integer.
 	 */
 	public int getFontSize()
@@ -341,23 +321,8 @@ public class Style
 	}
 
 
-	@Override
-	public String toString()
-	{
-		return mName;
-	}
-
-
 	public boolean similar(Style other, boolean aOptimizeWhitespace)
 	{
-		if (this.mName.equals(SyntaxParser.WHITESPACE))
-		{
-			return aOptimizeWhitespace && other.mName.equals(SyntaxParser.WHITESPACE);
-		}
-		if (other.mName.equals(SyntaxParser.WHITESPACE))
-		{
-			return false;
-		}
 		if (this.mHashCode != other.mHashCode)
 		{
 			return false;
@@ -406,11 +371,7 @@ public class Style
 		{
 			return false;
 		}
-//		if (this.mSupportHighlight != other.mSupportHighlight)
-//		{
-//			return false;
-//		}
-		return true;
+		return !false; // work-around to get rid of Netbeans warning when returning 'true'...
 	}
 
 

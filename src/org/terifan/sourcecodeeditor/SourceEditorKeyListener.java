@@ -28,9 +28,9 @@ public class SourceEditorKeyListener implements KeyListener, Serializable
 
 		char keyChar = aEvent.getKeyChar();
 
-		if (keyChar == '\t' && (!mSourceEditor.isAlternateMode() || aEvent.isControlDown()) && mSourceEditor.isTextSelected() && mSourceEditor.getSelectionStartUnmodified().y != mSourceEditor.getSelectionEndUnmodified().y)
+		if (keyChar == '\t' && (!mSourceEditor.getFocusTraversalKeysEnabled() || aEvent.isControlDown()) && mSourceEditor.isTextSelected() && mSourceEditor.getSelectionStartUnmodified().y != mSourceEditor.getSelectionEndUnmodified().y)
 		{
-			if (mSourceEditor.isTabIndentsTextEnabled())
+			if (mSourceEditor.isTabIndentsTextBlockEnabled())
 			{
 				if (aEvent.isShiftDown())
 				{
@@ -47,7 +47,7 @@ public class SourceEditorKeyListener implements KeyListener, Serializable
 			}
 			mSourceEditor.repaint();
 		}
-		else if (keyChar >= 32 && keyChar != 127 || (keyChar == '\t' && (!mSourceEditor.isAlternateMode() || aEvent.isControlDown())))
+		else if (keyChar >= 32 && keyChar != 127 || (keyChar == '\t' && (!mSourceEditor.getFocusTraversalKeysEnabled() || aEvent.isControlDown())))
 		{
 			mSourceEditor.keyTyped(keyChar);
 			mSourceEditor.repaint();
@@ -58,11 +58,15 @@ public class SourceEditorKeyListener implements KeyListener, Serializable
 	@Override
 	public void keyPressed(KeyEvent aEvent)
 	{
-		if (mSourceEditor.isAlternateMode() && aEvent.getKeyChar() == '\t')
+		if (mSourceEditor.getFocusTraversalKeysEnabled() && aEvent.getKeyChar() == '\t')
 		{
-			keyTyped(aEvent);
 			return;
 		}
+//		if (!mSourceEditor.getFocusTraversalKeysEnabled() && aEvent.getKeyChar() == '\t')
+//		{
+//			keyTyped(aEvent);
+//			return;
+//		}
 
 		boolean repaint = false;
 
@@ -197,7 +201,7 @@ public class SourceEditorKeyListener implements KeyListener, Serializable
 				repaint = true;
 				break;
 			case KeyEvent.VK_ENTER:
-				if (!mSourceEditor.isAlternateMode() || aEvent.isControlDown())
+				if (mSourceEditor.isMultiline())
 				{
 					mSourceEditor.insertBreak();
 					repaint = true;

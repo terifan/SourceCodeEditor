@@ -75,14 +75,14 @@ public class FindDialog extends JDialog implements ActionListener
 		mReplaceAndSearchButton.setActionCommand("replaceandsearch");
 		mReplaceAndSearchButton.setMnemonic('e');
 
-		mSearchField = new SourceEditor(mSourceEditor.getSyntaxParser().newInstance(), new Document());
-		mReplaceField = new SourceEditor(mSourceEditor.getSyntaxParser().newInstance(), new Document());
+		mSearchField = new SourceEditor(mSourceEditor.getSyntaxParser().newInstance(), new Document(), mSourceEditor.getStyleMap());
+		mReplaceField = new SourceEditor(mSourceEditor.getSyntaxParser().newInstance(), new Document(), mSourceEditor.getStyleMap());
 
-		mSearchField.setAlternateMode(true);
+		mSearchField.setFocusTraversalKeysEnabled(true);
 		mSearchField.addKeyListener(new FocusMover(mReplaceAllButton, mReplaceField));
 		JScrollPane searchInput = new JScrollPane(mSearchField);
 
-		mReplaceField.setAlternateMode(true);
+		mReplaceField.setFocusTraversalKeysEnabled(true);
 		mReplaceField.addKeyListener(new FocusMover(mSearchField, mCaseSensative));
 		JScrollPane replaceInput = new JScrollPane(mReplaceField);
 

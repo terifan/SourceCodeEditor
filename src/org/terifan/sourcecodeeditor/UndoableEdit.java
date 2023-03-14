@@ -8,38 +8,43 @@ public class UndoableEdit
 {
 	private final SourceEditor mSourceEditor;
 	private final ArrayList<UndoableAction> mUndoableActions;
+	private final ArrayList<String> mSubActions;
 	private final String mPresentationName;
-	private int mCaretStartPositionX;
-	private int mCaretStartPositionY;
-	private int mCaretEndPositionX;
-	private int mCaretEndPositionY;
+	private State mStartState;
+	private State mEndState;
 
 
 	public UndoableEdit(SourceEditor aSourceEditor, String aPresentationName)
 	{
-		this.mUndoableActions = new ArrayList();
+		mUndoableActions = new ArrayList();
 		mSourceEditor = aSourceEditor;
 		mPresentationName = aPresentationName;
+		mSubActions = new ArrayList<>();
 	}
 
 
-	public void setCaretStartPosition(Point aCaretPosition)
+	public void saveStartState()
 	{
-		mCaretStartPositionX = aCaretPosition.x;
-		mCaretStartPositionY = aCaretPosition.y;
+		mStartState = new State();
 	}
 
 
-	public void setCaretEndPosition(Point aCaretPosition)
+	public void saveEndState()
 	{
-		mCaretEndPositionX = aCaretPosition.x;
-		mCaretEndPositionY = aCaretPosition.y;
+		mEndState = new State();
 	}
 
 
 	public void addAction(UndoableAction aUndoableAction)
 	{
 		mUndoableActions.add(aUndoableAction);
+		mSubActions.add(mPresentationName);
+	}
+
+
+	public void addSubAction(String aName)
+	{
+		mSubActions.add(aName);
 	}
 
 
@@ -62,17 +67,51 @@ public class UndoableEdit
 			mUndoableActions.get(i).undo();
 		}
 
-		mSourceEditor.getCaret().moveAbsolute(mCaretStartPositionX, mCaretStartPositionY, false, false, true);
+		mStartState.restore();
 	}
 
 
 	public void redo()
 	{
-		for (int i = 0, sz = mUndoableActions.size(); i < sz; i++)
+		for (UndoableAction action : mUndoableActions)
 		{
-			mUndoableActions.get(i).redo();
+			action.redo();
 		}
 
-		mSourceEditor.getCaret().moveAbsolute(mCaretEndPositionX, mCaretEndPositionY, false, false, true);
+		mEndState.restore();
+	}
+
+
+	private class State
+	{
+		private Point mCaret;
+		private Point mSelectionStart;
+		private Point mSelectionEnd;
+		private boolean mRectangularSelection;
+
+
+		public State()
+		{
+			mSelectionStart = mSourceEditor.getSelectionStart();
+			mSelectionEnd = mSourceEditor.getSelectionEnd();
+			mRectangularSelection = mSourceEditor.isRectangularSelection();
+			mCaret = mSourceEditor.getCaret().getCharacterPosition();
+		}
+
+
+		public void restore()
+		{
+			mSourceEditor.getCaret().moveAbsolute(mCaret.x, mCaret.y, false, false, true);
+			if (mSelectionStart != null && mSelectionEnd != null)
+			{
+				mSourceEditor.setRectangularSelection(mRectangularSelection);
+				mSourceEditor.setSelectionStart(mSelectionStart.x, mSelectionStart.y);
+				mSourceEditor.setSelectionEnd(mSelectionEnd.x, mSelectionEnd.y);
+			}
+			else
+			{
+				mSourceEditor.clearSelection();
+			}
+		}
 	}
 }

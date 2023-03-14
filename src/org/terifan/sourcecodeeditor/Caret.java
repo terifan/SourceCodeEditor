@@ -180,9 +180,9 @@ public class Caret extends Thread implements Serializable
 			{
 				int x = mCaretPixelPosition.x + mSourceEditor.getMargins().left;
 				int y = mCaretPixelPosition.y + mSourceEditor.getMargins().top;
-				if (mSourceEditor.getCaretColor() != null)
+				if (mSourceEditor.getStyle(SyntaxParser.CARET) != null)
 				{
-					aGraphics.setColor(mSourceEditor.getCaretColor());
+					aGraphics.setColor(mSourceEditor.getStyle(SyntaxParser.CARET).getForeground());
 				}
 				else
 				{
@@ -305,7 +305,7 @@ public class Caret extends Thread implements Serializable
 				mCaretListeners.get(i).caretMoved(caretEvent);
 			}
 
-			if (aDeltaY != 0 && mSourceEditor.getHighlightCaretRow() != null)
+			if (aDeltaY != 0 && mSourceEditor.isHighlightCaretRowEnabled())
 			{
 				mSourceEditor.repaint();
 			}

@@ -1,39 +1,34 @@
 package org.terifan.sourcecodeeditor.parsers;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import org.terifan.sourcecodeeditor.Document;
-import org.terifan.sourcecodeeditor.Style;
 import org.terifan.sourcecodeeditor.SyntaxParser;
 import org.terifan.sourcecodeeditor.Token;
 
 
 public class SqlSyntaxParser extends SyntaxParser
 {
-	public final static String BLOCKCOMMENT = "BLOCKCOMMENT";
+	public final static String COMMENT_BLOCK = "COMMENT_BLOCK";
 	public final static String BRACKETS = "BRACKETS";
 	public final static String FUNCTION = "FUNCTION";
 	public final static String OTHER = "OTHER";
 	public final static String KEYWORD = "KEYWORD";
-	public final static String NUMERICLITERAL = "NUMERICLITERAL";
+	public final static String LITERAL_NUMERIC = "LITERAL_NUMERIC";
 	public final static String JOIN = "OBJECTTYPE";
 	public final static String OPERATOR = "OPERATOR";
-	public final static String SINGLELINECOMMENT = "SINGLELINECOMMENT";
-	public final static String STRINGLITERAL = "STRINGLITERAL";
-	public final static String SYNTAXERROR = "SYNTAXERROR";
+	public final static String COMMENT_LINE = "COMMENT_LINE";
+	public final static String LITERAL_STRING = "LITERAL_STRING";
+	public final static String SYNTAX_ERROR = "SYNTAX_ERROR";
 
 	private final static HashSet<String> mKeywords;
 	private final static HashSet<String> mFunctions;
 	private final static HashSet<String> mJoins;
-	private final HashMap<String,Style> mStyles;
 	private String mToken;
 	private int mTokenOffset;
 	private String mSourceLine;
-	private Style mTokenStyle;
+	private String mTokenStyle;
 	private String mCommentState;
 	private int mStringLiteralState;
 	private boolean mOptimizeTokens;
@@ -93,58 +88,6 @@ public class SqlSyntaxParser extends SyntaxParser
 
 	public SqlSyntaxParser()
 	{
-		Font plain = new Font("monospaced", Font.PLAIN, 14);
-		Font bold = new Font("monospaced", Font.BOLD, 14);
-		Font italic = new Font("monospaced", Font.ITALIC, 14);
-		Font bolditalic = new Font("monospaced", Font.BOLD | Font.ITALIC, 14);
-		Color bg = Color.WHITE;
-
-		mStyles = new HashMap<>();
-		mStyles.put(LINE_BREAK, new Style(LINE_BREAK, plain, new Color(0,0,153), bg, false, false, true, false));
-		mStyles.put(SEARCH_RESULT, new Style(SEARCH_RESULT, plain, Color.WHITE, new Color(255,255,128), false, false, false, false));
-		mStyles.put(SELECTION, new Style(SELECTION, plain, Color.WHITE, new Color(176,197,227), false, false, false, false));
-		mStyles.put(WHITESPACE, new Style(WHITESPACE, plain, Color.BLACK, bg, false, false, true, false));
-		mStyles.put(HIGHLIGHT, new Style(HIGHLIGHT, plain, Color.BLACK, new Color(225,236,247), false, false, true, false));
-		mStyles.put(SYNTAXERROR, new Style(SYNTAXERROR, bold, new Color(0,0,0), new Color(255,200,200), false, false, false, false));
-
-		mStyles.put(BRACKETS, new Style(BRACKETS, plain, new Color(0,0,0), bg, false, false, true, false));
-		mStyles.put(NUMERICLITERAL, new Style(NUMERICLITERAL, plain, new Color(255,0,0), bg, false, false, true, true));
-		mStyles.put(STRINGLITERAL, new Style(STRINGLITERAL, plain, new Color(255,0,0), bg, false, false, true, false));
-		mStyles.put(OPERATOR, new Style(OPERATOR, plain, new Color(0,0,0), bg, false, false, true, false));
-		mStyles.put(SINGLELINECOMMENT, new Style(SINGLELINECOMMENT, italic, new Color(0,128,0), bg, false, false, true, false));
-		mStyles.put(BLOCKCOMMENT, new Style(BLOCKCOMMENT, italic, new Color(0,128,0), bg, false, false, true, false));
-		mStyles.put(FUNCTION, new Style(FUNCTION, plain, new Color(255,0,255), bg, false, false, true, true));
-		mStyles.put(KEYWORD, new Style(KEYWORD, plain, new Color(0,0,255), bg, false, false, true, true));
-		mStyles.put(JOIN, new Style(JOIN, plain, new Color(127,127,127), bg, false, false, true, true));
-		mStyles.put(OTHER, new Style(OTHER, plain, new Color(0,0,0), bg, false, false, true, true));
-	}
-
-
-
-	/**
-	 * Return the style matching to a style identifier.
-	 */
-	@Override
-	public Style getStyle(String aIdentifier)
-	{
-		Style s = mStyles.get(aIdentifier);
-		if (s == null)
-		{
-			throw new IllegalArgumentException("Style not found: " + aIdentifier);
-		}
-		return s;
-	}
-
-
-	/**
-	 * Return an array with all style keys.
-	 */
-	@Override
-	public String [] getStyleKeys()
-	{
-		String [] keys = new String[mStyles.size()];
-		mStyles.keySet().toArray(keys);
-		return keys;
 	}
 
 
@@ -156,7 +99,7 @@ public class SqlSyntaxParser extends SyntaxParser
 		mOptimizeTokens = aOptimizeTokens;
 		mOptimizeWhitespace = aOptimizeWhitespace;
 		mStringLiteralState = 0;
-		if (SINGLELINECOMMENT.equals(mCommentState))
+		if (COMMENT_LINE.equals(mCommentState))
 		{
 			mCommentState = null;
 		}
@@ -198,11 +141,11 @@ public class SqlSyntaxParser extends SyntaxParser
 		{
 			if (mStringLiteralState == 2)
 			{
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = SYNTAX_ERROR;
 			}
 			else if (mCommentState == null)
 			{
-				mTokenStyle = mStyles.get(WHITESPACE);
+				mTokenStyle = WHITESPACE;
 			}
 
 			if (c == ' ')
@@ -242,7 +185,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			return scanStringLiteral();
 		}
 
-		if (SINGLELINECOMMENT.equals(mCommentState))
+		if (COMMENT_LINE.equals(mCommentState))
 		{
 			return scanSingleLineComment();
 		}
@@ -266,8 +209,8 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '/':
 				if (mSourceLine.charAt(mTokenOffset + 1) == '*')
 				{
-					mCommentState = BLOCKCOMMENT;
-					mTokenStyle = mStyles.get(BLOCKCOMMENT);
+					mCommentState = COMMENT_BLOCK;
+					mTokenStyle = COMMENT_BLOCK;
 					mTokenOffset += 2;
 					return "/*";
 				}
@@ -275,8 +218,8 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '-':
 				if (mSourceLine.charAt(mTokenOffset + 1) == '-')
 				{
-					mTokenStyle = mStyles.get(SINGLELINECOMMENT);
-					mCommentState = SINGLELINECOMMENT;
+					mTokenStyle = COMMENT_LINE;
+					mCommentState = COMMENT_LINE;
 					if (mOptimizeTokens)
 					{
 						return scanSingleLineComment();
@@ -291,7 +234,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '*':
 				if (mSourceLine.charAt(mTokenOffset + 1) == '/')
 				{
-					mTokenStyle = mStyles.get(SYNTAXERROR);
+					mTokenStyle = SYNTAX_ERROR;
 					mTokenOffset+=2;
 					return "*/";
 				}
@@ -299,7 +242,7 @@ public class SqlSyntaxParser extends SyntaxParser
 				{
 					if (mTokenOffset > 0 && mSourceLine.charAt(mTokenOffset-1) == '.')
 					{
-						mTokenStyle = mStyles.get(OTHER);
+						mTokenStyle = OTHER;
 						mTokenOffset++;
 						return "*";
 					}
@@ -322,7 +265,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '8': case '9':
 				return scanNumericLiteral();
 			default:
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = SYNTAX_ERROR;
 				mTokenOffset++;
 				return Character.toString(c);
 		}
@@ -427,7 +370,7 @@ public class SqlSyntaxParser extends SyntaxParser
 
 		if (foundTerminator)
 		{
-			mTokenStyle = mStyles.get(STRINGLITERAL);
+			mTokenStyle = LITERAL_STRING;
 			mStringLiteralState = 0;
 		}
 		else if (foundBreak)
@@ -452,16 +395,16 @@ public class SqlSyntaxParser extends SyntaxParser
 
 			if (mStringLiteralState == 1)
 			{
-				mTokenStyle = mStyles.get(STRINGLITERAL);
+				mTokenStyle = LITERAL_STRING;
 			}
 			else if (mStringLiteralState == 2)
 			{
-				mTokenStyle = mStyles.get(SYNTAXERROR);
+				mTokenStyle = SYNTAX_ERROR;
 			}
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 			mStringLiteralState = 0;
 		}
 
@@ -516,19 +459,19 @@ public class SqlSyntaxParser extends SyntaxParser
 
 		if (isError)
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 		}
 		else if (mKeywords.contains(t))
 		{
-			mTokenStyle = mStyles.get(KEYWORD);
+			mTokenStyle = KEYWORD;
 		}
 		else if (mFunctions.contains(t))
 		{
-			mTokenStyle = mStyles.get(FUNCTION);
+			mTokenStyle = FUNCTION;
 		}
 		else if (mJoins.contains(t))
 		{
-			mTokenStyle = mStyles.get(JOIN);
+			mTokenStyle = JOIN;
 		}
 		else
 		{
@@ -555,7 +498,7 @@ public class SqlSyntaxParser extends SyntaxParser
 //				}
 //			}
 
-			mTokenStyle = mStyles.get(OTHER);
+			mTokenStyle = OTHER;
 		}
 
 		return s;
@@ -630,11 +573,11 @@ public class SqlSyntaxParser extends SyntaxParser
 
 		if (errorFound || !numberFound)
 		{
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 		}
 		else
 		{
-			mTokenStyle = mStyles.get(NUMERICLITERAL);
+			mTokenStyle = LITERAL_NUMERIC;
 		}
 
 		String s = mSourceLine.substring(mTokenOffset, o);
@@ -661,7 +604,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			}
 		}
 
-		mTokenStyle = mStyles.get(NUMERICLITERAL);
+		mTokenStyle = LITERAL_NUMERIC;
 		String s = mSourceLine.substring(mTokenOffset, mTokenOffset + len);
 		mTokenOffset += len;
 		return s;
@@ -683,12 +626,12 @@ public class SqlSyntaxParser extends SyntaxParser
 			}
 
 			s += temp;
-			mTokenStyle = mStyles.get(SYNTAXERROR);
+			mTokenStyle = SYNTAX_ERROR;
 		}
 
 		if (mTokenStyle == null)
 		{
-			mTokenStyle = mStyles.get(OPERATOR);
+			mTokenStyle = OPERATOR;
 		}
 
 		mTokenOffset += s.length();
@@ -804,7 +747,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			}
 		}
 
-		mTokenStyle = mStyles.get(BRACKETS);
+		mTokenStyle = BRACKETS;
 		String s = mSourceLine.substring(mTokenOffset, o);
 		mTokenOffset = o;
 
@@ -836,8 +779,8 @@ public class SqlSyntaxParser extends SyntaxParser
 					if (!singleLineComment && c == '/' && s.charAt(i + 1) == '*')
 					{
 						finished = true;
-						mTokenStyle = mStyles.get(BLOCKCOMMENT);
-						mCommentState = BLOCKCOMMENT;
+						mTokenStyle = COMMENT_BLOCK;
+						mCommentState = COMMENT_BLOCK;
 						i++;
 					}
 					if (c == '*' && s.charAt(i + 1) == '/')
@@ -882,25 +825,18 @@ public class SqlSyntaxParser extends SyntaxParser
 		Token prevToken = null;
 		while (iterate())
 		{
-			Style style;
+			String style;
 			if (mCommentState == null)
 			{
 				style = mTokenStyle;
 			}
 			else
 			{
-				style = mStyles.get(mCommentState);
+				style = mCommentState;
 			}
 
-			if (aOptimizeTokens && prevToken != null && prevToken.getStyle().similar(mTokenStyle, aOptimizeWhitespace))
-			{
-				prevToken.append(mToken);
-			}
-			else
-			{
-				prevToken = new Token(mToken, style, mTokenOffset-mToken.length(), mCommentState != null);
-				tokens.add(prevToken);
-			}
+			prevToken = new Token(mToken, style, mTokenOffset-mToken.length(), mCommentState != null);
+			tokens.add(prevToken);
 		}
 		return tokens;
 	}
