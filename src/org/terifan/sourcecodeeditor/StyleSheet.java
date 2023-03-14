@@ -20,7 +20,7 @@ public class StyleSheet
 
 			StyleMap styles = new StyleMap();
 
-			Color bg = new Color(40, 40, 40);
+			Color bg = new Color(30, 30, 30);
 
 			styles.put(JavaSyntaxParser.ANNOTATION, new Style(plain, new Color(198, 255, 109), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.BRACKETS, new Style(plain, new Color(200, 200, 200), bg, false, false, true, false));
@@ -29,16 +29,16 @@ public class StyleSheet
 			styles.put(JavaSyntaxParser.COMMENT_LINE, new Style(italic, new Color(120, 120, 120), bg, false, false, true, false));
 			styles.put(JavaSyntaxParser.DOCUMENTATION, new Style(bold, new Color(120, 120, 120), bg, false, false, true, false));
 			styles.put(JavaSyntaxParser.HIGHLIGHT_CARET_ROW, new Style(plain, null, new Color(50, 50, 50), false, false, true, false));
-			styles.put(JavaSyntaxParser.HIGHLIGHT_WORD, new Style(plain, new Color(170, 170, 170), new Color(70, 70, 0), false, false, true, true));
+			styles.put(JavaSyntaxParser.HIGHLIGHT_WORD, new Style(plain, new Color(255,255,255), new Color(70, 30, 30), false, false, true, true));
 			styles.put(JavaSyntaxParser.IDENTIFIER, new Style(plain, new Color(170, 170, 170), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.INDENT_LINE, new Style(plain, new Color(70, 70, 70), bg, false, false, true, false));
-			styles.put(JavaSyntaxParser.KEYWORD, new Style(plain, new Color(204, 120, 50), bg, false, false, true, true));
+			styles.put(JavaSyntaxParser.KEYWORD, new Style(plain, new Color(204,120,50), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.LINE_BREAK, new Style(plain, new Color(70, 70, 70), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.LITERAL_CHARACTER, new Style(plain, new Color(106, 135, 89), bg, false, false, true, false));
-			styles.put(JavaSyntaxParser.LITERAL_NUMERIC, new Style(plain, new Color(200, 100, 200), bg, false, false, true, true));
-			styles.put(JavaSyntaxParser.LITERAL_STRING, new Style(plain, new Color(106, 135, 89), bg, false, false, true, false));
+			styles.put(JavaSyntaxParser.LITERAL_NUMERIC, new Style(plain, new Color(255, 0, 255), bg, false, false, true, true));
+			styles.put(JavaSyntaxParser.LITERAL_STRING, new Style(plain, new Color(30,123,175), bg, false, false, true, false));
 			styles.put(JavaSyntaxParser.METHOD_DECLARATION, new Style(plain, new Color(255, 198, 109), bg, false, false, true, true));
-			styles.put(JavaSyntaxParser.METHOD_USE, new Style(plain, new Color(162, 178, 198), bg, false, false, true, true));
+			styles.put(JavaSyntaxParser.METHOD_USE, new Style(plain, new Color(157,135,55), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.OBJECT_TYPE, new Style(plain, new Color(152, 118, 170), bg, false, false, true, true));
 			styles.put(JavaSyntaxParser.OPERATOR, new Style(plain, new Color(255, 255, 255), bg, false, false, true, false));
 			styles.put(JavaSyntaxParser.PRIMITIVE, new Style(plain, new Color(0, 200, 220), bg, false, false, true, true));

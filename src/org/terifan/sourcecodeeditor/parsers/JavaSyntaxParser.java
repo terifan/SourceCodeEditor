@@ -494,42 +494,32 @@ public class JavaSyntaxParser extends SyntaxParser
 
 	protected String scanCharacterLiteral()
 	{
-		int o = mTokenOffset + 1;
-		int len = 0;
-		boolean foundTerminator = false;
-		boolean foundEscape = false;
-		boolean escapeConsumed = false;
-
-		for (; o < mSourceLine.length()-1; o++)
+		int len;
+		String t = mSourceLine.substring(mTokenOffset + 1);
+		boolean b = t.startsWith("\\");
+		if (!b && t.matches(".{1}\\'.*"))
 		{
-			if (mSourceLine.charAt(o) == '\'' && (escapeConsumed || mSourceLine.charAt(o - 1) != '\\'))
-			{
-				o++;
-				foundTerminator = true;
-				break;
-			}
-			if (!foundEscape && mSourceLine.charAt(o) == '\\')
-			{
-				len--;
-				foundEscape = true;
-			}
-			else if (mSourceLine.charAt(o) == '\\')
-			{
-				escapeConsumed = true;
-			}
-			len++;
+			len = 3;
+			mTokenStyle = LITERAL_CHARACTER;
 		}
-
-		if (foundTerminator && len == 1)
+		else if (b && t.matches("\\\\u[0-9]{4}\\'.*"))
 		{
+			len = 8;
+			mTokenStyle = LITERAL_CHARACTER;
+		}
+		else if (b && t.matches("\\\\[0-9]{3}\\'.*"))
+		{
+			len = 6;
 			mTokenStyle = LITERAL_CHARACTER;
 		}
 		else
 		{
+			len = t.contains("\'") ? t.indexOf("\'") + 1 : 1;
 			mTokenStyle = SYNTAX_ERROR;
 		}
-		String s = mSourceLine.substring(mTokenOffset, o);
-		mTokenOffset = o;
+
+		String s = mSourceLine.substring(mTokenOffset, mTokenOffset + len);
+		mTokenOffset += len;
 		return s;
 	}
 
@@ -804,6 +794,7 @@ public class JavaSyntaxParser extends SyntaxParser
 				return "+";
 			case '-':
 				if (c == '=') return "-=";
+				if (c == '>') return "->";
 				if (c == '-')
 				{
 					if (mSourceLine.charAt(aOffset+2) == ';') return "--;";
