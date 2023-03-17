@@ -14,6 +14,7 @@ public class SqlSyntaxParser extends SyntaxParser
 	public final static String BRACKETS = "BRACKETS";
 	public final static String FUNCTION = "FUNCTION";
 	public final static String OTHER = "OTHER";
+	public final static String VARIABLE = "VARIABLE";
 	public final static String KEYWORD = "KEYWORD";
 	public final static String LITERAL_NUMERIC = "LITERAL_NUMERIC";
 	public final static String JOIN = "OBJECTTYPE";
@@ -252,6 +253,8 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '>': case '=': case '!': case '&': case '|': case '^': case '~':
 			case '%':
 				return scanOperator();
+			case '@':
+				return scanVariable();
 			case '[': case ']': case '(': case ')': case '{': case '}':
 				return scanBrackets();
 			case '\"': case '\'':
@@ -331,6 +334,28 @@ public class SqlSyntaxParser extends SyntaxParser
 			}
 		}
 
+		String s = mSourceLine.substring(mTokenOffset, offset);
+		mTokenOffset = offset;
+		return s;
+	}
+
+
+	protected String scanVariable()
+	{
+		int offset = mTokenOffset;
+
+		outer: for (; offset < mSourceLine.length()-1; offset++)
+		{
+			switch (mSourceLine.charAt(offset))
+			{
+				case ' ':
+					break outer;
+				case '\t':
+					break outer;
+			}
+		}
+
+		mTokenStyle = VARIABLE;
 		String s = mSourceLine.substring(mTokenOffset, offset);
 		mTokenOffset = offset;
 		return s;

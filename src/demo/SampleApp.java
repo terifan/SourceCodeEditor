@@ -126,7 +126,11 @@ public class SampleApp
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "SQL", new SourceEditor(parserSql, documentSql, StyleSheet.installSql("monospaced", 14, ""))
+			add(tabbedPane, "SQL Dark", new SourceEditor(parserSql, documentSql, StyleSheet.installSql("monospaced", 14, "dark"))
+				.setWhitespaceSymbolEnabled(true)
+				.setLineBreakSymbolEnabled(true)
+			);
+			add(tabbedPane, "SQL Light", new SourceEditor(parserSql, new Document(documentSql), StyleSheet.installSql("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
@@ -138,8 +142,6 @@ public class SampleApp
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-//			add(tabbedPane, "Json", new SourceEditor(parserJson, documentJson)));
-//			add(tabbedPane, "Html", new SourceEditor(parserHtml, documentHtml)));
 			add(tabbedPane, "Text", new SourceEditor(parserText, documentText, StyleSheet.installText("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
