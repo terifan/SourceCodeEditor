@@ -95,6 +95,7 @@ public class StyleSheet
 
 			styles.put(SqlSyntaxParser.BRACKETS, new Style(plain, new Color(200, 200, 200), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.CARET, new Style(plain, new Color(255, 255, 255), bg, false, false, true, false));
+			styles.put(SqlSyntaxParser.COMMA, new Style(plain, new Color(255, 255, 255), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.COMMENT_BLOCK, new Style(italic, new Color(120, 120, 120), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.COMMENT_LINE, new Style(italic, new Color(120, 120, 120), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.FUNCTION, new Style(plain, new Color(255, 0, 255), bg, false, false, true, true));
@@ -111,7 +112,7 @@ public class StyleSheet
 			styles.put(SqlSyntaxParser.OTHER, new Style(plain, new Color(86, 156, 214), bg, false, false, true, true));
 			styles.put(SqlSyntaxParser.SEARCH_RESULT, new Style(plain, bg, new Color(255, 255, 128), false, false, false, true));
 			styles.put(SqlSyntaxParser.SELECTION, new Style(plain, Color.WHITE, new Color(33, 66, 131), false, false, false, true));
-			styles.put(SqlSyntaxParser.SYNTAX_ERROR, new Style(bold, new Color(255, 0, 0), new Color(30, 30, 30), false, false, false, true));
+			styles.put(SqlSyntaxParser.SYNTAX_ERROR, new Style(bold, new Color(255, 0, 0), new Color(70, 30, 30), false, false, false, true));
 			styles.put(SqlSyntaxParser.VARIABLE, new Style(plain, new Color(255, 198, 109), bg, false, false, true, true));
 			styles.put(SqlSyntaxParser.WHITESPACE, new Style(plain, new Color(70, 70, 70), bg, false, false, true, false));
 		}
@@ -121,6 +122,7 @@ public class StyleSheet
 
 			styles.put(SqlSyntaxParser.BRACKETS, new Style(plain, new Color(0, 0, 0), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.CARET, new Style(plain, Color.BLACK, Color.BLACK, false, false, true, false));
+			styles.put(SqlSyntaxParser.COMMA, new Style(plain, new Color(0,0,0), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.COMMENT_BLOCK, new Style(italic, new Color(0, 128, 0), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.COMMENT_LINE, new Style(italic, new Color(0, 128, 0), bg, false, false, true, false));
 			styles.put(SqlSyntaxParser.FUNCTION, new Style(plain, new Color(255, 0, 255), bg, false, false, true, true));

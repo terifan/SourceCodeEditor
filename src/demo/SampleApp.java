@@ -78,7 +78,7 @@ public class SampleApp
 				"	INNER JOIN tbl_subscription_publication sp\n" +
 				"	INNER JOIN tbl_publication_reference pr ON sp.publication_id = pr.publication_id\n" +
 				"	INNER JOIN tbl_epod_reference er ON pr.reference_value = er.reference_value AND pr.reference_type = er.reference_type ON ed.id = er.epod_id\n" +
-				"	WHERE sp.subscription_id = @id AND sp.processed = 'n' AND sp.create_date_time > DATEADD(day, - 14, GETDATE())\n" +
+				"	WHERE sp.subscription_id = @id AND sp.processed = 'n' AND sp.create_date_time > DATEADD(day, -14, GETDATE())\n" +
 				"	GROUP BY ed.url\n"
 			);
 

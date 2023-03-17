@@ -22,6 +22,7 @@ public class SqlSyntaxParser extends SyntaxParser
 	public final static String COMMENT_LINE = "COMMENT_LINE";
 	public final static String LITERAL_STRING = "LITERAL_STRING";
 	public final static String SYNTAX_ERROR = "SYNTAX_ERROR";
+	public final static String COMMA = "COMMA";
 
 	private final static HashSet<String> mKeywords;
 	private final static HashSet<String> mFunctions;
@@ -195,6 +196,8 @@ public class SqlSyntaxParser extends SyntaxParser
 			return scanBlockComment();
 		}
 
+		char cc = mSourceLine.charAt(mTokenOffset + 1);
+
 		switch (c)
 		{
 			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
@@ -208,7 +211,7 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '$': case '_':
 				return scanIdentifier();
 			case '/':
-				if (mSourceLine.charAt(mTokenOffset + 1) == '*')
+				if (cc == '*')
 				{
 					mCommentState = COMMENT_BLOCK;
 					mTokenStyle = COMMENT_BLOCK;
@@ -217,7 +220,7 @@ public class SqlSyntaxParser extends SyntaxParser
 				}
 				return scanOperator();
 			case '-':
-				if (mSourceLine.charAt(mTokenOffset + 1) == '-')
+				if (cc == '-')
 				{
 					mTokenStyle = COMMENT_LINE;
 					mCommentState = COMMENT_LINE;
@@ -225,21 +228,22 @@ public class SqlSyntaxParser extends SyntaxParser
 					{
 						return scanSingleLineComment();
 					}
-					else
-					{
-						mTokenOffset += 2;
-						return "--";
-					}
+					mTokenOffset += 2;
+					return "--";
+				}
+				if (cc >= '0' && cc <= '9' || cc == '.')
+				{
+					return scanNumericLiteral();
 				}
 				return scanOperator();
 			case '*':
-				if (mSourceLine.charAt(mTokenOffset + 1) == '/')
+				if (cc == '/')
 				{
 					mTokenStyle = SYNTAX_ERROR;
 					mTokenOffset+=2;
 					return "*/";
 				}
-				if (mSourceLine.charAt(mTokenOffset + 1) == ';')
+				if (cc == ';')
 				{
 					if (mTokenOffset > 0 && mSourceLine.charAt(mTokenOffset-1) == '.')
 					{
@@ -249,7 +253,7 @@ public class SqlSyntaxParser extends SyntaxParser
 					}
 				}
 				return scanOperator();
-			case '+': case ';': case ',': case '?': case ':': case '<':
+			case '+': case ';': case '?': case ':': case '<':
 			case '>': case '=': case '!': case '&': case '|': case '^': case '~':
 			case '%':
 				return scanOperator();
@@ -260,13 +264,17 @@ public class SqlSyntaxParser extends SyntaxParser
 			case '\"': case '\'':
 				return scanStringLiteral();
 			case '0':
-				if (mSourceLine.charAt(mTokenOffset + 1) == 'x' || mSourceLine.charAt(mTokenOffset + 1) == 'X')
+				if (cc == 'x' || cc == 'X')
 				{
 					return scanHexNumericLiteral();
 				}
 			case '1': case '2': case '3': case '4': case '5': case '6': case '7':
 			case '8': case '9':
 				return scanNumericLiteral();
+			case ',':
+				mTokenStyle = COMMA;
+				mTokenOffset++;
+				return Character.toString(c);
 			default:
 				mTokenStyle = SYNTAX_ERROR;
 				mTokenOffset++;
@@ -549,7 +557,7 @@ public class SqlSyntaxParser extends SyntaxParser
 					{
 						break outer;
 					}
-					if (signFound || !exponentFound)
+					if (signFound || o > mTokenOffset && !exponentFound)
 					{
 						o++;
 						errorFound = true;
