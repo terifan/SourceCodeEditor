@@ -8,8 +8,17 @@ import org.terifan.sourcecodeeditor.parsers.TextSyntaxParser;
 import org.terifan.sourcecodeeditor.parsers.XmlSyntaxParser;
 
 
-public class StyleSheet
+public class StyleMaps
 {
+	public final static StyleMap JavaDark = installJava("monospaced", 14, "dark");
+	public final static StyleMap JavaLight = installJava("monospaced", 14, "");
+	public final static StyleMap SQLDark = installSql("monospaced", 14, "dark");
+	public final static StyleMap SQLLight = installSql("monospaced", 14, "");
+	public final static StyleMap XmlDark = installXml("monospaced", 14, "dark");
+	public final static StyleMap XmlLight = installXml("monospaced", 14, "");
+	public final static StyleMap Text = installText("monospaced", 14, "");
+
+
 	public static StyleMap installJava(String aFontFamily, int aFontSize, String aVariant)
 	{
 		StyleMap styles = new StyleMap();

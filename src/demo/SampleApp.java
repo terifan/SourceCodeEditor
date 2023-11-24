@@ -16,7 +16,7 @@ import javax.swing.UIManager;
 import org.terifan.sourcecodeeditor.Document;
 import org.terifan.sourcecodeeditor.parsers.JavaSyntaxParser;
 import org.terifan.sourcecodeeditor.SourceEditor;
-import org.terifan.sourcecodeeditor.StyleSheet;
+import org.terifan.sourcecodeeditor.StyleMaps;
 import org.terifan.sourcecodeeditor.parsers.SqlSyntaxParser;
 import org.terifan.sourcecodeeditor.SyntaxParser;
 import org.terifan.sourcecodeeditor.parsers.TextSyntaxParser;
@@ -125,31 +125,31 @@ public class SampleApp
 			);
 
 			tabbedPane = new JTabbedPane();
-			add(tabbedPane, "Java Dark", new SourceEditor(parserJava, documentJava, StyleSheet.installJava("monospaced", 14, "dark"))
+			add(tabbedPane, "Java Dark", new SourceEditor(parserJava, documentJava, StyleMaps.installJava("monospaced", 14, "dark"))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "Java Light", new SourceEditor(new JavaSyntaxParser(), new Document(documentJava), StyleSheet.installJava("monospaced", 14, ""))
+			add(tabbedPane, "Java Light", new SourceEditor(new JavaSyntaxParser(), new Document(documentJava), StyleMaps.installJava("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "SQL Dark", new SourceEditor(parserSql, documentSql, StyleSheet.installSql("monospaced", 14, "dark"))
+			add(tabbedPane, "SQL Dark", new SourceEditor(parserSql, documentSql, StyleMaps.installSql("monospaced", 14, "dark"))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "SQL Light", new SourceEditor(parserSql, new Document(documentSql), StyleSheet.installSql("monospaced", 14, ""))
+			add(tabbedPane, "SQL Light", new SourceEditor(parserSql, new Document(documentSql), StyleMaps.installSql("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "Xml Dark", new SourceEditor(parserXml, documentXml, StyleSheet.installXml("monospaced", 14, "dark"))
+			add(tabbedPane, "Xml Dark", new SourceEditor(parserXml, documentXml, StyleMaps.installXml("monospaced", 14, "dark"))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "Xml Light", new SourceEditor(parserXml, new Document(documentXml), StyleSheet.installXml("monospaced", 14, ""))
+			add(tabbedPane, "Xml Light", new SourceEditor(parserXml, new Document(documentXml), StyleMaps.installXml("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
-			add(tabbedPane, "Text", new SourceEditor(parserText, documentText, StyleSheet.installText("monospaced", 14, ""))
+			add(tabbedPane, "Text", new SourceEditor(parserText, documentText, StyleMaps.installText("monospaced", 14, ""))
 				.setWhitespaceSymbolEnabled(true)
 				.setLineBreakSymbolEnabled(true)
 			);
